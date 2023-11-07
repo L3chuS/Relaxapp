@@ -361,19 +361,27 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
         self.frame_main = ctk.CTkFrame(self.frame, height=450, width=350, fg_color="#2b2b2b")
         self.frame_main.pack(padx=10, fill="both")
 
-        self.options_menu_button = tk.Menubutton(self.frame_top_menu, text="Archivo", font=(self.font,8),
+        self.archieve_menu_button = tk.Menubutton(self.frame_top_menu, text="Archivo", font=(self.font,8),
         width=5, height=2, background="#2b2b2b", foreground="white", activebackground="#0a4e50", activeforeground="white")
-        self.options_menu_button.place(rely=0.5, anchor="w")
+        self.archieve_menu_button.place(rely=0.5, anchor="w")
 
-        self.about_us_button = tk.Menubutton(self.frame_top_menu, text="Acerca de", font=(self.font,8),
-        width=8, height=2, background="#2b2b2b", foreground="white", activebackground="#0a4e50", activeforeground="white")
-        self.about_us_button.place(rely=0.5, relx=0.2, anchor="w")
+        # self.about_us_button = tk.Menubutton(self.frame_top_menu, text="Acerca de", font=(self.font,8),
+        # width=8, height=2, background="#2b2b2b", foreground="white", activebackground="#0a4e50", activeforeground="white")
+        # self.about_us_button.place(rely=0.5, relx=0.2, anchor="w")
 
-        self.sign_out_button = tk.Menubutton(self.frame_top_menu, text="Cerrar Sesión", font=(self.font,8),
-        width=10, height=2, background="#2b2b2b", foreground="white", activebackground="#0a4e50", activeforeground="white")
-        self.sign_out_button.place(rely=0.5, relx=0.99, anchor="e")
+        # self.sign_out_button = tk.Menubutton(self.frame_top_menu, text="Cerrar Sesión", font=(self.font,8),
+        # width=10, height=2, background="#2b2b2b", foreground="white", activebackground="#0a4e50", activeforeground="white")
+        # self.sign_out_button.place(rely=0.5, relx=0.99, anchor="e")
 
-        
+        self.menu_archieve = tk.Menu(self.archieve_menu_button, tearoff=0)
+        self.archieve_menu_button.config(menu=self.menu_archieve)
+
+        self.menu_archieve.add_command(label=" Cargar Configuración ", command=lambda: print("imprimir"), background="#2b2b2b", foreground="white", activebackground="#0a4e50",
+                                       hidemargin=True)
+
+        # self.menu_archieve.add_command(label="Guardar Configuración", command=lambda: print("imprimir"), background="#2b2b2b", foreground="white", activebackground="#0a4e50")
+
+
 
 
 
