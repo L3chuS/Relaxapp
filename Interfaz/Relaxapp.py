@@ -154,11 +154,12 @@ class RelaxApp_Initial_Frame(RelaxApp_Structure):
         if base_datos.validacion_login:
             self.root.destroy()
             self.close_create(RelaxApp_User_Main_Menu)
-
+            return user["login"]
         else:
             self.error_login = ctk.CTkLabel(self.frame, text="Usuario o contraseña incorrecta. Vuelva a intentarlo.", font=(font,11))
             self.error_login.place(rely=0.81, relx=0.5, anchor="center")
 
+    
     # Method that register users.
     def sign_up(self):
         self.root.destroy()
@@ -367,9 +368,14 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
         self.help_button = tk.Menubutton(self.frame_top_menu, text="Ayuda", font=(font,9),
         width=4, height=2, background=colors["soft_grey"], foreground=colors["white"], activebackground=colors["dark_green"], activeforeground=colors["white"])
         self.help_button.place(rely=0.5, relx=0.18, anchor="w")
+        
+        # SE PUEDE BORRAR TODO ESTOS 
+        # self.sign_out_button = tk.Menubutton(self.frame_top_menu, text="Cerrar Sesión", font=(font,9),
+        # width=9, height=2, background=colors["soft_grey"], foreground=colors["white"], activebackground=colors["dark_green"], activeforeground=colors["white"])
+        # self.sign_out_button.place(rely=0.5, relx=1, anchor="e")
 
-        self.sign_out_button = tk.Menubutton(self.frame_top_menu, text="Cerrar Sesión", font=(font,9),
-        width=9, height=2, background=colors["soft_grey"], foreground=colors["white"], activebackground=colors["dark_green"], activeforeground=colors["white"])
+        self.sign_out_button = ctk.CTkButton(self.frame_top_menu, width=10, height=50, text="Cerrar Sesión", font=(font,12), command=lambda:print(user["login"]),
+        hover=True, fg_color=colors["soft_grey"], hover_color=colors["dark_green"])
         self.sign_out_button.place(rely=0.5, relx=1, anchor="e")
 
         self.menu_archieve = tk.Menu(self.archieve_menu_button, tearoff=0)
@@ -382,8 +388,6 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
         self.menu_archieve.add_command(label=" Guardar Configuración  ", font=(font,9), command=lambda: print("imprimir"), background=colors["soft_grey"], foreground=colors["white"], activebackground=colors["dark_green"], hidemargin=True)
 
         self.menu_help.add_command(label=" Conozca RelaxApp  ", font=(font,9), command=lambda: print("imprimir"), background=colors["soft_grey"], foreground=colors["white"], activebackground=colors["dark_green"], hidemargin=True)
-
-
 
 
         # self.opciones_main_menu.add_command(label="Cargar Configuración")
