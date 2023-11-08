@@ -52,6 +52,9 @@ class RelaxApp_Structure:
         # Set App font.
         self.font = "Segoe Print"
 
+        # Dictionary to set colors of the app.
+        self.color_app = {}
+
     # Method that creates a new root everytime the main root is destroyed.
     def close_create(self, new_window):
         self.root = ctk.CTk()
@@ -365,21 +368,19 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
         width=5, height=2, background="#2b2b2b", foreground="white", activebackground="#0a4e50", activeforeground="white")
         self.archieve_menu_button.place(rely=0.5, anchor="w")
 
-        # self.about_us_button = tk.Menubutton(self.frame_top_menu, text="Acerca de", font=(self.font,8),
-        # width=8, height=2, background="#2b2b2b", foreground="white", activebackground="#0a4e50", activeforeground="white")
-        # self.about_us_button.place(rely=0.5, relx=0.2, anchor="w")
+        self.about_us_button = tk.Menubutton(self.frame_top_menu, text="Acerca de", font=(self.font,8),
+        width=8, height=2, background="#2b2b2b", foreground="white", activebackground="#0a4e50", activeforeground="white")
+        self.about_us_button.place(rely=0.5, relx=0.2, anchor="w")
 
-        # self.sign_out_button = tk.Menubutton(self.frame_top_menu, text="Cerrar Sesión", font=(self.font,8),
-        # width=10, height=2, background="#2b2b2b", foreground="white", activebackground="#0a4e50", activeforeground="white")
-        # self.sign_out_button.place(rely=0.5, relx=0.99, anchor="e")
+        self.sign_out_button = tk.Menubutton(self.frame_top_menu, text="Cerrar Sesión", font=(self.font,8),
+        width=10, height=2, background="#2b2b2b", foreground="white", activebackground="#0a4e50", activeforeground="white")
+        self.sign_out_button.place(rely=0.5, relx=0.99, anchor="e")
 
         self.menu_archieve = tk.Menu(self.archieve_menu_button, tearoff=0)
         self.archieve_menu_button.config(menu=self.menu_archieve)
 
-        self.menu_archieve.add_command(label=" Cargar Configuración ", command=lambda: print("imprimir"), background="#2b2b2b", foreground="white", activebackground="#0a4e50",
-                                       hidemargin=True)
-
-        # self.menu_archieve.add_command(label="Guardar Configuración", command=lambda: print("imprimir"), background="#2b2b2b", foreground="white", activebackground="#0a4e50")
+        self.menu_archieve.add_command(label=" Cargar Configuración  ", command=lambda: print("imprimir"), background="#2b2b2b", foreground="white", activebackground="#0a4e50", hidemargin=True)
+        self.menu_archieve.add_command(label=" Guardar Configuración  ", command=lambda: print("imprimir"), background="#2b2b2b", foreground="white", activebackground="#0a4e50", hidemargin=True)
 
 
 
