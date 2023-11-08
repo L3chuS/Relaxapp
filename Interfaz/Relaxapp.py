@@ -126,17 +126,20 @@ class RelaxApp_Initial_Frame(RelaxApp_Structure):
 
         # Login button.
         self.button_start = ctk.CTkButton(self.frame, text="Entrar", font=(font,20), command= self.sign_in,
-        corner_radius=90, width=100, height=20, hover=True, fg_color=colors["soft_green"], hover_color=colors["dark_green"])
+                                          corner_radius=90, width=100, height=20, hover=True, fg_color=colors["soft_green"], 
+                                          hover_color=colors["dark_green"])
         self.button_start.place(rely=0.72, relx=0.5, anchor="center")
 
         # "Register User" button..
-        self.button_new_user = ctk.CTkButton(self.frame, width=10, height=10, text="Registrar Usuario", font=(font,12), command=self.sign_up,
-        corner_radius=10, hover=True, fg_color=colors["soft_grey"], hover_color=colors["dark_green"])
+        self.button_new_user = ctk.CTkButton(self.frame, width=10, height=10, text="Registrar Usuario", font=(font,12), 
+                                             command=self.sign_up, corner_radius=10, hover=True, fg_color=colors["soft_grey"], 
+                                             hover_color=colors["dark_green"])
         self.button_new_user.place(rely=0.9, relx=0.04)
 
         # "Forget password" button.
-        self.button_forget_pw = ctk.CTkButton(self.frame, width=10, height=10, text="Olvidé contraseña", font=(font,12), command=self.change_password,
-        corner_radius=10, hover=True, fg_color=colors["soft_grey"], hover_color=colors["dark_green"])
+        self.button_forget_pw = ctk.CTkButton(self.frame, width=10, height=10, text="Olvidé contraseña", font=(font,12), 
+                                              command=self.change_password, corner_radius=10, hover=True, fg_color=colors["soft_grey"], 
+                                              hover_color=colors["dark_green"])
         self.button_forget_pw.place(rely=0.9, relx=0.6)
 
     # Method to log in.
@@ -156,7 +159,8 @@ class RelaxApp_Initial_Frame(RelaxApp_Structure):
             self.close_create(RelaxApp_User_Main_Menu)
             return user["login"]
         else:
-            self.error_login = ctk.CTkLabel(self.frame, text="Usuario o contraseña incorrecta. Vuelva a intentarlo.", font=(font,11))
+            self.error_login = ctk.CTkLabel(self.frame, text="Usuario o contraseña incorrecta. Vuelva a intentarlo.", 
+                                            font=(font,11))
             self.error_login.place(rely=0.81, relx=0.5, anchor="center")
 
     
@@ -184,11 +188,13 @@ class RelaxApp_User_Registration(RelaxApp_Structure):
         self.root = root
         
         # Top bar of the register menu.
-        self.top_bar = ctk.CTkLabel(self.frame, text=None, fg_color=colors["dark_green"], width=310, height=0, corner_radius=10)
+        self.top_bar = ctk.CTkLabel(self.frame, text=None, fg_color=colors["dark_green"], width=310, height=0, 
+                                    corner_radius=10)
         self.top_bar.place(rely=0.02, relx=0.03)
 
         # Bottom bar of the register menu.
-        self.bottom_bar = ctk.CTkLabel(self.frame, text=None, fg_color=colors["dark_green"], width=310, height=0, corner_radius=10)
+        self.bottom_bar = ctk.CTkLabel(self.frame, text=None, fg_color=colors["dark_green"], width=310, height=0, 
+                                       corner_radius=10)
         self.bottom_bar.place(rely=0.95, relx=0.03)
 
         # Label of the register menu.
@@ -227,18 +233,21 @@ class RelaxApp_User_Registration(RelaxApp_Structure):
         self.password.place(rely=0.5, relx=0.03)
         
         # Password entry.
-        self.password_entry = ctk.CTkEntry(self.frame, font=(font,14), width=180, height=10, corner_radius=10, show="*")
+        self.password_entry = ctk.CTkEntry(self.frame, font=(font,14), width=180, height=10, corner_radius=10, 
+                                           show="*")
         self.password_entry.place(rely=0.5, relx=0.42)
         self.password_entry.bind("<Button-1>", lambda borrar: self.password_entry.delete(0, tk.END))
 
         # Button to accept the user registration.
         self.create_button = ctk.CTkButton(self.frame, text="Dar de Alta", font=(font,14), command= self.accept_sign_up,
-        corner_radius=90, width=100, height=20, hover=True, fg_color=colors["soft_green"], hover_color="#0a4e50")
+                                           corner_radius=90, width=100, height=20, hover=True, fg_color=colors["soft_green"], 
+                                           hover_color="#0a4e50")
         self.create_button.place(rely=0.7, relx=0.5, anchor="center")
 
         # Button to cancel the user registration.
         self.cancel_button = ctk.CTkButton(self.frame, text="Cancelar", font=(font,14), command= self.cancel_sign_up,
-        corner_radius=90, width=100, height=20, hover=True, fg_color=colors["soft_green"], hover_color=colors["dark_green"])
+                                           corner_radius=90, width=100, height=20, hover=True, fg_color=colors["soft_green"], 
+                                           hover_color=colors["dark_green"])
         self.cancel_button.place(rely=0.8, relx=0.5, anchor="center")
                 
     def accept_sign_up(self):
@@ -272,11 +281,13 @@ class RelaxApp_User_Change_Password(RelaxApp_Structure):
         self.root = root
         
         # Top bar of the change password menu.
-        self.top_bar = ctk.CTkLabel(self.frame, text=None, fg_color=colors["dark_green"], width=310, height=0, corner_radius=10)
+        self.top_bar = ctk.CTkLabel(self.frame, text=None, fg_color=colors["dark_green"], width=310, height=0, 
+                                    corner_radius=10)
         self.top_bar.place(rely=0.02, relx=0.03)
 
         # Bottom bar of the change password menu.
-        self.bottom_bar = ctk.CTkLabel(self.frame, text=None, fg_color=colors["dark_green"], width=310, height=0, corner_radius=10)
+        self.bottom_bar = ctk.CTkLabel(self.frame, text=None, fg_color=colors["dark_green"], width=310, height=0, 
+                                       corner_radius=10)
         self.bottom_bar.place(rely=0.95, relx=0.03)
 
         # Label of the change password menu.
@@ -297,7 +308,8 @@ class RelaxApp_User_Change_Password(RelaxApp_Structure):
         self.pw1.place(rely=0.3, relx=0.03)
         
         # Password entry 1.
-        self.pw1_entry = ctk.CTkEntry(self.frame, font=(font,14), width=165, height=10, corner_radius=10, show="*")
+        self.pw1_entry = ctk.CTkEntry(self.frame, font=(font,14), width=165, height=10, corner_radius=10, 
+                                      show="*")
         self.pw1_entry.place(rely=0.3, relx=0.47)
         self.pw1_entry.bind("<Button-1>", lambda borrar: self.pw1_entry.delete(0, tk.END))
 
@@ -306,18 +318,21 @@ class RelaxApp_User_Change_Password(RelaxApp_Structure):
         self.pw2.place(rely=0.4, relx=0.03)
         
         # Password entry 2.
-        self.pw2_entry = ctk.CTkEntry(self.frame, font=(font,14), width=165, height=10, corner_radius=10, show="*")
+        self.pw2_entry = ctk.CTkEntry(self.frame, font=(font,14), width=165, height=10, corner_radius=10, 
+                                      show="*")
         self.pw2_entry.place(rely=0.4, relx=0.47)
         self.pw2_entry.bind("<Button-1>", lambda borrar: self.pw2_entry.delete(0, tk.END))
         
         # Button to confirm to change the password.
         self.change_pw_button = ctk.CTkButton(self.frame, text="Cambiar Contraseña", font=(font,14), command= self.accept_change_pw,
-        corner_radius=90, width=100, height=20, hover=True, fg_color=colors["soft_green"], hover_color=colors["dark_green"])
+                                              corner_radius=90, width=100, height=20, hover=True, fg_color=colors["soft_green"], 
+                                              hover_color=colors["dark_green"])
         self.change_pw_button.place(rely=0.55, relx=0.5, anchor="center")
 
         # Button to cancel to change the password.
         self.cancel_change_pw_button = ctk.CTkButton(self.frame, text="Cancelar", font=(font,14), command= self.cancel_change_pw,
-        corner_radius=90, width=100, height=20, hover=True, fg_color=colors["soft_green"], hover_color=colors["dark_green"])
+                                                     corner_radius=90, width=100, height=20, hover=True, fg_color=colors["soft_green"], 
+                                                     hover_color=colors["dark_green"])
         self.cancel_change_pw_button.place(rely=0.65, relx=0.5, anchor="center")
                 
     def accept_change_pw(self):
@@ -352,44 +367,80 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
         super().__init__(root)
         self.root = root
         
+        # Frame at the back.
         self.frame.configure(fg_color=colors["black"])
         self.frame.pack(pady=10, padx=0, fill="both")  
 
-        self.frame_top_menu = ctk.CTkFrame(self.frame, height=30, width=350, fg_color=colors["soft_grey"], corner_radius=3)
+        # Frame at the top that contains menu options.
+        self.frame_top_menu = ctk.CTkFrame(self.frame, height=30, width=350, fg_color=colors["soft_grey"], 
+                                           corner_radius=3)
         self.frame_top_menu.pack(pady=2, padx=10) 
 
+        # Main frame that contains all user options.
         self.frame_main = ctk.CTkFrame(self.frame, height=450, width=350, fg_color=colors["soft_grey"])
         self.frame_main.pack(padx=10, fill="both")
 
-        self.archieve_menu_button = tk.Menubutton(self.frame_top_menu, text="Archivo", font=(font,9),
-        width=5, height=2, background=colors["soft_grey"], foreground=colors["white"], activebackground=colors["dark_green"], activeforeground=colors["white"])
+        # Archieve button menu.
+        self.archieve_menu_button = tk.Menubutton(self.frame_top_menu, text="Archivo", font=(font,9), width=5, 
+                                                  height=2, background=colors["soft_grey"], foreground=colors["white"], 
+                                                  activebackground=colors["dark_green"], activeforeground=colors["white"])
         self.archieve_menu_button.place(rely=0.5, relx=0, anchor="w")
 
-        self.help_button = tk.Menubutton(self.frame_top_menu, text="Ayuda", font=(font,9),
-        width=4, height=2, background=colors["soft_grey"], foreground=colors["white"], activebackground=colors["dark_green"], activeforeground=colors["white"])
+        # Help button menu.
+        self.help_button = tk.Menubutton(self.frame_top_menu, text="Ayuda", font=(font,9), width=4, 
+                                         height=2, background=colors["soft_grey"], foreground=colors["white"], 
+                                         activebackground=colors["dark_green"], activeforeground=colors["white"])
         self.help_button.place(rely=0.5, relx=0.18, anchor="w")
         
-        # SE PUEDE BORRAR TODO ESTOS 
-        # self.sign_out_button = tk.Menubutton(self.frame_top_menu, text="Cerrar Sesión", font=(font,9),
-        # width=9, height=2, background=colors["soft_grey"], foreground=colors["white"], activebackground=colors["dark_green"], activeforeground=colors["white"])
-        # self.sign_out_button.place(rely=0.5, relx=1, anchor="e")
-
-        self.sign_out_button = ctk.CTkButton(self.frame_top_menu, width=10, height=50, text="Cerrar Sesión", font=(font,12), command=self.sign_out,
-        hover=True, fg_color=colors["soft_grey"], hover_color=colors["dark_green"])
+        # Sign out button menu.
+        self.sign_out_button = ctk.CTkButton(self.frame_top_menu, width=10, height=50, text="Cerrar Sesión", 
+                                             font=(font,12), command=self.sign_out, hover=True, fg_color=colors["soft_grey"], 
+                                             hover_color=colors["dark_green"])
         self.sign_out_button.place(rely=0.5, relx=1, anchor="e")
 
+        # Archieve menu cascade.
         self.menu_archieve = tk.Menu(self.archieve_menu_button, tearoff=0)
         self.archieve_menu_button.config(menu=self.menu_archieve)
 
+        # Help menu cascade.
         self.menu_help = tk.Menu(self.help_button, tearoff=0)
         self.help_button.config(menu=self.menu_help)
 
-        self.menu_archieve.add_command(label=" Cargar Configuración  ", font=(font,9), command=lambda: print("imprimir"), background=colors["soft_grey"], foreground=colors["white"], activebackground=colors["dark_green"], hidemargin=True)
-        self.menu_archieve.add_command(label=" Guardar Configuración  ", font=(font,9), command=lambda: print("imprimir"), background=colors["soft_grey"], foreground=colors["white"], activebackground=colors["dark_green"], hidemargin=True)
+        # Labels of archieve menu cascade.
+        self.menu_archieve.add_command(label=" Cargar Configuración  ", font=(font,9), command=self.load_configuration, 
+                                       background=colors["soft_grey"], foreground=colors["white"], activebackground=colors["dark_green"], 
+                                       hidemargin=True)
+        self.menu_archieve.add_command(label=" Guardar Configuración  ", font=(font,9), command=self.save_configuration, 
+                                       background=colors["soft_grey"], foreground=colors["white"], activebackground=colors["dark_green"], 
+                                       hidemargin=True)
 
-        self.menu_help.add_command(label=" Conozca RelaxApp  ", font=(font,9), command=lambda: print("imprimir"), background=colors["soft_grey"], foreground=colors["white"], activebackground=colors["dark_green"], hidemargin=True)
+        # Label of help menu cascade.
+        self.menu_help.add_command(label=" Conozca RelaxApp  ", font=(font,9), command=self.about_us, background=colors["soft_grey"], 
+                                   foreground=colors["white"], activebackground=colors["dark_green"], hidemargin=True)
+    
 
+    ###################################################################
+    ###### TO SET ######
+    def load_configuration(self):
+        ###### TO SET ######
+        print("load_configuration EN DESARROLLO")
+        ###### TO SET ######
 
+    ###### TO SET ######
+    def save_configuration(self):
+        ###### TO SET ######
+        print("save_configuration EN DESARROLLO")
+        ###### TO SET ######
+
+    ###### TO SET ######
+    def about_us(self):
+        ###### TO SET ######
+        print("about_us EN DESARROLLO")
+        ###### TO SET ######
+    ###################################################################
+
+    
+    # Function to sign out of the App.
     def sign_out(self):
         self.user = user["login"]
         RelaxApp_MessageBox_Options(self.root, "Sign Out", self.user)
@@ -423,76 +474,85 @@ class RelaxApp_MessageBox_Options(RelaxApp_MessageBox_Structure):
 
         if message == "Sign up":
             # Label ask/cancel user registration.
-            self.ask_cancel_label = ctk.CTkLabel(self.window, text="¿Está seguro que desea dar de alta \
-el usuario indicado?", font=(font,14), bg_color=colors["soft_grey"])
+            self.ask_cancel_label = ctk.CTkLabel(self.window, text="¿Está seguro que desea dar de alta el usuario indicado?", 
+                                                 font=(font,14), bg_color=colors["soft_grey"])
             self.ask_cancel_label.place(rely=0.3, relx=0.5, anchor="center")
             self.select_button1 = True
 
         elif message == "Cancel":
             # Label ask/cancel to cancel user registration.
-            self.ask_cancel_label = ctk.CTkLabel(self.window, text="¿Está seguro que desea cancelar el alta \
-del usuario indicado?", font=(font,14), bg_color=colors["soft_grey"])
+            self.ask_cancel_label = ctk.CTkLabel(self.window, text="¿Está seguro que desea cancelar el alta del usuario indicado?", 
+                                                 font=(font,14), bg_color=colors["soft_grey"])
             self.ask_cancel_label.place(rely=0.3, relx=0.5, anchor="center")
             self.select_button1 = True
 
         elif message == "Continue":
             # Label confirm user registration.
-            self.continue_registration = ctk.CTkLabel(self.window, text=base_datos.mensaje, font=(font,14), bg_color=colors["soft_grey"])
+            self.continue_registration = ctk.CTkLabel(self.window, text=base_datos.mensaje, font=(font,14), 
+                                                      bg_color=colors["soft_grey"])
             self.continue_registration.place(rely=0.35, relx=0.5, anchor="center")
             self.select_button2 = True
 
         elif message == "Error":
             # Label confirm user registration.
-            self.continue_registration = ctk.CTkLabel(self.window, text=base_datos.mensaje, font=(font,14), bg_color=colors["soft_grey"])
+            self.continue_registration = ctk.CTkLabel(self.window, text=base_datos.mensaje, font=(font,14), 
+                                                      bg_color=colors["soft_grey"])
             self.continue_registration.place(rely=0.35, relx=0.5, anchor="center")
             self.select_button3 = True
 
         elif message == "Password Correct":
             # Label to confirm or not to change the password.
-            self.pw_match = ctk.CTkLabel(self.window, text="¿Está seguro que desea actualizar su contraseña?", font=(font,14), bg_color=colors["soft_grey"])
+            self.pw_match = ctk.CTkLabel(self.window, text="¿Está seguro que desea actualizar su contraseña?", 
+                                         font=(font,14), bg_color=colors["soft_grey"])
             self.pw_match.place(rely=0.3, relx=0.5, anchor="center")
             self.select_button1 = True
 
         elif message == "Password Incorrect":
             # Label to inform that the password 1 does not match with password 2.
-            self.pw_unmatch = ctk.CTkLabel(self.window, text="Las contraseñas introducidas no coinciden entre sí. \
-\nVuelva a introducirlas.", font=(font,14), bg_color=colors["soft_grey"])
+            self.pw_unmatch = ctk.CTkLabel(self.window, text="Las contraseñas introducidas no coinciden entre sí. \nVuelva a introducirlas.", 
+                                           font=(font,14), bg_color=colors["soft_grey"])
             self.pw_unmatch.place(rely=0.35, relx=0.5, anchor="center")
             self.select_button1 = True
 
         elif message == "Cancel Change PW":
             # Label ask/cancel to cancel to change password.
-            self.pw_ask_cancel_label = ctk.CTkLabel(self.window, text="¿Está seguro que desea cancelar el cambio de contraseña?", font=(font,14), bg_color=colors["soft_grey"])
+            self.pw_ask_cancel_label = ctk.CTkLabel(self.window, text="¿Está seguro que desea cancelar el cambio de contraseña?", 
+                                                    font=(font,14), bg_color=colors["soft_grey"])
             self.pw_ask_cancel_label.place(rely=0.3, relx=0.5, anchor="center")
             self.select_button1 = True
 
         elif message == "Sign Out":
             # Label ask/cancel to sign out.
-            self.pw_ask_cancel_label = ctk.CTkLabel(self.window, text=f"¿Está seguro que desea cerrar la sesión de '{self.user}'?", font=(font,14), bg_color=colors["soft_grey"])
+            self.pw_ask_cancel_label = ctk.CTkLabel(self.window, text=f"¿Está seguro que desea cerrar la sesión de '{self.user}'?", 
+                                                    font=(font,14), bg_color=colors["soft_grey"])
             self.pw_ask_cancel_label.place(rely=0.3, relx=0.5, anchor="center")
             self.select_button1 = True    
 
         if self.select_button1 == True:
             # Button to accept user registration.
-            self.accept_ask_cancel_button = ctk.CTkButton(self.window, width=80, height=17, text="Aceptar", font=(font,14), command=lambda: self.accept_button(message),
-            corner_radius=10, hover=True, fg_color=colors["soft_green"], hover_color=colors["dark_green"])
+            self.accept_ask_cancel_button = ctk.CTkButton(self.window, width=80, height=17, text="Aceptar", font=(font,14), 
+                                                          command=lambda: self.accept_button(message), corner_radius=10, 
+                                                          hover=True, fg_color=colors["soft_green"], hover_color=colors["dark_green"])
             self.accept_ask_cancel_button.place(rely=0.65, relx=0.25, anchor="w")
 
             # Button to cancel user registration.
-            self.cancel_ask_cancel_button = ctk.CTkButton(self.window, width=80, height=17, text="Cancelar", font=(font,14), command=self.cancel_button,
-            corner_radius=10, hover=True, fg_color=colors["soft_green"], hover_color=colors["dark_green"])
+            self.cancel_ask_cancel_button = ctk.CTkButton(self.window, width=80, height=17, text="Cancelar", font=(font,14), 
+                                                          command=self.cancel_button, corner_radius=10, hover=True, 
+                                                          fg_color=colors["soft_green"], hover_color=colors["dark_green"])
             self.cancel_ask_cancel_button.place(rely=0.65, relx=0.75, anchor="e")
 
         if self.select_button2 == True:
             # Button to continue to the main menu.
-            self.continue_registration_button = ctk.CTkButton(self.window, width=80, height=17, text="Continuar", font=(font,14), command=self.continue_button,
-            corner_radius=10, hover=True, fg_color=colors["soft_green"], hover_color=colors["dark_green"])
+            self.continue_registration_button = ctk.CTkButton(self.window, width=80, height=17, text="Continuar", font=(font,14), 
+                                                              command=self.continue_button, corner_radius=10, hover=True, 
+                                                              fg_color=colors["soft_green"], hover_color=colors["dark_green"])
             self.continue_registration_button.place(rely=0.65, relx=0.5, anchor="center")
 
         if self.select_button3 == True:
             # Button to continue to the main menu.
-            self.continue_registration_button = ctk.CTkButton(self.window, width=80, height=17, text="Volver", font=(font,14), command=self.return_button,
-            corner_radius=10, hover=True, fg_color=colors["soft_green"], hover_color=colors["dark_green"])
+            self.continue_registration_button = ctk.CTkButton(self.window, width=80, height=17, text="Volver", font=(font,14), 
+                                                              command=self.return_button, corner_radius=10, hover=True, 
+                                                              fg_color=colors["soft_green"], hover_color=colors["dark_green"])
             self.continue_registration_button.place(rely=0.65, relx=0.5, anchor="center")
 
     # Accept button to accept registration or accept cancelation
