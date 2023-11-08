@@ -374,7 +374,7 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
         # width=9, height=2, background=colors["soft_grey"], foreground=colors["white"], activebackground=colors["dark_green"], activeforeground=colors["white"])
         # self.sign_out_button.place(rely=0.5, relx=1, anchor="e")
 
-        self.sign_out_button = ctk.CTkButton(self.frame_top_menu, width=10, height=50, text="Cerrar Sesión", font=(font,12), command=lambda:print(user["login"]),
+        self.sign_out_button = ctk.CTkButton(self.frame_top_menu, width=10, height=50, text="Cerrar Sesión", font=(font,12), command=self.sign_out,
         hover=True, fg_color=colors["soft_grey"], hover_color=colors["dark_green"])
         self.sign_out_button.place(rely=0.5, relx=1, anchor="e")
 
@@ -390,31 +390,9 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
         self.menu_help.add_command(label=" Conozca RelaxApp  ", font=(font,9), command=lambda: print("imprimir"), background=colors["soft_grey"], foreground=colors["white"], activebackground=colors["dark_green"], hidemargin=True)
 
 
-        # self.opciones_main_menu.add_command(label="Cargar Configuración")
-        # self.opciones_main_menu.add_command(label="Guardar Configuración")
-        # self.opciones_main_menu.add_separator()
-        # self.opciones_main_menu.add_command(label="Salir", command=self.root.destroy) # MODIFICAR COMMAND
-
-
-        # # Button to confirm to change the password.
-        # self.change_pw_button = ctk.CTkButton(self.frame, text="Cambiar Contraseña", font=(font,14), command= self.accept_change_pw,
-        # corner_radius=90, width=100, height=20, hover=True, fg_color=colors["soft_green"], hover_color=colors["dark_green"])
-        # self.change_pw_button.place(rely=0.55, relx=0.5, anchor="center")
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    def sign_out(self):
+        self.user = user["login"]
+        RelaxApp_MessageBox_Options(self.root, "Sign Out", self.user)
 
 
 
@@ -431,7 +409,7 @@ class RelaxApp_MessageBox_Options(RelaxApp_MessageBox_Structure):
     """This class defines all pop-ups of the App.
        Inherit all structure from parent."""
     
-    def __init__(self, root, message, user):
+    def __init__(self, root, message, user=None):
         super().__init__(root)
         self.root = root
         self.message = message
@@ -483,10 +461,16 @@ del usuario indicado?", font=(font,14), bg_color=colors["soft_grey"])
             self.select_button1 = True
 
         elif message == "Cancel Change PW":
-            # Label ask/cancel to cancel to change passwor.
+            # Label ask/cancel to cancel to change password.
             self.pw_ask_cancel_label = ctk.CTkLabel(self.window, text="¿Está seguro que desea cancelar el cambio de contraseña?", font=(font,14), bg_color=colors["soft_grey"])
             self.pw_ask_cancel_label.place(rely=0.3, relx=0.5, anchor="center")
             self.select_button1 = True
+
+        elif message == "Sign Out":
+            # Label ask/cancel to sign out.
+            self.pw_ask_cancel_label = ctk.CTkLabel(self.window, text=f"¿Está seguro que desea cerrar la sesión de '{self.user}'?", font=(font,14), bg_color=colors["soft_grey"])
+            self.pw_ask_cancel_label.place(rely=0.3, relx=0.5, anchor="center")
+            self.select_button1 = True    
 
         if self.select_button1 == True:
             # Button to accept user registration.
@@ -521,7 +505,7 @@ del usuario indicado?", font=(font,14), bg_color=colors["soft_grey"])
             base_datos.editar_tabla("lechus", "usuarios", self.user)
 
         # User registration is canceled and turn back to main menu.
-        elif message == "Cancel" or message == "Cancel Change PW":
+        elif message == "Cancel" or message == "Cancel Change PW" or message == "Sign Out":
             self.root.destroy()
             RelaxApp_Structure.close_create(self, RelaxApp_Initial_Frame)
 
