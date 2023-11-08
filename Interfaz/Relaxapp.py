@@ -360,24 +360,28 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
         self.frame_main = ctk.CTkFrame(self.frame, height=450, width=350, fg_color=colors["soft_grey"])
         self.frame_main.pack(padx=10, fill="both")
 
-        self.archieve_menu_button = tk.Menubutton(self.frame_top_menu, text="Archivo", font=(font,8),
+        self.archieve_menu_button = tk.Menubutton(self.frame_top_menu, text="Archivo", font=(font,9),
         width=5, height=2, background=colors["soft_grey"], foreground=colors["white"], activebackground=colors["dark_green"], activeforeground=colors["white"])
-        self.archieve_menu_button.place(rely=0.5, anchor="w")
+        self.archieve_menu_button.place(rely=0.5, relx=0, anchor="w")
 
-        self.about_us_button = tk.Menubutton(self.frame_top_menu, text="Acerca de", font=(font,8),
-        width=8, height=2, background=colors["soft_grey"], foreground=colors["white"], activebackground=colors["dark_green"], activeforeground=colors["white"])
-        self.about_us_button.place(rely=0.5, relx=0.2, anchor="w")
+        self.help_button = tk.Menubutton(self.frame_top_menu, text="Ayuda", font=(font,9),
+        width=4, height=2, background=colors["soft_grey"], foreground=colors["white"], activebackground=colors["dark_green"], activeforeground=colors["white"])
+        self.help_button.place(rely=0.5, relx=0.18, anchor="w")
 
-        self.sign_out_button = tk.Menubutton(self.frame_top_menu, text="Cerrar Sesión", font=(font,8),
-        width=10, height=2, background=colors["soft_grey"], foreground=colors["white"], activebackground=colors["dark_green"], activeforeground=colors["white"])
-        self.sign_out_button.place(rely=0.5, relx=0.99, anchor="e")
+        self.sign_out_button = tk.Menubutton(self.frame_top_menu, text="Cerrar Sesión", font=(font,9),
+        width=9, height=2, background=colors["soft_grey"], foreground=colors["white"], activebackground=colors["dark_green"], activeforeground=colors["white"])
+        self.sign_out_button.place(rely=0.5, relx=1, anchor="e")
 
         self.menu_archieve = tk.Menu(self.archieve_menu_button, tearoff=0)
         self.archieve_menu_button.config(menu=self.menu_archieve)
 
-        self.menu_archieve.add_command(label=" Cargar Configuración  ", font=(font,8), command=lambda: print("imprimir"), background=colors["soft_grey"], foreground=colors["white"], activebackground=colors["dark_green"], hidemargin=True)
-        self.menu_archieve.add_command(label=" Guardar Configuración  ", font=(font,8), command=lambda: print("imprimir"), background=colors["soft_grey"], foreground=colors["white"], activebackground=colors["dark_green"], hidemargin=True)
+        self.menu_help = tk.Menu(self.help_button, tearoff=0)
+        self.help_button.config(menu=self.menu_help)
 
+        self.menu_archieve.add_command(label=" Cargar Configuración  ", font=(font,9), command=lambda: print("imprimir"), background=colors["soft_grey"], foreground=colors["white"], activebackground=colors["dark_green"], hidemargin=True)
+        self.menu_archieve.add_command(label=" Guardar Configuración  ", font=(font,9), command=lambda: print("imprimir"), background=colors["soft_grey"], foreground=colors["white"], activebackground=colors["dark_green"], hidemargin=True)
+
+        self.menu_help.add_command(label=" Conozca RelaxApp  ", font=(font,9), command=lambda: print("imprimir"), background=colors["soft_grey"], foreground=colors["white"], activebackground=colors["dark_green"], hidemargin=True)
 
 
 
