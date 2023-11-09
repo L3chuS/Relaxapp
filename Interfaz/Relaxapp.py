@@ -413,11 +413,47 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
         self.menu_archieve.add_command(label=" Guardar Configuración  ", font=(font,9), command=self.save_configuration, 
                                        background=colors["soft_grey"], foreground=colors["white"], activebackground=colors["dark_green"], 
                                        hidemargin=True)
-
+        
         # Label of help menu cascade.
         self.menu_help.add_command(label=" Conozca RelaxApp  ", font=(font,9), command=self.about_us, background=colors["soft_grey"], 
                                    foreground=colors["white"], activebackground=colors["dark_green"], hidemargin=True)
-    
+
+
+        # Options label.
+        self.options = ctk.CTkLabel(self.frame_main, text="Configurar", font=(font, 16), corner_radius=10, height=35)
+        self.options.place(rely=0.3, relx=0.5, anchor="center")
+
+        # Label to set visual options.
+        self.visual_options = ctk.CTkButton(self.frame_main, text="Descanso Visual", font=(font, 14), 
+                                                command=self.set_visual_options, corner_radius=10, height=35, 
+                                                hover=True, fg_color=colors["soft_green"], hover_color=colors["dark_green"])
+        self.visual_options.place(rely=0.4, relx=0.15, anchor="w")
+        # Variable to save the information of "visual_options_CB" when is marked or unmarked.
+        self.visual_options_choice = ctk.IntVar()
+        # Checkbox to activate or deactivate "visual_options".
+        self.visual_options_CB = ctk.CTkCheckBox(self.frame_main, text=None, variable=self.visual_options_choice , width=20, height=20, hover=True, 
+                                                 fg_color=colors["soft_green"], hover_color=colors["dark_green"])
+        self.visual_options_CB.place(rely=0.4, relx=0.9, anchor="e")
+#################
+        # Label to set stretch options.
+        self.stretch_options = ctk.CTkButton(self.frame_main, text="Estirar", font=(font, 14), 
+                                                command=self.set_stretch_options, corner_radius=10, height=35, 
+                                                hover=True, fg_color=colors["soft_green"], hover_color=colors["dark_green"])
+        self.stretch_options.place(rely=0.5, relx=0.15, anchor="w")
+        # Variable to save the information of "stretch_options_CB" when is marked or unmarked.
+        self.stretch_options_choice = ctk.IntVar()
+        # Checkbox to activate or deactivate "stretch_options".
+        self.stretch_options_CB = ctk.CTkCheckBox(self.frame_main, text=None, variable=self.stretch_options_choice, width=20, height=20, hover=True, 
+                                                 fg_color=colors["soft_green"], hover_color=colors["dark_green"])
+        self.stretch_options_CB.place(rely=0.5, relx=0.9, anchor="e")
+
+        
+
+
+
+
+
+
 
     ###################################################################
     ###### TO SET ######
@@ -436,6 +472,25 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
     def about_us(self):
         ###### TO SET ######
         print("about_us EN DESARROLLO")
+        ###### TO SET ######
+
+    ###### TO SET ######
+    def set_visual_options(self):
+        ###### TO SET ######
+        print("set_visual_options EN DESARROLLO")
+        if self.visual_options_choice.get() == 1:
+            print("onvalue")
+        elif self.visual_options_choice.get() == 0:
+            print("offvalue")
+        ###### TO SET ######
+
+    def set_stretch_options(self):
+        ###### TO SET ######
+        print("set_stretch_options EN DESARROLLO")
+        if self.stretch_options_choice.get() == 1:
+            print("onvalue")
+        elif self.stretch_options_choice.get() == 0:
+            print("offvalue")
         ###### TO SET ######
     ###################################################################
 
