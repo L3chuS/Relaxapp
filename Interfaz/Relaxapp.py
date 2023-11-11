@@ -36,7 +36,7 @@ font = "Segoe Print"
 
 class RelaxApp_Structure:
     """This class defines the general structure of the app.
-       Defines the appearance, dimensions and title."""
+       Defines the dimensions, title and creates a frame."""
 
     def __init__(self, root):
         
@@ -64,9 +64,14 @@ class RelaxApp_Structure:
         app = new_window(self.root)
         self.root.mainloop()
 
+
+###########################################################
+### Class that contains general settings of the Pop-ups ###
+###########################################################
+
 class RelaxApp_MessageBox_Structure:
     """This class defines the general structure of the pop-ups.
-       Defines the appearance, dimensions and title."""
+       Defines the dimensions, title and creates a frame."""
 
     def __init__(self, root):
         self.root = root
@@ -96,12 +101,32 @@ class RelaxApp_MessageBox_Structure:
 ### Class that contains general settings of the User's main menu ###
 ####################################################################
 
+class RelaxApp_User_Settings_Structure:
+    """This class defines the general structure of the user's main 
+       menu settings. Defines the appearance, dimensions and title."""
 
+    def __init__(self, root):
+        self.root = root
 
+        # New pop-ups is created.
+        self.window = ctk.CTkToplevel()
+        self.window.grab_set()
 
+        # Set the width, height, configuration and location of the windows.
+        width = 260
+        height = 300
+        width_resolution = self.window.winfo_screenwidth() // 2 - width // 2 - width // 3
+        height_resolution = self.window.winfo_screenheight() // 2 - height
+        self.dimensions = self.window.geometry(f"{width}x{height}+{width_resolution}+{height_resolution}")
+        self.maximize = self.window.resizable(False,False)
 
+        # Set a frame at the background.
+        self.frame = ctk.CTkFrame(self.window, height=300, width=250, fg_color=colors["soft_grey"])
+        self.frame.pack(pady=10, padx=10, fill="both") 
 
-
+        # Set the title and the logo of the app.
+        self.title = self.window.title("RelaxApp")
+        self.window.after(200, lambda: self.window.iconbitmap(image_path + "logo.ico"))
 
 
 ######################################################
@@ -488,11 +513,14 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
     ###### TO SET ######
     def set_visual_options(self):
         ###### TO SET ######
-        print("set_visual_options EN DESARROLLO")
-        if self.visual_options_choice.get() == 1:
-            print("onvalue")
-        elif self.visual_options_choice.get() == 0:
-            print("offvalue")
+        # print("set_visual_options EN DESARROLLO")
+        # if self.visual_options_choice.get() == 1:
+        #     print("onvalue")
+        # elif self.visual_options_choice.get() == 0:
+        #     print("offvalue")
+
+
+        RelaxApp_User_Main_Menu_Settings(self.root)
         ###### TO SET ######
 
     def set_stretch_options(self):
@@ -518,7 +546,69 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
         RelaxApp_MessageBox_Options(self.root, "Sign Out", self.user)
 
 
+class RelaxApp_User_Main_Menu_Settings(RelaxApp_User_Settings_Structure):
+    
+    def __init__(self, root):
+        super().__init__(root)
+        self.root = root
 
+        # Frame at the back.
+        self.frame.configure(fg_color=colors["black"])
+        self.frame.pack(pady=0, padx=0, fill="both")  
+
+        self.frame1 = ctk.CTkFrame(self.frame, height=50, width=250, fg_color=colors["soft_grey"], corner_radius=3)
+        self.frame1.pack(pady=10, padx=10)
+
+        self.frame2 = ctk.CTkFrame(self.frame, height=40, width=250, fg_color=colors["soft_grey"], corner_radius=3)
+        self.frame2.pack(pady=1, padx=10)
+
+        self.frame3 = ctk.CTkFrame(self.frame, height=40, width=250, fg_color=colors["soft_grey"], corner_radius=3)
+        self.frame3.pack(pady=1, padx=10) 
+
+        self.frame4 = ctk.CTkFrame(self.frame, height=40, width=250, fg_color=colors["soft_grey"], corner_radius=3)
+        self.frame4.pack(pady=1, padx=10)
+
+        self.frame5 = ctk.CTkFrame(self.frame, height=40, width=250, fg_color=colors["soft_grey"], corner_radius=3)
+        self.frame5.pack(pady=1, padx=10)
+
+        self.frame6 = ctk.CTkFrame(self.frame, height=40, width=250, fg_color=colors["soft_grey"], corner_radius=3)
+        self.frame6.pack(pady=10, padx=10)
+
+
+        self.setting_title = ctk.CTkLabel(self.frame1, text="Configurar Alertas", font=(font, 15), 
+                                          corner_radius=10, fg_color=colors["soft_green"])
+        self.setting_title.place(rely=0.5, relx=0.5, anchor="center")
+
+
+        # self.central_bar = ctk.CTkLabel(self.frame, text=None, width=2, height=250, fg_color=colors["soft_green"])
+        # self.central_bar.place(rely=0.6, relx=0.5, anchor="center")
+
+        self.lenght = ctk.CTkLabel(self.frame2, text="Duración", font=(font, 14))
+        self.lenght.place(rely=0.5, relx=0.03, anchor="w")
+
+        self.lenght_entry = ctk.CTkEntry(self.frame2, font=(font,14), width=90)
+        self.lenght_entry.place(rely=0.5, relx=0.97, anchor="e")
+        self.lenght_entry.insert(0, "HH:MM:SS")
+        self.lenght_entry.bind("<Button-1>", lambda borrar: self.lenght_entry.delete(0, tk.END))
+
+        self.lapse = ctk.CTkLabel(self.frame3, text="Intervalo Alertas", font=(font, 14))
+        self.lapse.place(rely=0.5, relx=0.03, anchor="w")
+
+        self.break_time = ctk.CTkLabel(self.frame4, text="Tiempo Descanso", font=(font, 14))
+        self.break_time.place(rely=0.5, relx=0.03, anchor="w")
+
+        self.sound_alert = ctk.CTkLabel(self.frame5, text="Activar Sonido", font=(font, 14))
+        self.sound_alert.place(rely=0.5, relx=0.03, anchor="w")
+
+        self.save_button = ctk.CTkButton(self.frame6, width=10, height=10, text="Guardar", font=(font,14), 
+                                              corner_radius=10, hover=True, fg_color=colors["soft_grey"], 
+                                              hover_color=colors["dark_green"])
+        self.save_button.place(rely=0.5, relx=0.1, anchor="w")
+
+        self.cancel_button = ctk.CTkButton(self.frame6, width=10, height=10, text="Cancelar", font=(font,14), 
+                                              corner_radius=10, hover=True, fg_color=colors["soft_grey"], 
+                                              hover_color=colors["dark_green"])
+        self.cancel_button.place(rely=0.5, relx=0.9, anchor="e")
 
 
 
