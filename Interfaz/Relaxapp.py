@@ -556,55 +556,82 @@ class RelaxApp_User_Main_Menu_Settings(RelaxApp_User_Settings_Structure):
         self.frame.configure(fg_color=colors["black"])
         self.frame.pack(pady=0, padx=0, fill="both")  
 
+        # Frame that contains the alert configuration label.
         self.frame1 = ctk.CTkFrame(self.frame, height=50, width=250, fg_color=colors["soft_grey"], corner_radius=3)
         self.frame1.pack(pady=10, padx=10)
 
+        # Frame that contains the lenght configuration label.
         self.frame2 = ctk.CTkFrame(self.frame, height=40, width=250, fg_color=colors["soft_grey"], corner_radius=3)
         self.frame2.pack(pady=1, padx=10)
 
+        # Frame that contains the lapse configuration label.
         self.frame3 = ctk.CTkFrame(self.frame, height=40, width=250, fg_color=colors["soft_grey"], corner_radius=3)
-        self.frame3.pack(pady=1, padx=10) 
+        self.frame3.pack(pady=1, padx=10)
 
+        # Frame that contains the break time configuration label.
         self.frame4 = ctk.CTkFrame(self.frame, height=40, width=250, fg_color=colors["soft_grey"], corner_radius=3)
         self.frame4.pack(pady=1, padx=10)
 
+        # Frame that contains the sound configuration checkbox.
         self.frame5 = ctk.CTkFrame(self.frame, height=40, width=250, fg_color=colors["soft_grey"], corner_radius=3)
         self.frame5.pack(pady=1, padx=10)
 
+        # Frame that contains the save and cancel buttons.
         self.frame6 = ctk.CTkFrame(self.frame, height=40, width=250, fg_color=colors["soft_grey"], corner_radius=3)
         self.frame6.pack(pady=10, padx=10)
 
-
+        # Alert configuration label.
         self.setting_title = ctk.CTkLabel(self.frame1, text="Configurar Alertas", font=(font, 15), 
                                           corner_radius=10, fg_color=colors["soft_green"])
         self.setting_title.place(rely=0.5, relx=0.5, anchor="center")
 
-
-        # self.central_bar = ctk.CTkLabel(self.frame, text=None, width=2, height=250, fg_color=colors["soft_green"])
-        # self.central_bar.place(rely=0.6, relx=0.5, anchor="center")
-
+        # Lenght label.
         self.lenght = ctk.CTkLabel(self.frame2, text="Duración", font=(font, 14))
         self.lenght.place(rely=0.5, relx=0.03, anchor="w")
 
+        # Lenght entry.
         self.lenght_entry = ctk.CTkEntry(self.frame2, font=(font,14), width=90)
         self.lenght_entry.place(rely=0.5, relx=0.97, anchor="e")
         self.lenght_entry.insert(0, "HH:MM:SS")
         self.lenght_entry.bind("<Button-1>", lambda borrar: self.lenght_entry.delete(0, tk.END))
 
+        # Lapse label.
         self.lapse = ctk.CTkLabel(self.frame3, text="Intervalo Alertas", font=(font, 14))
         self.lapse.place(rely=0.5, relx=0.03, anchor="w")
 
+        # Lapse entry.
+        self.lapse_entry = ctk.CTkEntry(self.frame3, font=(font,14), width=40)
+        self.lapse_entry.place(rely=0.5, relx=0.97, anchor="e")
+        self.lapse_entry.insert(0, "MM")
+        self.lapse_entry.bind("<Button-1>", lambda borrar: self.lapse_entry.delete(0, tk.END))
+
+        # Break time label.
         self.break_time = ctk.CTkLabel(self.frame4, text="Tiempo Descanso", font=(font, 14))
         self.break_time.place(rely=0.5, relx=0.03, anchor="w")
 
+        # Break time entry.
+        self.break_time_entry = ctk.CTkEntry(self.frame4, font=(font,14), width=60)
+        self.break_time_entry.place(rely=0.5, relx=0.97, anchor="e")
+        self.break_time_entry.insert(0, "MM:SS")
+        self.break_time_entry.bind("<Button-1>", lambda borrar: self.break_time_entry.delete(0, tk.END))
+
+        # Sound alert label.
         self.sound_alert = ctk.CTkLabel(self.frame5, text="Activar Sonido", font=(font, 14))
         self.sound_alert.place(rely=0.5, relx=0.03, anchor="w")
 
+        # Sound alert checkbox.
+        self.sound_alert_choice = ctk.IntVar()
+        self.sound_alert_CB = ctk.CTkCheckBox(self.frame5, text=None, variable=self.sound_alert_choice, width=20, height=20, hover=True, 
+                                              fg_color=colors["soft_green"], hover_color=colors["dark_green"])
+        self.sound_alert_CB.place(rely=0.5, relx=1, anchor="e")
+
+        # Save button.
         self.save_button = ctk.CTkButton(self.frame6, width=10, height=10, text="Guardar", font=(font,14), 
                                               corner_radius=10, hover=True, fg_color=colors["soft_grey"], 
                                               hover_color=colors["dark_green"])
         self.save_button.place(rely=0.5, relx=0.1, anchor="w")
 
+        # Cancel button.
         self.cancel_button = ctk.CTkButton(self.frame6, width=10, height=10, text="Cancelar", font=(font,14), 
                                               corner_radius=10, hover=True, fg_color=colors["soft_grey"], 
                                               hover_color=colors["dark_green"])
