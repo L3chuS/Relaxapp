@@ -92,6 +92,18 @@ class RelaxApp_MessageBox_Structure:
         self.window.after(200, lambda: self.window.iconbitmap(image_path + "logo.ico"))
 
 
+####################################################################
+### Class that contains general settings of the User's main menu ###
+####################################################################
+
+
+
+
+
+
+
+
+
 ######################################################
 ### Class that contains the first frame of the App ###
 ######################################################
@@ -452,11 +464,6 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
                                                 command=self.start_relaxapp, height=70, corner_radius=50, 
                                                 hover=True, fg_color=colors["soft_green"], hover_color=colors["dark_green"])
         self.start_relaxapp_button.place(rely=0.7, relx=0.5, anchor="center")
-
-
-
-
-
 
 
     ###################################################################
