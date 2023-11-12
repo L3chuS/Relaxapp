@@ -609,11 +609,32 @@ class RelaxApp_User_Main_Menu_Settings(RelaxApp_User_Settings_Structure):
         self.break_time = ctk.CTkLabel(self.frame4, text="Tiempo Descanso", font=(font, 14))
         self.break_time.place(rely=0.5, relx=0.03, anchor="w")
 
+
+        def validate(text):
+            if len(text) == 0:
+                # empty Entry is ok
+                return True
+            elif text == "HH:SS":
+                # empty Entry is ok
+                return True
+            elif len(text) < 6 and text.isdigit():
+                # Entry with 1 digit is ok
+                return True
+            else:
+                # Anything else, reject it
+                return False
+        
+        self.vcmd = (self.root.register(validate), '%P')
+
         # Break time entry.
-        self.break_time_entry = ctk.CTkEntry(self.frame4, font=(font,14), width=60)
+        self.break_time_entry = ctk.CTkEntry(self.frame4, font=(font,14), width=60, validate="key", validatecommand=self.vcmd)
         self.break_time_entry.place(rely=0.5, relx=0.97, anchor="e")
-        self.break_time_entry.insert(0, "MM:SS")
+        self.break_time_entry.insert(0, "HH:SS")
         self.break_time_entry.bind("<Button-1>", lambda borrar: self.break_time_entry.delete(0, tk.END))
+
+        
+            
+        
 
         # Sound alert label.
         self.sound_alert = ctk.CTkLabel(self.frame5, text="Activar Sonido", font=(font, 14))
@@ -627,16 +648,27 @@ class RelaxApp_User_Main_Menu_Settings(RelaxApp_User_Settings_Structure):
 
         # Save button.
         self.save_button = ctk.CTkButton(self.frame6, width=10, height=10, text="Guardar", font=(font,14), 
-                                              corner_radius=10, hover=True, fg_color=colors["soft_grey"], 
-                                              hover_color=colors["dark_green"])
+                                              command=self.save_settings, corner_radius=10, hover=True, 
+                                              fg_color=colors["soft_grey"], hover_color=colors["dark_green"])
         self.save_button.place(rely=0.5, relx=0.1, anchor="w")
 
         # Cancel button.
-        self.cancel_button = ctk.CTkButton(self.frame6, width=10, height=10, text="Cancelar", font=(font,14), 
-                                              corner_radius=10, hover=True, fg_color=colors["soft_grey"], 
-                                              hover_color=colors["dark_green"])
+        self.cancel_button = ctk.CTkButton(self.frame6, width=10, height=10, text="Cancelar", font=(font,14),
+                                           command=self.cancel_settings, corner_radius=10, hover=True, 
+                                           fg_color=colors["soft_grey"], hover_color=colors["dark_green"])
         self.cancel_button.place(rely=0.5, relx=0.9, anchor="e")
 
+
+
+    
+            
+    def save_settings(self):
+        self.window.destroy()
+
+
+    def cancel_settings(self):
+        self.window.destroy()
+        
 
 
 
