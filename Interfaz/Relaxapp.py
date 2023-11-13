@@ -135,37 +135,27 @@ class RelaxApp_User_Settings_Structure:
 
 class Validate_CMD:
 
-    def validate_lenght_entry(text):
+    def validate_hours(text):
        
         if len(text) == 0:
             return True
-        elif text == "HH:MM:SS":
+        elif text == "HH":
             return True           
-        elif len(text) < 7 and text.isdigit():
+        elif len(text) < 3 and text.isdigit():
             return True
         else:
             return False
       
-    def validate_lapse_entry(text):
+    def validate_min_sec(text):
         if len(text) == 0:
             return True
-        elif text == "MM":
+        elif text == "MM" or text == "SS":
             return True
         elif len(text) < 3 and text.isdigit():
             return True
         else:
             return False
-            
-    def validate_break_time_entry(text):
-       
-        if len(text) == 0:
-            return True
-        elif text == "MM:SS":
-            return True
-        elif len(text) < 5 and text.isdigit():
-            return True
-        else:
-            return False
+        
 
 
 ######################################################
@@ -628,26 +618,37 @@ class RelaxApp_User_Main_Menu_Settings(RelaxApp_User_Settings_Structure):
         self.lenght = ctk.CTkLabel(self.frame2, text="Duración", font=(font, 14))
         self.lenght.place(rely=0.5, relx=0.03, anchor="w")
 
-        # Validate lenght entry. 
-        self.validate_lenght_entry = self.root.register(Validate_CMD.validate_lenght_entry)
+        # Validate hours. 
+        self.hours_entry = self.root.register(Validate_CMD.validate_hours)
 
-        # Lenght entry.
-        self.lenght_entry = ctk.CTkEntry(self.frame2, font=(font,14), width=90,
-                                         validate="key", validatecommand=(self.validate_lenght_entry, "%P"))
-        self.lenght_entry.place(rely=0.5, relx=0.97, anchor="e")
-        self.lenght_entry.insert(0, "HH:MM:SS")
-        self.lenght_entry.bind("<Button-1>", lambda borrar: self.lenght_entry.delete(0, tk.END))
+        # Validate minutes or seconds. 
+        self.min_sec_entry = self.root.register(Validate_CMD.validate_min_sec)
+
+        # Lenght entry hours.
+        self.lenght_entryHH = ctk.CTkEntry(self.frame2, font=(font,14), width=40,
+                                           validate="key", validatecommand=(self.hours_entry, "%P"))
+        self.lenght_entryHH.place(rely=0.5, relx=0.76, anchor="e")
+        self.lenght_entryHH.insert(0, "HH")
+        self.lenght_entryHH.bind("<Button-1>", lambda borrar: self.lenght_entryHH.delete(0, tk.END))
+
+        # Two points separator.
+        self.twopoints_lenght_entry = ctk.CTkLabel(self.frame2, text=":", font=(font, 14))
+        self.twopoints_lenght_entry.place(rely=0.5, relx=0.79, anchor="e")
+
+        # Lenght entry minutes.
+        self.lenght_entryMM = ctk.CTkEntry(self.frame2, font=(font,14), width=40,
+                                           validate="key", validatecommand=(self.min_sec_entry, "%P"))
+        self.lenght_entryMM.place(rely=0.5, relx=0.97, anchor="e")
+        self.lenght_entryMM.insert(0, "MM")
+        self.lenght_entryMM.bind("<Button-1>", lambda borrar: self.lenght_entryMM.delete(0, tk.END))
 
         # Lapse label.
         self.lapse = ctk.CTkLabel(self.frame3, text="Intervalo Alertas", font=(font, 14))
         self.lapse.place(rely=0.5, relx=0.03, anchor="w")
 
-        # Validate lapse entry.
-        self.validate_lapse_entry = self.root.register(Validate_CMD.validate_lapse_entry)
-
         # Lapse entry.
         self.lapse_entry = ctk.CTkEntry(self.frame3, font=(font,14), width=40,
-                                        validate="key", validatecommand=(self.validate_lapse_entry, "%P"))
+                                        validate="key", validatecommand=(self.min_sec_entry, "%P"))
         self.lapse_entry.place(rely=0.5, relx=0.97, anchor="e")
         self.lapse_entry.insert(0, "MM")
         self.lapse_entry.bind("<Button-1>", lambda borrar: self.lapse_entry.delete(0, tk.END))
@@ -656,16 +657,25 @@ class RelaxApp_User_Main_Menu_Settings(RelaxApp_User_Settings_Structure):
         self.break_time = ctk.CTkLabel(self.frame4, text="Tiempo Descanso", font=(font, 14))
         self.break_time.place(rely=0.5, relx=0.03, anchor="w")
 
-        # Validate break time entry.
-        self.break_time_entry = self.root.register(Validate_CMD.validate_break_time_entry)
+        # Break time entry minutes.
+        self.break_time_entryMM = ctk.CTkEntry(self.frame4, font=(font,14), width=40,
+                                               validate="key", validatecommand=(self.min_sec_entry, "%P"))
 
-        # Break time entry.
-        self.break_time_entry = ctk.CTkEntry(self.frame4, font=(font,14), width=60, 
-                                             validate="key", validatecommand=(self.break_time_entry, "%P"))
+        self.break_time_entryMM.place(rely=0.5, relx=0.76, anchor="e")
+        self.break_time_entryMM.insert(0, "MM")
+        self.break_time_entryMM.bind("<Button-1>", lambda borrar: self.break_time_entryMM.delete(0, tk.END))
 
-        self.break_time_entry.place(rely=0.5, relx=0.97, anchor="e")
-        self.break_time_entry.insert(0, "MM:SS")
-        self.break_time_entry.bind("<Button-1>", lambda borrar: self.break_time_entry.delete(0, tk.END))
+        # Two points separator.
+        self.twopoints_break_time_entry = ctk.CTkLabel(self.frame4, text=":", font=(font, 14))
+        self.twopoints_break_time_entry.place(rely=0.5, relx=0.79, anchor="e")
+
+        # Break time entry seconds.
+        self.break_time_entrySS = ctk.CTkEntry(self.frame4, font=(font,14), width=40,
+                                               validate="key", validatecommand=(self.min_sec_entry, "%P"))
+
+        self.break_time_entrySS.place(rely=0.5, relx=0.97, anchor="e")
+        self.break_time_entrySS.insert(0, "SS")
+        self.break_time_entrySS.bind("<Button-1>", lambda borrar: self.break_time_entrySS.delete(0, tk.END))
 
         # Sound alert label.
         self.sound_alert = ctk.CTkLabel(self.frame5, text="Activar Sonido", font=(font, 14))
