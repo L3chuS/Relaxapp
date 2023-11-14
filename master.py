@@ -2,6 +2,7 @@ import Interfaz.Relaxapp as app
 
 root = app.ctk.CTk()
 app = app.RelaxApp_Initial_Frame(root)
+
 root.mainloop()
 
 # import Base_Datos.base_datos as bd

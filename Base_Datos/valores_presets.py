@@ -1,12 +1,16 @@
+import os
+
+user = os.environ.get("UsuarioMySql")
+password = os.environ.get("PasswordMySql")
+
 # Diccionario que contiene los valores por defecto para realizar la conexión a la base de datos.
 
 acceso_root = {
             "host" : "localhost",
-            "user" : "root",
-            "password" : "L3chuswork1212*",
+            "user" : user,
+            "password" : password,
             "database" : ""
             }
-
 
 #Lista de diccionarios que funciona como presets para cargar nuevas tablas.
 #En los índices del [0:-1] representan cada columna con los valores a modificar.
