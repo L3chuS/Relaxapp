@@ -625,7 +625,7 @@ class RelaxApp_User_Main_Menu_Settings(RelaxApp_User_Settings_Structure):
         self.min_sec_entry = self.root.register(Validate_CMD.validate_min_sec)
 
         # Lenght entry hours.
-        self.lenght_entryHH = ctk.CTkEntry(self.frame2, font=(font,14), width=40,
+        self.lenght_entryHH = ctk.CTkEntry(self.frame2, font=(font,14), width=40, justify="center",
                                            validate="key", validatecommand=(self.hours_entry, "%P"))
         self.lenght_entryHH.place(rely=0.5, relx=0.76, anchor="e")
         self.lenght_entryHH.insert(0, "HH")
@@ -636,7 +636,7 @@ class RelaxApp_User_Main_Menu_Settings(RelaxApp_User_Settings_Structure):
         self.twopoints_lenght_entry.place(rely=0.5, relx=0.79, anchor="e")
 
         # Lenght entry minutes.
-        self.lenght_entryMM = ctk.CTkEntry(self.frame2, font=(font,14), width=40,
+        self.lenght_entryMM = ctk.CTkEntry(self.frame2, font=(font,14), width=40, justify="center",
                                            validate="key", validatecommand=(self.min_sec_entry, "%P"))
         self.lenght_entryMM.place(rely=0.5, relx=0.97, anchor="e")
         self.lenght_entryMM.insert(0, "MM")
@@ -647,7 +647,7 @@ class RelaxApp_User_Main_Menu_Settings(RelaxApp_User_Settings_Structure):
         self.lapse.place(rely=0.5, relx=0.03, anchor="w")
 
         # Lapse entry.
-        self.lapse_entry = ctk.CTkEntry(self.frame3, font=(font,14), width=40,
+        self.lapse_entry = ctk.CTkEntry(self.frame3, font=(font,14), width=40, justify="center",
                                         validate="key", validatecommand=(self.min_sec_entry, "%P"))
         self.lapse_entry.place(rely=0.5, relx=0.97, anchor="e")
         self.lapse_entry.insert(0, "MM")
@@ -658,7 +658,7 @@ class RelaxApp_User_Main_Menu_Settings(RelaxApp_User_Settings_Structure):
         self.break_time.place(rely=0.5, relx=0.03, anchor="w")
 
         # Break time entry minutes.
-        self.break_time_entryMM = ctk.CTkEntry(self.frame4, font=(font,14), width=40,
+        self.break_time_entryMM = ctk.CTkEntry(self.frame4, font=(font,14), width=40, justify="center",
                                                validate="key", validatecommand=(self.min_sec_entry, "%P"))
 
         self.break_time_entryMM.place(rely=0.5, relx=0.76, anchor="e")
@@ -670,7 +670,7 @@ class RelaxApp_User_Main_Menu_Settings(RelaxApp_User_Settings_Structure):
         self.twopoints_break_time_entry.place(rely=0.5, relx=0.79, anchor="e")
 
         # Break time entry seconds.
-        self.break_time_entrySS = ctk.CTkEntry(self.frame4, font=(font,14), width=40,
+        self.break_time_entrySS = ctk.CTkEntry(self.frame4, font=(font,14), width=40, justify="center",
                                                validate="key", validatecommand=(self.min_sec_entry, "%P"))
 
         self.break_time_entrySS.place(rely=0.5, relx=0.97, anchor="e")
