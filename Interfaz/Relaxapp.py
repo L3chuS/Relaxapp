@@ -694,6 +694,7 @@ class RelaxApp_User_Main_Menu_Settings(RelaxApp_User_Settings_Structure):
         self.sound_alert_CB = ctk.CTkCheckBox(self.frame5, text=None, variable=self.sound_alert_choice, width=20, height=20, hover=True, 
                                               fg_color=colors["soft_green"], hover_color=colors["dark_green"])
         self.sound_alert_CB.place(rely=0.5, relx=1, anchor="e")
+        self.sound_alert_activated = False
 
         # Save button.
         self.save_button = ctk.CTkButton(self.frame6, width=10, height=10, text="Guardar", font=(font,14), 
@@ -709,6 +710,11 @@ class RelaxApp_User_Main_Menu_Settings(RelaxApp_User_Settings_Structure):
 
       
     def save_settings(self):
+        if self.sound_alert_choice.get() == 1:
+            self.sound_alert_activated = True
+        else:
+            self.sound_alert_activated = False
+        
         if self.lenght_entryHH.get() == "HH" or self.lenght_entryMM.get() == "MM" or \
         self.lapse_entry.get() == "MM" or self.break_time_entryMM.get() == "MM" or \
         self.break_time_entrySS.get() == "SS":
@@ -719,20 +725,10 @@ class RelaxApp_User_Main_Menu_Settings(RelaxApp_User_Settings_Structure):
         elif int(self.lenght_entryMM.get()) > 60 or int(self.lapse_entry.get()) > 60 or  \
         int(self.break_time_entryMM.get()) > 60 or int(self.break_time_entrySS.get()) > 60:
             RelaxApp_MessageBox_Options(self.root, "Invalid Time")
-        # self.lenght_entryMM.get()
-        # self.lapse_entry.get()
-        # self.break_time_entryMM.get()
-        # self.break_time_entrySS.get()
-        # self.sound_alert_choice.get()
-
-        # if self.sound_alert_choice.get() == 1:
-        #     print("Act")
-        # else:
-        #     print("deact")
 
         else:
             self.window.destroy()
-
+        print(self.sound_alert_activated)
 
 
     def cancel_settings(self):
