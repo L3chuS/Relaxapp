@@ -98,7 +98,7 @@ class RelaxApp_MessageBox_Structure:
 
 
 ####################################################################
-### Class that contains general settings of the User's main menu ###
+### Class that contains general settings of the user's main menu ###
 ####################################################################
 
 class RelaxApp_User_Settings_Structure:
@@ -134,9 +134,11 @@ class RelaxApp_User_Settings_Structure:
 ###############################################################################
 
 class Validate_CMD:
-
+    """This class is used to validate the user's personal settings entries
+       in the main menu."""
+ 
     def validate_hours(text):
-       
+        """Funtions to validate lenght of the hours entries"""
         if len(text) == 0:
             return True
         elif text == "HH":
@@ -147,6 +149,7 @@ class Validate_CMD:
             return False
       
     def validate_min_sec(text):
+        """Funtions to validate lenght of the minutes and seconds entries"""
         if len(text) == 0:
             return True
         elif text == "MM" or text == "SS":
@@ -156,7 +159,6 @@ class Validate_CMD:
         else:
             return False
         
-
 
 ######################################################
 ### Class that contains the first frame of the App ###
@@ -246,7 +248,7 @@ class RelaxApp_Initial_Frame(RelaxApp_Structure):
 ###############################################################
 
 class RelaxApp_User_Registration(RelaxApp_Structure):
-    """This class open a new window for users registrations. 
+    """This class opens a new window for users registrations. 
        Inherit all structure from parent."""
 
     def __init__(self, root):
@@ -339,7 +341,7 @@ class RelaxApp_User_Registration(RelaxApp_Structure):
 ##############################################################
 
 class RelaxApp_User_Change_Password(RelaxApp_Structure):
-    """This class open a new window to change the pasword. 
+    """This class opens a new window to change the pasword. 
        Inherit all structure from parent."""
 
     def __init__(self, root):
@@ -428,6 +430,8 @@ class RelaxApp_User_Change_Password(RelaxApp_Structure):
 #########################################################
 
 class RelaxApp_User_Main_Menu(RelaxApp_Structure):
+    """This class contains the user's main menu. It allows to start
+       the app, set, save and load settings and knows about RelaxApp."""
 
     def __init__(self, root):
         super().__init__(root)
@@ -483,7 +487,6 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
         # Label of help menu cascade.
         self.menu_help.add_command(label=" Conozca RelaxApp  ", font=(font,9), command=self.about_us, background=colors["soft_grey"], 
                                    foreground=colors["white"], activebackground=colors["dark_green"], hidemargin=True)
-
 
         # Options label.
         self.options = ctk.CTkLabel(self.frame_main, text="Configurar", font=(font, 16), corner_radius=10, height=35)
@@ -568,14 +571,19 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
         ###### TO SET ######
     ###################################################################
 
-    
     # Function to sign out of the App.
     def sign_out(self):
         self.user = user["login"]
         RelaxApp_MessageBox_Options(self.root, "Sign Out", self.user)
 
 
+##########################################################
+###  Class that contains the user's personal settings  ###
+##########################################################
+
 class RelaxApp_User_Main_Menu_Settings(RelaxApp_User_Settings_Structure):
+    """This class opens a new window to set the user's personal settings 
+    of the App. Inherit all structure from parent."""
     
     def __init__(self, root):
         super().__init__(root)
@@ -700,9 +708,7 @@ class RelaxApp_User_Main_Menu_Settings(RelaxApp_User_Settings_Structure):
         self.cancel_button.place(rely=0.5, relx=0.9, anchor="e")
 
 
-
-    
-            
+      
     def save_settings(self):
         self.window.destroy()
 
@@ -710,8 +716,6 @@ class RelaxApp_User_Main_Menu_Settings(RelaxApp_User_Settings_Structure):
     def cancel_settings(self):
         self.window.destroy()
         
-
-
 
 
 ####################################################
