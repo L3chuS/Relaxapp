@@ -551,8 +551,8 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
         # elif self.visual_options_choice.get() == 0:
         #     print("offvalue")
 
-
         RelaxApp_User_Main_Menu_Settings(self.root)
+
         ###### TO SET ######
 
     def set_stretch_options(self):
@@ -567,6 +567,13 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
     def start_relaxapp(self):
         ###### TO SET ######
         print("start_relaxapp EN DESARROLLO")
+        
+        # print(RelaxApp_User_Main_Menu_Settings.lenght_entryHH)
+        # print(RelaxApp_User_Main_Menu_Settings.lenght_entryMM)
+        # print(RelaxApp_User_Main_Menu_Settings.lapse_entry)
+        # print(RelaxApp_User_Main_Menu_Settings.break_time_entryMM)
+        # print(RelaxApp_User_Main_Menu_Settings.break_time_entrySS)
+        # print(RelaxApp_User_Main_Menu_Settings.sound_alert_activated)
         
         ###### TO SET ######
     ###################################################################
@@ -728,7 +735,7 @@ class RelaxApp_User_Main_Menu_Settings(RelaxApp_User_Settings_Structure):
 
         else:
             self.window.destroy()
-        print(self.sound_alert_activated)
+        return self.lenght_entryHH, self.lenght_entryMM, self.lapse_entry, self.break_time_entryMM, self.break_time_entrySS, self.sound_alert_activated
 
 
     def cancel_settings(self):
