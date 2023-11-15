@@ -147,7 +147,7 @@ class Validate_CMD:
             return True
         else:
             return False
-      
+  
     def validate_min_sec(text):
         """Funtions to validate lenght of the minutes and seconds entries"""
         if len(text) == 0:
@@ -707,10 +707,32 @@ class RelaxApp_User_Main_Menu_Settings(RelaxApp_User_Settings_Structure):
                                            fg_color=colors["soft_grey"], hover_color=colors["dark_green"])
         self.cancel_button.place(rely=0.5, relx=0.9, anchor="e")
 
-
       
     def save_settings(self):
-        self.window.destroy()
+        if self.lenght_entryHH.get() == "HH" or self.lenght_entryMM.get() == "MM" or \
+        self.lapse_entry.get() == "MM" or self.break_time_entryMM.get() == "MM" or \
+        self.break_time_entrySS.get() == "SS":
+            RelaxApp_MessageBox_Options(self.root, "Empty")
+
+        elif int(self.lenght_entryHH.get()) > 16:
+            RelaxApp_MessageBox_Options(self.root, "Extra Hours")
+        elif int(self.lenght_entryMM.get()) > 60 or int(self.lapse_entry.get()) > 60 or  \
+        int(self.break_time_entryMM.get()) > 60 or int(self.break_time_entrySS.get()) > 60:
+            RelaxApp_MessageBox_Options(self.root, "Invalid Time")
+        # self.lenght_entryMM.get()
+        # self.lapse_entry.get()
+        # self.break_time_entryMM.get()
+        # self.break_time_entrySS.get()
+        # self.sound_alert_choice.get()
+
+        # if self.sound_alert_choice.get() == 1:
+        #     print("Act")
+        # else:
+        #     print("deact")
+
+        else:
+            self.window.destroy()
+
 
 
     def cancel_settings(self):
@@ -792,33 +814,59 @@ class RelaxApp_MessageBox_Options(RelaxApp_MessageBox_Structure):
             self.pw_ask_cancel_label = ctk.CTkLabel(self.window, text=f"¿Está seguro que desea cerrar la sesión de '{self.user}'?", 
                                                     font=(font,14), bg_color=colors["soft_grey"])
             self.pw_ask_cancel_label.place(rely=0.3, relx=0.5, anchor="center")
-            self.select_button1 = True    
+            self.select_button1 = True
+
+        elif message == "Empty":
+            # Label to alert not to leave entries unfilled.
+            self.empty_entry_label = ctk.CTkLabel(self.window, text="Debes configurar todos los campos antes de guardalos.", 
+                                                  font=(font,14), bg_color=colors["soft_grey"])
+            self.empty_entry_label.place(rely=0.3, relx=0.5, anchor="center")
+            self.select_button3 = True
+
+        elif message == "Extra Hours":
+            # Label to alert not to work extra hours.
+            self.extra_hours_label = ctk.CTkLabel(self.window, text="No puedes configurar mas de 16hs. Recuerda que mínimo \ndebes dormir 8hs.", 
+                                                  font=(font,14), bg_color=colors["soft_grey"])
+            self.extra_hours_label.place(rely=0.35, relx=0.5, anchor="center")
+            self.select_button3 = True
+        
+        elif message == "Invalid Time":
+            # Label ask/cancel to alert not to work extra hours.
+            self.invalid_time_label = ctk.CTkLabel(self.window, text="Los minutos o los segundos no deben ser mayores a 60.", 
+                                                   font=(font,14), bg_color=colors["soft_grey"])
+            self.invalid_time_label.place(rely=0.3, relx=0.5, anchor="center")
+            self.select_button3 = True
+
 
         if self.select_button1 == True:
             # Button to accept user registration.
             self.accept_ask_cancel_button = ctk.CTkButton(self.window, width=80, height=17, text="Aceptar", font=(font,14), 
-                                                          command=lambda: self.accept_button(message), corner_radius=10, 
-                                                          hover=True, fg_color=colors["soft_green"], hover_color=colors["dark_green"])
+                                                          command=lambda: self.accept_button(message), corner_radius=10,
+                                                          hover=True, fg_color=colors["soft_green"], hover_color=colors["dark_green"], 
+                                                          bg_color=colors["soft_grey"])
             self.accept_ask_cancel_button.place(rely=0.65, relx=0.25, anchor="w")
 
             # Button to cancel user registration.
             self.cancel_ask_cancel_button = ctk.CTkButton(self.window, width=80, height=17, text="Cancelar", font=(font,14), 
                                                           command=self.cancel_button, corner_radius=10, hover=True, 
-                                                          fg_color=colors["soft_green"], hover_color=colors["dark_green"])
+                                                          fg_color=colors["soft_green"], hover_color=colors["dark_green"],
+                                                          bg_color=colors["soft_grey"])
             self.cancel_ask_cancel_button.place(rely=0.65, relx=0.75, anchor="e")
 
         if self.select_button2 == True:
             # Button to continue to the main menu.
             self.continue_registration_button = ctk.CTkButton(self.window, width=80, height=17, text="Continuar", font=(font,14), 
                                                               command=self.continue_button, corner_radius=10, hover=True, 
-                                                              fg_color=colors["soft_green"], hover_color=colors["dark_green"])
+                                                              fg_color=colors["soft_green"], hover_color=colors["dark_green"],
+                                                              bg_color=colors["soft_grey"])
             self.continue_registration_button.place(rely=0.65, relx=0.5, anchor="center")
 
         if self.select_button3 == True:
             # Button to continue to the main menu.
             self.continue_registration_button = ctk.CTkButton(self.window, width=80, height=17, text="Volver", font=(font,14), 
-                                                              command=self.return_button, corner_radius=10, hover=True, 
-                                                              fg_color=colors["soft_green"], hover_color=colors["dark_green"])
+                                                              command=self.return_button, corner_radius=10, hover=True,
+                                                              fg_color=colors["soft_green"], hover_color=colors["dark_green"],
+                                                              bg_color=colors["soft_grey"])
             self.continue_registration_button.place(rely=0.65, relx=0.5, anchor="center")
 
     # Accept button to accept registration or accept cancelation
@@ -859,4 +907,3 @@ class RelaxApp_MessageBox_Options(RelaxApp_MessageBox_Structure):
 
     def return_button(self):
         self.window.destroy()
-

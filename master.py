@@ -13,7 +13,8 @@ root.mainloop()
 
 # conectar.editar_tabla("lechus", "usuarios", usuario)
 
-# conectar.eliminar_datos_tabla("lechus", "usuarios", "UNIQUE", "lechu")
+# conectar.eliminar_datos_tabla("lechus", "usuar
+# ios", "UNIQUE", "lechu")
 
 # conectar.seleccionar_bd("lechus")
 
