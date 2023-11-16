@@ -59,12 +59,11 @@ class RelaxApp_Structure:
         self.icon = self.root.iconbitmap(image_path + "logo.ico")
         
     # Method that creates a new root everytime the main root is destroyed.
-    def close_create(self, new_window, *args):
+    def close_create(self, new_window):
         self.root = ctk.CTk()
-        app = new_window(self.root, *args)
+        app = new_window(self.root)
         self.root.mainloop()
 
-        # RelaxApp_Structure.close_create(RelaxApp_User_Main_Menu, True)
 
 ###########################################################
 ### Class that contains general settings of the Pop-ups ###
@@ -225,7 +224,7 @@ class RelaxApp_Initial_Frame(RelaxApp_Structure):
         base_datos.validacion_login = True
         if base_datos.validacion_login:
             self.root.destroy()
-            self.close_create(RelaxApp_User_Main_Menu, False)
+            self.close_create(RelaxApp_User_Main_Menu)
 
         else:
             self.error_login = ctk.CTkLabel(self.frame, text="Usuario o contraseña incorrecta. Vuelva a intentarlo.", 
@@ -434,18 +433,11 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
     """This class contains the user's main menu. It allows to start
        the app, set, save and load settings and knows about RelaxApp."""
 
-    def __init__(self, root, start=False):
+    def __init__(self, root):
         super().__init__(root)
         self.root = root
 
-        # Variable that change the user's main menu when start is pressed or not.
-        self.start = start
-
-        # Variable to send when the class RelaxApp_User_Main_Menu_Settings is called.
-        # self.visual_options_values = visual_options
-        
-        # Variable to send when the class RelaxApp_User_Main_Menu_Settings is called.
-        # self.stretch_options_values = stretch_options
+        self.start = False
 
         # Frame at the back.
         self.frame.configure(fg_color=colors["black"])
@@ -570,11 +562,9 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
 
     def start_relaxapp(self):
         ###### TO SET ######
-        self.root.destroy()
-        self.close_create(RelaxApp_User_Main_Menu, True)
-        
+        print("start_relaxapp EN DESARROLLO")
 
-        
+
         ###### TO SET ######
     ###################################################################
 
