@@ -715,7 +715,6 @@ class RelaxApp_User_Main_Menu_Settings(RelaxApp_User_Settings_Structure):
                                            fg_color=colors["soft_grey"], hover_color=colors["dark_green"])
         self.cancel_button.place(rely=0.5, relx=0.9, anchor="e")
 
-      
     def save_settings(self):
         if self.sound_alert_choice.get() == 1:
             self.sound_alert_activated = True
