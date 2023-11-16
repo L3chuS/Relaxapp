@@ -436,7 +436,33 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
     def __init__(self, root):
         super().__init__(root)
         self.root = root
+
+        # Dictionary that contains default values of the visual options settings.
+        self.visual_options_values = False
         
+        # {
+        #                               "lenght_entryHH": 0,
+        #                               "lenght_entryMM": 0,
+        #                               "lapse_entry": 0,
+        #                               "break_time_entryMM": 0,
+        #                               "break_time_entrySS": 0,
+        #                               "sound_alert_activated": False
+        #                               }
+        
+        # Dictionary that contains default values of the stretch options settings.
+        self.stretch_options_values = False
+        
+        # {
+        #                               "lenght_entryHH": 0,
+        #                               "lenght_entryMM": 0,
+        #                               "lapse_entry": 0,
+        #                               "break_time_entryMM": 0,
+        #                               "break_time_entrySS": 0,
+        #                               "sound_alert_activated": False
+        #                               }
+
+
+
         # Frame at the back.
         self.frame.configure(fg_color=colors["black"])
         self.frame.pack(pady=10, padx=0, fill="both")  
@@ -545,35 +571,21 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
     ###### TO SET ######
     def set_visual_options(self):
         ###### TO SET ######
-        # print("set_visual_options EN DESARROLLO")
-        # if self.visual_options_choice.get() == 1:
-        #     print("onvalue")
-        # elif self.visual_options_choice.get() == 0:
-        #     print("offvalue")
 
-        RelaxApp_User_Main_Menu_Settings(self.root)
+        self.visual_options_values = True
+        RelaxApp_User_Main_Menu_Settings(self.root, self.visual_options_values)
 
         ###### TO SET ######
 
     def set_stretch_options(self):
         ###### TO SET ######
-        print("set_stretch_options EN DESARROLLO")
-        if self.stretch_options_choice.get() == 1:
-            print("onvalue")
-        elif self.stretch_options_choice.get() == 0:
-            print("offvalue")
+        self.stretch_options_values = True
+        RelaxApp_User_Main_Menu_Settings(self.root, None, self.stretch_options_values)
         ###### TO SET ######
 
     def start_relaxapp(self):
         ###### TO SET ######
         print("start_relaxapp EN DESARROLLO")
-        
-        # print(RelaxApp_User_Main_Menu_Settings.lenght_entryHH)
-        # print(RelaxApp_User_Main_Menu_Settings.lenght_entryMM)
-        # print(RelaxApp_User_Main_Menu_Settings.lapse_entry)
-        # print(RelaxApp_User_Main_Menu_Settings.break_time_entryMM)
-        # print(RelaxApp_User_Main_Menu_Settings.break_time_entrySS)
-        # print(RelaxApp_User_Main_Menu_Settings.sound_alert_activated)
         
         ###### TO SET ######
     ###################################################################
@@ -592,9 +604,21 @@ class RelaxApp_User_Main_Menu_Settings(RelaxApp_User_Settings_Structure):
     """This class opens a new window to set the user's personal settings 
     of the App. Inherit all structure from parent."""
     
-    def __init__(self, root):
+    def __init__(self, root, visual_values=None, stretch_values=None):
         super().__init__(root)
         self.root = root
+
+        self.visual_options_values = visual_values
+        self.stretch_options_values = stretch_values
+
+        self.values = {
+                       "lenght_entryHH": 0,
+                       "lenght_entryMM": 0,
+                       "lapse_entry": 0,
+                       "break_time_entryMM": 0,
+                       "break_time_entrySS": 0,
+                       "sound_alert_activated": False
+                       }
 
         # Frame at the back.
         self.frame.configure(fg_color=colors["black"])
@@ -715,11 +739,14 @@ class RelaxApp_User_Main_Menu_Settings(RelaxApp_User_Settings_Structure):
                                            fg_color=colors["soft_grey"], hover_color=colors["dark_green"])
         self.cancel_button.place(rely=0.5, relx=0.9, anchor="e")
 
+    
+
     def save_settings(self):
+
         if self.sound_alert_choice.get() == 1:
-            self.sound_alert_activated = True
+            self.values["sound_alert_activated"] = True
         else:
-            self.sound_alert_activated = False
+            self.values["sound_alert_activated"] = False
         
         if self.lenght_entryHH.get() == "HH" or self.lenght_entryMM.get() == "MM" or \
         self.lapse_entry.get() == "MM" or self.break_time_entryMM.get() == "MM" or \
@@ -733,9 +760,25 @@ class RelaxApp_User_Main_Menu_Settings(RelaxApp_User_Settings_Structure):
             RelaxApp_MessageBox_Options(self.root, "Invalid Time")
 
         else:
-            self.window.destroy()
-        return self.lenght_entryHH, self.lenght_entryMM, self.lapse_entry, self.break_time_entryMM, self.break_time_entrySS, self.sound_alert_activated
+            print("visual options values: ", self.visual_options_values)
+            print("stretch options values: ", self.stretch_options_values)
 
+            self.values["lenght_entryHH"] = self.lenght_entryHH.get()
+            self.values["lenght_entryMM"] = self.lenght_entryMM.get()
+            self.values["lapse_entry"] = self.lapse_entry.get()
+            self.values["break_time_entryMM"] = self.break_time_entryMM.get()
+            self.values["break_time_entrySS"] = self.break_time_entrySS.get()
+            print("values: ", self.values)
+            self.window.destroy()
+
+            if self.visual_options_values == True:
+                self.visual_options_values = self.values
+            elif self.stretch_options_values == True:
+                self.stretch_options_values = self.values
+
+            print("visual options values: ", self.visual_options_values)
+            print("stretch options values: ", self.stretch_options_values)
+            print("########################################")
 
     def cancel_settings(self):
         self.window.destroy()
