@@ -16,7 +16,7 @@ acceso_root = {
 #En los índices del [0:-1] representan cada columna con los valores a modificar.
 #En el índice [-1] se establece la clave primaria. 
 
-columnas_default = [
+columnas_usuario_default = [
     {
         "nombre" : "id",
         "tipo" : "INT",
@@ -61,6 +61,34 @@ columnas_default = [
         "primary_key" : "id"
     }]
 
+columnas_configuraciones_default = [
+    {
+        "nombre" : "login",
+        "tipo" : "VARCHAR",
+        "largo" : 30,
+        "unico" : True,
+        "auto_increment" : False,
+        "not_null" : True,
+    },
+    {
+        "nombre" : "Configuracion_Visual",
+        "tipo" : "VARCHAR",
+        "largo" : 150,
+        "unico" : False,
+        "auto_increment" : False,
+        "not_null" : False,
+    },
+    {
+        "nombre" : "Configuracion_Estirar",
+        "tipo" : "VARCHAR",
+        "largo" : 150,
+        "unico" : False,
+        "auto_increment" : False,
+        "not_null" : False,
+    },
+    {
+        "primary_key" : "login"
+    }]
 
 # Diccionario que recupera los datos introducidos por el usuario para registar, actualizar o eliminar un usuario.
 # Valores sólo editables desde la interfaz gráfica.

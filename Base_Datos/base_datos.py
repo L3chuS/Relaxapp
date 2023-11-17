@@ -401,6 +401,11 @@ Elija otro nombre.'
             if usuario['accion'] == "registrar":
                 self.validacion_editar = True
                 self.mensaje = f'El usuario "{usuario["login"]}" ha sido registrado correctamente.'
+                # Se añade el mismo usuario en la tabla "usuarios_configuraciones" con campos vacíos.
+                insertar_usuarios_configuraciones = f"INSERT INTO usuarios_configuraciones (login) values ('{usuario['login']}');"
+                self.cursor.execute(insertar_usuarios_configuraciones)
+                self.conector.commit()
+
                 print(self.mensaje)
                 return self.validacion_editar, self.mensaje
             elif usuario['accion'] == "modificar":
@@ -414,6 +419,34 @@ Elija otro nombre.'
             self.mensaje = "Los campos indicados para este usuario no son válidos."
             print(self.mensaje)
             return self.validacion_editar, self.mensaje
+        
+    ############################################################
+    @conexion
+    @comprobar_bd
+    @comprobar_tabla
+    def configuraciones_usuario(self, base_datos, tabla, usuario, campo, configuracion):
+        """Método para añadir en la base de datos las configuraciones que el usuario realiza desde la aplicación.
+        Necesita 5 argumentos: Una base de datos (tipo string), una tabla (tipo string), un usuario (tipo string),
+        un campo a modificar (tipo string) y los valores de la configuración (tipo string)."""
+        # Se comprueba si la table existe. Finaliza la llamada en caso de ser False.
+        if self.tabla_existe == False:
+            print(f'La tabla "{tabla}" no existe en la base de datos "{base_datos}". \
+Compruebe el nombre indicado.')
+            return
+            
+        try:
+            # Selecciona la base de datos en donde se van a guardar los valores del usuario indicado. 
+            self.cursor.execute(f"USE {base_datos}")
+            comando_insertar = f"UPDATE {tabla} SET {campo} = '{configuracion}' WHERE login = '{usuario}'"
+            self.cursor.execute(comando_insertar)
+            self.conector.commit()
+        
+        except:
+            print("Error! Revise los datos introducidos en el usuario indicado.")
+            return
+
+
+    ############################################################
 
     
     @conexion
@@ -506,6 +539,7 @@ Compruebe el nombre indicado.')
         # Excepción lanzada si los argumentos del diccionario "usuario" son incorrectos.
         except:
             print("Error! Revise los argumentos indicados.")
+
 
     @conexion
     @comprobar_bd

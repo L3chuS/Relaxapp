@@ -218,10 +218,10 @@ class RelaxApp_Initial_Frame(RelaxApp_Structure):
         user["password"] = get_password
         base_datos.verificar_login("lechus", "usuarios", user)
         
-        ###########################################
-        #VARIABLE OCASIONAL PARA ENTRAR SIN USUARIO
-        ###########################################
-        base_datos.validacion_login = True
+        # ###########################################
+        # #VARIABLE OCASIONAL PARA ENTRAR SIN USUARIO
+        # ###########################################
+        # base_datos.validacion_login = True
         if base_datos.validacion_login:
             self.root.destroy()
             self.close_create(RelaxApp_User_Main_Menu)
@@ -589,14 +589,8 @@ class RelaxApp_User_Main_Menu_Settings(RelaxApp_User_Settings_Structure):
         self.visual_options_values = visual_values
         self.stretch_options_values = stretch_values
 
-        self.values = {
-                       "lenght_entryHH": 0,
-                       "lenght_entryMM": 0,
-                       "lapse_entry": 0,
-                       "break_time_entryMM": 0,
-                       "break_time_entrySS": 0,
-                       "sound_alert_activated": False
-                       }
+        # An empty string which is going to save all values when user save a configuration.
+        self.values = ""
 
         # Frame at the back.
         self.frame.configure(fg_color=colors["black"])
@@ -721,9 +715,9 @@ class RelaxApp_User_Main_Menu_Settings(RelaxApp_User_Settings_Structure):
     def save_settings(self):
 
         if self.sound_alert_choice.get() == 1:
-            self.values["sound_alert_activated"] = True
+            self.sound = True
         else:
-            self.values["sound_alert_activated"] = False
+            self.sound = False
         
         if self.lenght_entryHH.get() == "HH" or self.lenght_entryMM.get() == "MM" or \
         self.lapse_entry.get() == "MM" or self.break_time_entryMM.get() == "MM" or \
@@ -740,20 +734,23 @@ class RelaxApp_User_Main_Menu_Settings(RelaxApp_User_Settings_Structure):
             print("visual options values: ", self.visual_options_values)
             print("stretch options values: ", self.stretch_options_values)
 
-            self.values["lenght_entryHH"] = self.lenght_entryHH.get()
-            self.values["lenght_entryMM"] = self.lenght_entryMM.get()
-            self.values["lapse_entry"] = self.lapse_entry.get()
-            self.values["break_time_entryMM"] = self.break_time_entryMM.get()
-            self.values["break_time_entrySS"] = self.break_time_entrySS.get()
+            self.values += self.lenght_entryHH.get()
+            self.values += self.lenght_entryMM.get()
+            self.values += self.lapse_entry.get()
+            self.values += self.break_time_entryMM.get()
+            self.values += self.break_time_entrySS.get()
+            self.values += str(self.sound)
             print("values: ", self.values)
 
             if self.visual_options_values == True:
-                self.visual_options_values = self.values
+                base_datos.configuraciones_usuario("lechus", "usuarios_configuraciones", "lechu1", "Configuracion_visual", self.values)
+
             elif self.stretch_options_values == True:
-                self.stretch_options_values = self.values
+                base_datos.configuraciones_usuario("lechus", "usuarios_configuraciones", "lechu1", "Configuracion_estirar", self.values)
 
             print("visual options values: ", self.visual_options_values)
             print("stretch options values: ", self.stretch_options_values)
+
             print("########################################")
             self.window.destroy()
         
