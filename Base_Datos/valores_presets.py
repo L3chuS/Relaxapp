@@ -63,6 +63,14 @@ columnas_usuario_default = [
 
 columnas_configuraciones_default = [
     {
+        "nombre" : "id",
+        "tipo" : "INT",
+        "largo" : 10,
+        "unico" : True,
+        "auto_increment" : True,
+        "not_null" : True,
+    },
+    {
         "nombre" : "login",
         "tipo" : "VARCHAR",
         "largo" : 30,
@@ -87,17 +95,25 @@ columnas_configuraciones_default = [
         "not_null" : False,
     },
     {
-        "primary_key" : "login"
+        "primary_key" : "id"
     }]
 
 # Diccionario que recupera los datos introducidos por el usuario para registar, actualizar o eliminar un usuario.
 # Valores sólo editables desde la interfaz gráfica.
 
-usuario = {
+user = {
         "accion" : "",
         "nombre" : "",
         "apellido" : "",
         "login" : "",
         "password" : "",
         }
+
+# Main database used.
+databases = {"database1": "lechus"}
+
+# Tables used.
+tables = {"users_table": "usuarios", 
+          "settings_table":"usuarios_configuraciones"}
+
 

@@ -1,9 +1,10 @@
 import tkinter as tk
 import customtkinter as ctk
 import Base_Datos.base_datos as bd
-from Base_Datos.valores_presets import usuario as user
+from Base_Datos.valores_presets import user, databases, tables
 from os import path
 import ctypes
+import time
 
 # Connect to the database.
 base_datos = bd.BaseDatos(**bd.acceso_root)
@@ -59,9 +60,9 @@ class RelaxApp_Structure:
         self.icon = self.root.iconbitmap(image_path + "logo.ico")
         
     # Method that creates a new root everytime the main root is destroyed.
-    def close_create(self, new_window):
+    def close_create(self, new_window, *args):
         self.root = ctk.CTk()
-        app = new_window(self.root)
+        app = new_window(self.root, *args)
         self.root.mainloop()
 
 
@@ -180,7 +181,7 @@ class RelaxApp_Initial_Frame(RelaxApp_Structure):
         self.entry_user = ctk.CTkEntry(self.frame,font=(font,15), corner_radius=10)
         self.entry_user.place(rely=0.47, relx=0.5, anchor="center")
         self.entry_user.insert(0, "Ej: Usuario")
-        self.entry_user.bind("<Button-1>", lambda borrar: self.entry_user.delete(0, tk.END))
+        self.entry_user.bind("<Button-1>", lambda remove: self.entry_user.delete(0, tk.END))
 
         # Password label.
         self.password = ctk.CTkLabel(self.frame, text="Contraseña", font=(font,19))
@@ -190,7 +191,7 @@ class RelaxApp_Initial_Frame(RelaxApp_Structure):
         self.entry_password = ctk.CTkEntry(self.frame,font=(font,15), corner_radius=10, show="*")
         self.entry_password.place(rely=0.61, relx=0.5, anchor="center",)
         self.entry_password.insert(0, "**********")
-        self.entry_password.bind("<Button-1>", lambda borrar: self.entry_password.delete(0, tk.END))
+        self.entry_password.bind("<Button-1>", lambda remove: self.entry_password.delete(0, tk.END))
 
         # Login button.
         self.button_start = ctk.CTkButton(self.frame, text="Entrar", font=(font,20), command= self.sign_in,
@@ -216,15 +217,15 @@ class RelaxApp_Initial_Frame(RelaxApp_Structure):
         get_password = self.entry_password.get()
         user["login"] = get_login
         user["password"] = get_password
-        base_datos.verificar_login("lechus", "usuarios", user)
+        base_datos.verificar_login(databases["database1"], tables["users_table"], user)
         
         # ###########################################
         # #VARIABLE OCASIONAL PARA ENTRAR SIN USUARIO
         # ###########################################
-        # base_datos.validacion_login = True
+        base_datos.validacion_login = True
         if base_datos.validacion_login:
             self.root.destroy()
-            self.close_create(RelaxApp_User_Main_Menu)
+            self.close_create(RelaxApp_User_Main_Menu, False)
 
         else:
             self.error_login = ctk.CTkLabel(self.frame, text="Usuario o contraseña incorrecta. Vuelva a intentarlo.", 
@@ -276,7 +277,7 @@ class RelaxApp_User_Registration(RelaxApp_Structure):
         # Name entry.
         self.name_entry = ctk.CTkEntry(self.frame, font=(font,14), width=180, height=10, corner_radius=10)
         self.name_entry.place(rely=0.2, relx=0.42)
-        self.name_entry.bind("<Button-1>", lambda borrar: self.name_entry.delete(0, tk.END))
+        self.name_entry.bind("<Button-1>", lambda remove: self.name_entry.delete(0, tk.END))
 
         # Label to register the last name.
         self.last_name = ctk.CTkLabel(self.frame, text="Apellido:", font=(font,14))
@@ -285,7 +286,7 @@ class RelaxApp_User_Registration(RelaxApp_Structure):
         # Last name entry.
         self.last_name_entry = ctk.CTkEntry(self.frame, font=(font,14), width=180, height=10, corner_radius=10)
         self.last_name_entry.place(rely=0.3, relx=0.42)
-        self.last_name_entry.bind("<Button-1>", lambda borrar: self.last_name_entry.delete(0, tk.END))
+        self.last_name_entry.bind("<Button-1>", lambda remove: self.last_name_entry.delete(0, tk.END))
 
         # Label to register the username.
         self.username = ctk.CTkLabel(self.frame, text="Nombre Usuario:", font=(font,14))
@@ -294,7 +295,7 @@ class RelaxApp_User_Registration(RelaxApp_Structure):
         # Username entry.
         self.username_entry = ctk.CTkEntry(self.frame, font=(font,14), width=180, height=10, corner_radius=10)
         self.username_entry.place(rely=0.4, relx=0.42)
-        self.username_entry.bind("<Button-1>", lambda borrar: self.username_entry.delete(0, tk.END))
+        self.username_entry.bind("<Button-1>", lambda remove: self.username_entry.delete(0, tk.END))
 
         # Label to register the password.
         self.password = ctk.CTkLabel(self.frame, text="Contraseña:", font=(font,14))
@@ -304,7 +305,7 @@ class RelaxApp_User_Registration(RelaxApp_Structure):
         self.password_entry = ctk.CTkEntry(self.frame, font=(font,14), width=180, height=10, corner_radius=10, 
                                            show="*")
         self.password_entry.place(rely=0.5, relx=0.42)
-        self.password_entry.bind("<Button-1>", lambda borrar: self.password_entry.delete(0, tk.END))
+        self.password_entry.bind("<Button-1>", lambda remove: self.password_entry.delete(0, tk.END))
 
         # Button to accept the user registration.
         self.create_button = ctk.CTkButton(self.frame, text="Dar de Alta", font=(font,14), command= self.accept_sign_up,
@@ -369,7 +370,7 @@ class RelaxApp_User_Change_Password(RelaxApp_Structure):
         # Username entry.
         self.name_entry = ctk.CTkEntry(self.frame, font=(font,14), width=165, height=10, corner_radius=10)
         self.name_entry.place(rely=0.2, relx=0.47)
-        self.name_entry.bind("<Button-1>", lambda borrar: self.name_entry.delete(0, tk.END))
+        self.name_entry.bind("<Button-1>", lambda remove: self.name_entry.delete(0, tk.END))
        
         # Label to set the new password.
         self.pw1 = ctk.CTkLabel(self.frame, text="Nueva Contraseña:", font=(font,14))
@@ -379,7 +380,7 @@ class RelaxApp_User_Change_Password(RelaxApp_Structure):
         self.pw1_entry = ctk.CTkEntry(self.frame, font=(font,14), width=165, height=10, corner_radius=10, 
                                       show="*")
         self.pw1_entry.place(rely=0.3, relx=0.47)
-        self.pw1_entry.bind("<Button-1>", lambda borrar: self.pw1_entry.delete(0, tk.END))
+        self.pw1_entry.bind("<Button-1>", lambda remove: self.pw1_entry.delete(0, tk.END))
 
         # Label to confirm the new password.
         self.pw2 = ctk.CTkLabel(self.frame, text="Repetir Contraseña:", font=(font,14))
@@ -389,7 +390,7 @@ class RelaxApp_User_Change_Password(RelaxApp_Structure):
         self.pw2_entry = ctk.CTkEntry(self.frame, font=(font,14), width=165, height=10, corner_radius=10, 
                                       show="*")
         self.pw2_entry.place(rely=0.4, relx=0.47)
-        self.pw2_entry.bind("<Button-1>", lambda borrar: self.pw2_entry.delete(0, tk.END))
+        self.pw2_entry.bind("<Button-1>", lambda remove: self.pw2_entry.delete(0, tk.END))
         
         # Button to confirm to change the password.
         self.change_pw_button = ctk.CTkButton(self.frame, text="Cambiar Contraseña", font=(font,14), command= self.accept_change_pw,
@@ -433,11 +434,13 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
     """This class contains the user's main menu. It allows to start
        the app, set, save and load settings and knows about RelaxApp."""
 
-    def __init__(self, root):
+    def __init__(self, root, start, visual_set=False, stretch_set=False):
         super().__init__(root)
         self.root = root
 
-        self.start = False
+        self.start = start
+        self.visual_set = visual_set
+        self.stretch_set = stretch_set
 
         # Frame at the back.
         self.frame.configure(fg_color=colors["black"])
@@ -488,13 +491,14 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
         
         # Label of help menu cascade.
         self.menu_help.add_command(label=" Conozca RelaxApp  ", font=(font,9), command=self.about_us, background=colors["soft_grey"], 
-                                   foreground=colors["white"], activebackground=colors["dark_green"], hidemargin=True)
-
-        # Options label.
-        self.options = ctk.CTkLabel(self.frame_main, text="Configurar", font=(font, 16), corner_radius=10, height=35)
-        self.options.place(rely=0.3, relx=0.5, anchor="center")
+                                   foreground=colors["white"], activebackground=colors["dark_green"], hidemargin=True) 
 
         if self.start == False:
+
+            # Options label.
+            self.options = ctk.CTkLabel(self.frame_main, text="Configurar", font=(font, 16), corner_radius=10, height=35)
+            self.options.place(rely=0.3, relx=0.5, anchor="center")
+
             # Button to set visual options.
             self.visual_options = ctk.CTkButton(self.frame_main, text="Descanso Visual", font=(font, 14), 
                                                     command=self.set_visual_options, corner_radius=10, height=35, 
@@ -526,10 +530,27 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
             self.start_relaxapp_button.place(rely=0.7, relx=0.5, anchor="center")
 
         elif self.start == True:
-            self.test = ctk.CTkButton(self.frame_main, text="COMENZADO", font=(font, 20), 
-                                                    height=70, corner_radius=50, 
-                                                    hover=True, fg_color=colors["soft_green"], hover_color=colors["dark_green"])
-            self.test.place(rely=0.7, relx=0.5, anchor="center")
+
+            # Frame that contains visual options.
+            self.frame_visual = ctk.CTkFrame(self.frame_main, height=100, width=230, fg_color=colors["black"], 
+                                             corner_radius=10)
+            self.frame_visual.place(rely=0.3, relx=0.5, anchor="center")
+
+            self.time_remaining = ctk.CTkLabel(self.frame_visual, text="Tiempo Restante", font=(font, 12))
+            self.time_remaining.place(rely=0.15, relx=0.04, anchor="w")
+
+            self.next_alert = ctk.CTkLabel(self.frame_visual, text="Alerta", font=(font, 12), justify="center")
+            self.next_alert.place(rely=0.15, relx=0.96, anchor="e")
+
+            self.breaktime = ctk.CTkLabel(self.frame_visual, text="Descanso", font=(font, 12), justify="center")
+            self.breaktime.place(rely=0.6, relx=0.96, anchor="e")
+
+            self.hh_test = ctk.CTkLabel(self.frame_visual, text="10", font=(font, 24))
+            self.hh_test.place(rely=0.5, relx=0.1, anchor="w")
+
+
+
+
 
 
     ###################################################################
@@ -561,10 +582,21 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
         RelaxApp_User_Main_Menu_Settings(self.root, None, self.stretch_options_values)
 
     def start_relaxapp(self):
-        ###### TO SET ######
-        print("start_relaxapp EN DESARROLLO")
+        # Get if "self.visual_options_CB" is checked.
+        if self.visual_options_choice.get() == 1:
+            self.visual_set = True
+        else:
+            self.visual_set = False
+        
+        # Get if "self.stretch_options_CB" is checked.
+        if self.stretch_options_choice.get() == 1:
+            self.stretch_set = True
+        else:
+            self.stretch_set = False
 
-
+        self.root.destroy()
+        self.close_create(RelaxApp_User_Main_Menu, True, self.visual_set, self.stretch_set)
+        
         ###### TO SET ######
     ###################################################################
 
@@ -585,7 +617,7 @@ class RelaxApp_User_Main_Menu_Settings(RelaxApp_User_Settings_Structure):
     def __init__(self, root, visual_values=None, stretch_values=None):
         super().__init__(root)
         self.root = root
-
+        
         self.visual_options_values = visual_values
         self.stretch_options_values = stretch_values
 
@@ -640,7 +672,7 @@ class RelaxApp_User_Main_Menu_Settings(RelaxApp_User_Settings_Structure):
                                            validate="key", validatecommand=(self.hours_entry, "%P"))
         self.lenght_entryHH.place(rely=0.5, relx=0.76, anchor="e")
         self.lenght_entryHH.insert(0, "HH")
-        self.lenght_entryHH.bind("<Button-1>", lambda borrar: self.lenght_entryHH.delete(0, tk.END))
+        self.lenght_entryHH.bind("<Button-1>", lambda remove: self.lenght_entryHH.delete(0, tk.END))
 
         # Two points separator.
         self.twopoints_lenght_entry = ctk.CTkLabel(self.frame2, text=":", font=(font, 14))
@@ -651,7 +683,7 @@ class RelaxApp_User_Main_Menu_Settings(RelaxApp_User_Settings_Structure):
                                            validate="key", validatecommand=(self.min_sec_entry, "%P"))
         self.lenght_entryMM.place(rely=0.5, relx=0.97, anchor="e")
         self.lenght_entryMM.insert(0, "MM")
-        self.lenght_entryMM.bind("<Button-1>", lambda borrar: self.lenght_entryMM.delete(0, tk.END))
+        self.lenght_entryMM.bind("<Button-1>", lambda remove: self.lenght_entryMM.delete(0, tk.END))
 
         # Lapse label.
         self.lapse = ctk.CTkLabel(self.frame3, text="Intervalo Alertas", font=(font, 14))
@@ -662,7 +694,7 @@ class RelaxApp_User_Main_Menu_Settings(RelaxApp_User_Settings_Structure):
                                         validate="key", validatecommand=(self.min_sec_entry, "%P"))
         self.lapse_entry.place(rely=0.5, relx=0.97, anchor="e")
         self.lapse_entry.insert(0, "MM")
-        self.lapse_entry.bind("<Button-1>", lambda borrar: self.lapse_entry.delete(0, tk.END))
+        self.lapse_entry.bind("<Button-1>", lambda remove: self.lapse_entry.delete(0, tk.END))
 
         # Break time label.
         self.break_time = ctk.CTkLabel(self.frame4, text="Tiempo Descanso", font=(font, 14))
@@ -674,7 +706,7 @@ class RelaxApp_User_Main_Menu_Settings(RelaxApp_User_Settings_Structure):
 
         self.break_time_entryMM.place(rely=0.5, relx=0.76, anchor="e")
         self.break_time_entryMM.insert(0, "MM")
-        self.break_time_entryMM.bind("<Button-1>", lambda borrar: self.break_time_entryMM.delete(0, tk.END))
+        self.break_time_entryMM.bind("<Button-1>", lambda remove: self.break_time_entryMM.delete(0, tk.END))
 
         # Two points separator.
         self.twopoints_break_time_entry = ctk.CTkLabel(self.frame4, text=":", font=(font, 14))
@@ -686,7 +718,7 @@ class RelaxApp_User_Main_Menu_Settings(RelaxApp_User_Settings_Structure):
 
         self.break_time_entrySS.place(rely=0.5, relx=0.97, anchor="e")
         self.break_time_entrySS.insert(0, "SS")
-        self.break_time_entrySS.bind("<Button-1>", lambda borrar: self.break_time_entrySS.delete(0, tk.END))
+        self.break_time_entrySS.bind("<Button-1>", lambda remove: self.break_time_entrySS.delete(0, tk.END))
 
         # Sound alert label.
         self.sound_alert = ctk.CTkLabel(self.frame5, text="Activar Sonido", font=(font, 14))
@@ -711,55 +743,52 @@ class RelaxApp_User_Main_Menu_Settings(RelaxApp_User_Settings_Structure):
                                            fg_color=colors["soft_grey"], hover_color=colors["dark_green"])
         self.cancel_button.place(rely=0.5, relx=0.9, anchor="e")
 
-
+    # Funtions to save settings in the user's main menu.
     def save_settings(self):
-
+        # Get when the sound checkbox is activated or not.
         if self.sound_alert_choice.get() == 1:
             self.sound = True
         else:
             self.sound = False
         
+        # Verify if all entries are filled.
         if self.lenght_entryHH.get() == "HH" or self.lenght_entryMM.get() == "MM" or \
         self.lapse_entry.get() == "MM" or self.break_time_entryMM.get() == "MM" or \
         self.break_time_entrySS.get() == "SS":
+            # Pop-ups a message box if any entry is unfilled.
             RelaxApp_MessageBox_Options(self.root, "Empty")
 
+        # Verify if lenght entry is not higher than 16hs.
         elif int(self.lenght_entryHH.get()) > 16:
             RelaxApp_MessageBox_Options(self.root, "Extra Hours")
+        # Verify if the rest of the entries are not higher than 60.
         elif int(self.lenght_entryMM.get()) > 60 or int(self.lapse_entry.get()) > 60 or  \
         int(self.break_time_entryMM.get()) > 60 or int(self.break_time_entrySS.get()) > 60:
             RelaxApp_MessageBox_Options(self.root, "Invalid Time")
 
         else:
-            print("visual options values: ", self.visual_options_values)
-            print("stretch options values: ", self.stretch_options_values)
-
+            # All entries are concatenated in one string.
             self.values += self.lenght_entryHH.get()
             self.values += self.lenght_entryMM.get()
             self.values += self.lapse_entry.get()
             self.values += self.break_time_entryMM.get()
             self.values += self.break_time_entrySS.get()
-            self.values += str(self.sound)
-            print("values: ", self.values)
+            self.values += str(self.sound)          
 
+            # Varible "self.values" is saved in the database inside the "Configuracion_visual" column.
             if self.visual_options_values == True:
-                base_datos.configuraciones_usuario("lechus", "usuarios_configuraciones", "lechu1", "Configuracion_visual", self.values)
+                base_datos.configuraciones_usuario(databases["database1"], tables["settings_table"], 
+                                                   user["login"], "Configuracion_visual", self.values)
 
+            # Varible "self.values" is saved in the database inside the "Configuracion_estirar" column.    
             elif self.stretch_options_values == True:
-                base_datos.configuraciones_usuario("lechus", "usuarios_configuraciones", "lechu1", "Configuracion_estirar", self.values)
+                base_datos.configuraciones_usuario(databases["database1"], tables["settings_table"], 
+                                                   user["login"], "Configuracion_estirar", self.values)
 
-            print("visual options values: ", self.visual_options_values)
-            print("stretch options values: ", self.stretch_options_values)
-
-            print("########################################")
             self.window.destroy()
         
     def cancel_settings(self):
         self.window.destroy()
-
-
-
-
 
 
 ####################################################
@@ -895,10 +924,10 @@ class RelaxApp_MessageBox_Options(RelaxApp_MessageBox_Structure):
     def accept_button(self, message):
         if message == "Sign up":
             # App connects with the database to check if the information is valid or not.
-            base_datos.editar_tabla("lechus", "usuarios", self.user)
+            base_datos.editar_tabla(databases["database1"], tables["users_table"], self.user)
         elif message == "Password Correct":
              # App connects with the database to check if the information is valid or not. 
-            base_datos.editar_tabla("lechus", "usuarios", self.user)
+            base_datos.editar_tabla(databases["database1"], tables["users_table"], self.user)
 
         # User registration is canceled and turn back to main menu.
         elif message == "Cancel" or message == "Cancel Change PW" or message == "Sign Out":

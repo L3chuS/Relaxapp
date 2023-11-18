@@ -420,7 +420,6 @@ Elija otro nombre.'
             print(self.mensaje)
             return self.validacion_editar, self.mensaje
         
-    ############################################################
     @conexion
     @comprobar_bd
     @comprobar_tabla
