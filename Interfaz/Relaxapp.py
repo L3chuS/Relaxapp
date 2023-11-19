@@ -5,6 +5,7 @@ from Base_Datos.valores_presets import user, databases, tables
 from os import path
 import ctypes
 import time
+import threading
 
 # Connect to the database.
 base_datos = bd.BaseDatos(**bd.acceso_root)
@@ -531,26 +532,120 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
 
         elif self.start == True:
 
+            self.stop_app = False
+
+            self.time_left_HH = ctk.StringVar(value="00")
+            self.time_left_MM = ctk.StringVar(value="10")
+            self.next_alert_MM = ctk.StringVar(value="05")
+            self.breaktime_MM = ctk.StringVar(value="20")
+            self.breaktime_SS = ctk.StringVar(value="25")
+
             # Frame that contains visual options.
             self.frame_visual = ctk.CTkFrame(self.frame_main, height=100, width=230, fg_color=colors["black"], 
                                              corner_radius=10)
             self.frame_visual.place(rely=0.3, relx=0.5, anchor="center")
 
-            self.time_remaining = ctk.CTkLabel(self.frame_visual, text="Tiempo Restante", font=(font, 12))
-            self.time_remaining.place(rely=0.15, relx=0.04, anchor="w")
+            self.time_left_VO_title = ctk.CTkLabel(self.frame_visual, text="Tiempo Restante", font=(font, 14))
+            self.time_left_VO_title.place(rely=0.15, relx=0.04, anchor="w")
 
-            self.next_alert = ctk.CTkLabel(self.frame_visual, text="Alerta", font=(font, 12), justify="center")
-            self.next_alert.place(rely=0.15, relx=0.96, anchor="e")
+            self.time_left_VO_HH_label = ctk.CTkLabel(self.frame_visual, textvariable=self.time_left_HH, font=(font, 24))
+            self.time_left_VO_HH_label.place(rely=0.5, relx=0.07, anchor="w")
 
-            self.breaktime = ctk.CTkLabel(self.frame_visual, text="Descanso", font=(font, 12), justify="center")
-            self.breaktime.place(rely=0.6, relx=0.96, anchor="e")
+            self.two_points1 = ctk.CTkLabel(self.frame_visual, text=":", font=(font, 28))
+            self.two_points1.place(rely=0.5, relx=0.24, anchor="w")
 
-            self.hh_test = ctk.CTkLabel(self.frame_visual, text="10", font=(font, 24))
-            self.hh_test.place(rely=0.5, relx=0.1, anchor="w")
+            self.time_left_VO_MM_label = ctk.CTkLabel(self.frame_visual, textvariable=self.time_left_MM, font=(font, 24))
+            self.time_left_VO_MM_label.place(rely=0.5, relx=0.3, anchor="w")
+
+            self.next_alert_VO_title = ctk.CTkLabel(self.frame_visual, text="Alerta", font=(font, 14), justify="center")
+            self.next_alert_VO_title.place(rely=0.15, relx=0.96, anchor="e")
+
+            self.next_alert_VO_MM_label = ctk.CTkLabel(self.frame_visual, textvariable=self.next_alert_MM, font=(font, 16))
+            self.next_alert_VO_MM_label.place(rely=0.4, relx=0.96, anchor="e")
+
+            self.breaktime_VO_title = ctk.CTkLabel(self.frame_visual, text="Descanso", font=(font, 14), justify="center")
+            self.breaktime_VO_title.place(rely=0.6, relx=0.96, anchor="e")
+
+            self.breaktime_VO_MM_label = ctk.CTkLabel(self.frame_visual, textvariable=self.breaktime_MM, font=(font, 16))
+            self.breaktime_VO_MM_label.place(rely=0.8, relx=0.81, anchor="e")
+
+            self.two_points2 = ctk.CTkLabel(self.frame_visual, text=":", font=(font, 16))
+            self.two_points2.place(rely=0.8, relx=0.84, anchor="e")
+
+            self.breaktime_VO_SS_label = ctk.CTkLabel(self.frame_visual, textvariable=self.breaktime_SS, font=(font, 16))
+            self.breaktime_VO_SS_label.place(rely=0.8, relx=0.96, anchor="e")
+
+            self.start = ctk.CTkButton(self.frame_main, text="Iniciar", font=(font, 20), 
+                                                    command=self.threading, height=70, corner_radius=50, 
+                                                    hover=True, fg_color=colors["soft_green"], hover_color=colors["dark_green"])
+            self.start.place(rely=0.8, relx=0.5, anchor="center")
 
 
+    def threading(self): 
+        # Call all countdown funtions. 
+        t1=threading.Thread(target=self.TR_VO_countdown) 
+        t1.start()
+        t2=threading.Thread(target=self.NA_VO_countdown) 
+        t2.start() 
+        # t3=threading.Thread(target=self.countdown) 
+        # t3.start()
 
+    def TR_VO_countdown(self):
 
+        TR_HH_valor = int(self.time_left_HH.get())
+        TR_MM_valor = int(self.time_left_MM.get())
+
+        while True:
+            # Verify if values have one or two digits in order to add a "0" in front.
+            if TR_MM_valor > 9:
+                self.time_left_MM.set(TR_MM_valor)
+            else:
+                self.time_left_MM.set("0" + str(TR_MM_valor))
+            if TR_HH_valor > 9:
+                self.time_left_HH.set(TR_HH_valor)
+            else:
+                self.time_left_HH.set("0" + str(TR_HH_valor))
+
+            if TR_MM_valor > 0:
+                TR_MM_valor -=1
+                self.frame_visual.update()
+                time.sleep(1)
+            elif TR_HH_valor > 0:     
+                TR_HH_valor -=1
+                TR_MM_valor = 59
+                self.frame_visual.update()
+                time.sleep(1)
+            else:
+                self.test = ctk.CTkLabel(self.frame_visual, text="Finalizado", font=(font, 18))
+                self.test.place(rely=0.5, relx=0.04, anchor="w")
+                self.stop_app = True
+                return self.stop_app
+
+    def NA_VO_countdown(self):
+        
+        initial_value = int(self.next_alert_MM.get())
+      
+
+        while self.stop_app == False:  
+            NA_MM_valor = initial_value
+
+            while NA_MM_valor != 0:
+                if self.stop_app == True:
+                    break
+                # Verify if values have one or two digits in order to add a "0" in front.
+                if NA_MM_valor > 9:
+                    self.next_alert_MM.set(NA_MM_valor)
+                else:
+                    self.next_alert_MM.set("0" + str(NA_MM_valor))
+
+                if NA_MM_valor > 0:
+                    NA_MM_valor -=1
+                    self.frame_visual.update()
+                    time.sleep(1)
+
+        self.test = ctk.CTkLabel(self.frame_visual, text="Finalizado", font=(font, 16))
+        self.test.place(rely=0.4, relx=0.96, anchor="e")
+                
 
 
     ###################################################################
