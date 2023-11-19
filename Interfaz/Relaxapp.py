@@ -534,11 +534,11 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
 
             self.stop_app = False
 
-            self.time_left_HH = ctk.StringVar(value="00")
+            self.time_left_HH = ctk.StringVar(value="03")
             self.time_left_MM = ctk.StringVar(value="10")
             self.next_alert_MM = ctk.StringVar(value="05")
-            self.breaktime_MM = ctk.StringVar(value="20")
-            self.breaktime_SS = ctk.StringVar(value="25")
+            self.breaktime_MM = ctk.StringVar(value="01")
+            self.breaktime_SS = ctk.StringVar(value="10")
 
             # Frame that contains visual options.
             self.frame_visual = ctk.CTkFrame(self.frame_main, height=100, width=230, fg_color=colors["black"], 
@@ -587,8 +587,8 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
         t1.start()
         t2=threading.Thread(target=self.NA_VO_countdown) 
         t2.start() 
-        # t3=threading.Thread(target=self.countdown) 
-        # t3.start()
+        t3=threading.Thread(target=self.BT_VO_countdown) 
+        t3.start()
 
     def TR_VO_countdown(self):
 
@@ -616,17 +616,20 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
                 self.frame_visual.update()
                 time.sleep(1)
             else:
-                self.test = ctk.CTkLabel(self.frame_visual, text="Finalizado", font=(font, 18))
-                self.test.place(rely=0.5, relx=0.04, anchor="w")
+                self.test1 = ctk.CTkLabel(self.frame_visual, text="Finalizado", font=(font, 18))
+                self.test1.place(rely=0.5, relx=0.04, anchor="w")
+                self.test2 = ctk.CTkLabel(self.frame_visual, text="Finalizado", font=(font, 16))
+                self.test2.place(rely=0.4, relx=0.96, anchor="e")
+                self.test3 = ctk.CTkLabel(self.frame_visual, text="Finalizado", font=(font, 16))
+                self.test3.place(rely=0.8, relx=0.81, anchor="e")
                 self.stop_app = True
                 return self.stop_app
 
     def NA_VO_countdown(self):
         
         initial_value = int(self.next_alert_MM.get())
-      
 
-        while self.stop_app == False:  
+        while self.stop_app == False:
             NA_MM_valor = initial_value
 
             while NA_MM_valor != 0:
@@ -643,9 +646,37 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
                     self.frame_visual.update()
                     time.sleep(1)
 
-        self.test = ctk.CTkLabel(self.frame_visual, text="Finalizado", font=(font, 16))
-        self.test.place(rely=0.4, relx=0.96, anchor="e")
-                
+    def BT_VO_countdown(self):
+
+        initial_value_MM = int(self.breaktime_MM.get())
+        initial_value_SS = int(self.breaktime_SS.get())
+
+        while self.stop_app == False:
+            BT_MM_valor = initial_value_MM
+            BT_SS_valor = initial_value_SS
+
+            while BT_MM_valor > -1:
+                # Verify if values have one or two digits in order to add a "0" in front.
+                if BT_SS_valor > 9:
+                    self.breaktime_SS.set(BT_SS_valor)
+                else:
+                    self.breaktime_SS.set("0" + str(BT_SS_valor))
+                if BT_MM_valor > 9:
+                    self.breaktime_MM.set(BT_MM_valor)
+                else:
+                    self.breaktime_MM.set("0" + str(BT_MM_valor))
+
+                if BT_SS_valor > 0:
+                    BT_SS_valor -=1
+                    self.frame_visual.update()
+                    time.sleep(1)
+                elif BT_MM_valor > 0:     
+                    BT_MM_valor -=1
+                    BT_SS_valor = 59
+                    self.frame_visual.update()
+                    time.sleep(1)
+                else:
+                    break        
 
 
     ###################################################################
