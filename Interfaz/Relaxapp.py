@@ -123,12 +123,40 @@ class RelaxApp_User_Settings_Structure:
         self.maximize = self.window.resizable(False,False)
 
         # Set a frame at the background.
-        self.frame = ctk.CTkFrame(self.window, height=300, width=250, fg_color=colors["soft_grey"])
-        self.frame.pack(pady=10, padx=10, fill="both") 
+        self.frame = ctk.CTkFrame(self.window, height=300, width=260, fg_color=colors["soft_grey"])
+        self.frame.pack(pady=10, padx=10, fill="both")
 
         # Set the title and the logo of the app.
         self.title = self.window.title("RelaxApp")
         self.window.after(200, lambda: self.window.iconbitmap(image_path + "logo.ico"))
+
+
+######################################################################
+### Class that contains general settings while RelaxApp is running ###
+######################################################################
+
+class RelaxApp_Running_Structure:
+    """This class defines the general structure while app is running. 
+       Defines the appearance, dimensions and title."""
+
+    def __init__(self, root):
+        self.root = root
+
+        # Set the width, height, configuration and location of the windows.
+        width = 280
+        height = 400
+        width_resolution = self.root.winfo_screenwidth() // 2 - width // 2 - width // 3
+        height_resolution = self.root.winfo_screenheight() // 2 - height
+        self.dimensions = self.root.geometry(f"{width}x{height}+{width_resolution}+{height_resolution}")
+        self.maximize = self.root.resizable(False,False)
+
+        # Set a frame at the background.
+        self.frame = ctk.CTkFrame(self.root, height=400, width=280, fg_color=colors["soft_grey"])
+        self.frame.pack(pady=10, padx=10, fill="both") 
+
+        # Set the title and the logo of the app.
+        self.title = self.root.title("RelaxApp")
+        self.root.after(200, lambda: self.root.iconbitmap(image_path + "logo.ico"))
 
 
 ###############################################################################
@@ -226,14 +254,13 @@ class RelaxApp_Initial_Frame(RelaxApp_Structure):
         base_datos.validacion_login = True
         if base_datos.validacion_login:
             self.root.destroy()
-            self.close_create(RelaxApp_User_Main_Menu, False)
+            self.close_create(RelaxApp_User_Main_Menu)
 
         else:
             self.error_login = ctk.CTkLabel(self.frame, text="Usuario o contraseña incorrecta. Vuelva a intentarlo.", 
                                             font=(font,11))
             self.error_login.place(rely=0.81, relx=0.5, anchor="center")
-
-    
+   
     # Method that register users.
     def sign_up(self):
         self.root.destroy()
@@ -435,11 +462,10 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
     """This class contains the user's main menu. It allows to start
        the app, set, save and load settings and knows about RelaxApp."""
 
-    def __init__(self, root, start, visual_set=False, stretch_set=False):
+    def __init__(self, root, visual_set=False, stretch_set=False):
         super().__init__(root)
         self.root = root
 
-        self.start = start
         self.visual_set = visual_set
         self.stretch_set = stretch_set
 
@@ -494,117 +520,189 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
         self.menu_help.add_command(label=" Conozca RelaxApp  ", font=(font,9), command=self.about_us, background=colors["soft_grey"], 
                                    foreground=colors["white"], activebackground=colors["dark_green"], hidemargin=True) 
 
-        if self.start == False:
+        # Options label.
+        self.options = ctk.CTkLabel(self.frame_main, text="Configurar", font=(font, 16), corner_radius=10, height=35)
+        self.options.place(rely=0.3, relx=0.5, anchor="center")
 
-            # Options label.
-            self.options = ctk.CTkLabel(self.frame_main, text="Configurar", font=(font, 16), corner_radius=10, height=35)
-            self.options.place(rely=0.3, relx=0.5, anchor="center")
+        # Button to set visual options.
+        self.visual_options = ctk.CTkButton(self.frame_main, text="Descanso Visual", font=(font, 14), 
+                                                command=self.set_visual_options, corner_radius=10, height=35, 
+                                                hover=True, fg_color=colors["soft_green"], hover_color=colors["dark_green"])
+        self.visual_options.place(rely=0.4, relx=0.25, anchor="w")
+        # Variable to save the information of "visual_options_CB" when is marked or unmarked.
+        self.visual_options_choice = ctk.IntVar()
+        # Checkbox to activate or deactivate "visual_options".
+        self.visual_options_CB = ctk.CTkCheckBox(self.frame_main, text=None, variable=self.visual_options_choice , width=20, height=20, hover=True, 
+                                                fg_color=colors["soft_green"], hover_color=colors["dark_green"])
+        self.visual_options_CB.place(rely=0.4, relx=0.8, anchor="e")
 
-            # Button to set visual options.
-            self.visual_options = ctk.CTkButton(self.frame_main, text="Descanso Visual", font=(font, 14), 
-                                                    command=self.set_visual_options, corner_radius=10, height=35, 
-                                                    hover=True, fg_color=colors["soft_green"], hover_color=colors["dark_green"])
-            self.visual_options.place(rely=0.4, relx=0.25, anchor="w")
-            # Variable to save the information of "visual_options_CB" when is marked or unmarked.
-            self.visual_options_choice = ctk.IntVar()
-            # Checkbox to activate or deactivate "visual_options".
-            self.visual_options_CB = ctk.CTkCheckBox(self.frame_main, text=None, variable=self.visual_options_choice , width=20, height=20, hover=True, 
-                                                    fg_color=colors["soft_green"], hover_color=colors["dark_green"])
-            self.visual_options_CB.place(rely=0.4, relx=0.8, anchor="e")
+        # Button to set stretch options.
+        self.stretch_options = ctk.CTkButton(self.frame_main, text="Estirar", font=(font, 14), 
+                                                command=self.set_stretch_options, corner_radius=10, height=35, 
+                                                hover=True, fg_color=colors["soft_green"], hover_color=colors["dark_green"])
+        self.stretch_options.place(rely=0.5, relx=0.25, anchor="w")
+        # Variable to save the information of "stretch_options_CB" when is marked or unmarked.
+        self.stretch_options_choice = ctk.IntVar()
+        # Checkbox to activate or deactivate "stretch_options".
+        self.stretch_options_CB = ctk.CTkCheckBox(self.frame_main, text=None, variable=self.stretch_options_choice, width=20, height=20, hover=True, 
+                                                fg_color=colors["soft_green"], hover_color=colors["dark_green"])
+        self.stretch_options_CB.place(rely=0.5, relx=0.8, anchor="e")
 
-            # Button to set stretch options.
-            self.stretch_options = ctk.CTkButton(self.frame_main, text="Estirar", font=(font, 14), 
-                                                    command=self.set_stretch_options, corner_radius=10, height=35, 
-                                                    hover=True, fg_color=colors["soft_green"], hover_color=colors["dark_green"])
-            self.stretch_options.place(rely=0.5, relx=0.25, anchor="w")
-            # Variable to save the information of "stretch_options_CB" when is marked or unmarked.
-            self.stretch_options_choice = ctk.IntVar()
-            # Checkbox to activate or deactivate "stretch_options".
-            self.stretch_options_CB = ctk.CTkCheckBox(self.frame_main, text=None, variable=self.stretch_options_choice, width=20, height=20, hover=True, 
-                                                    fg_color=colors["soft_green"], hover_color=colors["dark_green"])
-            self.stretch_options_CB.place(rely=0.5, relx=0.8, anchor="e")
+        # Button to set start RelaxApp.
+        self.start_relaxapp_button = ctk.CTkButton(self.frame_main, text="Iniciar", font=(font, 20), 
+                                                command=self.start_relaxapp, height=70, corner_radius=50, 
+                                                hover=True, fg_color=colors["soft_green"], hover_color=colors["dark_green"])
+        self.start_relaxapp_button.place(rely=0.7, relx=0.5, anchor="center")
 
-            # Button to set start RelaxApp.
-            self.start_relaxapp_button = ctk.CTkButton(self.frame_main, text="Iniciar", font=(font, 20), 
-                                                    command=self.start_relaxapp, height=70, corner_radius=50, 
-                                                    hover=True, fg_color=colors["soft_green"], hover_color=colors["dark_green"])
-            self.start_relaxapp_button.place(rely=0.7, relx=0.5, anchor="center")
 
-        elif self.start == True:
+    ###################################################################
+    ###### TO SET ######
+    def load_configuration(self):
+        ###### TO SET ######
+        print("load_configuration EN DESARROLLO")
+        ###### TO SET ######
 
-            # Variable to stop or keep running the app.
-            self.stop_app = False
+    ###### TO SET ######
+    def save_configuration(self):
+        ###### TO SET ######
+        print("save_configuration EN DESARROLLO")
+        ###### TO SET ######
 
-            # Query method is called to get user's visual options settings.
-            self.get_values_VO = base_datos.consulta(f"SELECT Configuracion_Visual FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}'")
-            base_datos.valor = base_datos.valor[0][0]
+    ###### TO SET ######
+    def about_us(self):
+        ###### TO SET ######
+        print("about_us EN DESARROLLO")
+        ###### TO SET ######
 
-            # Dictionary that contains each value of user's visual options settings.
-            self.values_VO = {"time_left_HH" : base_datos.valor[0:2],
-                              "time_left_MM" : base_datos.valor[2:4],
-                              "next_alert_MM" : base_datos.valor[4:6],
-                              "breaktime_MM" : base_datos.valor[6:8],
-                              "breaktime_SS" : base_datos.valor[8:10],
-                              "sound_active" : base_datos.valor[10::]}
-            
-            # Query method is called to get user's stretch options settings.
-            self.get_values_SO = base_datos.consulta(f"SELECT Configuracion_Estirar FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}'")
-            base_datos.valor = base_datos.valor[0][0]
-            
-            # Dictionary that contains each value of user's stretch options settings.
-            self.values_SO = {"time_left_HH" : base_datos.valor[0:2],
-                              "time_left_MM" : base_datos.valor[2:4],
-                              "next_alert_MM" : base_datos.valor[4:6],
-                              "breaktime_MM" : base_datos.valor[6:8],
-                              "breaktime_SS" : base_datos.valor[8:10],
-                              "sound_active" : base_datos.valor[10::]}
+    # Function to sign out of the App.
+    def sign_out(self):
+        self.user = user["login"]
+        RelaxApp_MessageBox_Options(self.root, "Sign Out", self.user)
 
-            self.time_left_HH_VO = ctk.StringVar(value=self.values_VO["time_left_HH"])
-            self.time_left_MM_VO = ctk.StringVar(value=self.values_VO["time_left_MM"])
-            self.next_alert_MM_VO = ctk.StringVar(value=self.values_VO["next_alert_MM"])
-            self.breaktime_MM_VO = ctk.StringVar(value=self.values_VO["breaktime_MM"])
-            self.breaktime_SS_VO = ctk.StringVar(value=self.values_VO["breaktime_SS"])
+    # Function to set visual options of the App.
+    def set_visual_options(self):
+        self.visual_options_values = True
+        RelaxApp_User_Main_Menu_Settings(self.root, self.visual_options_values)
 
-            # Frame that contains visual options.
-            self.frame_visual = ctk.CTkFrame(self.frame_main, height=100, width=230, fg_color=colors["black"], 
-                                             corner_radius=10)
-            self.frame_visual.place(rely=0.3, relx=0.5, anchor="center")
+    # Function to set stretch options of the App.
+    def set_stretch_options(self):
+        self.stretch_options_values = True
+        RelaxApp_User_Main_Menu_Settings(self.root, None, self.stretch_options_values)
 
-            self.time_left_VO_title = ctk.CTkLabel(self.frame_visual, text="Tiempo Restante", font=(font, 14))
-            self.time_left_VO_title.place(rely=0.15, relx=0.04, anchor="w")
+    # Function to start App.
+    def start_relaxapp(self):
+        # Get if "self.visual_options_CB" is checked.
+        if self.visual_options_choice.get() == 1:
+            self.visual_set = True
+        else:
+            self.visual_set = False
+        
+        # Get if "self.stretch_options_CB" is checked.
+        if self.stretch_options_choice.get() == 1:
+            self.stretch_set = True
+        else:
+            self.stretch_set = False
 
-            self.time_left_VO_HH_label = ctk.CTkLabel(self.frame_visual, textvariable=self.time_left_HH_VO, font=(font, 24))
-            self.time_left_VO_HH_label.place(rely=0.5, relx=0.07, anchor="w")
 
-            self.two_points1 = ctk.CTkLabel(self.frame_visual, text=":", font=(font, 28))
-            self.two_points1.place(rely=0.5, relx=0.24, anchor="w")
+        self.root.destroy()
+        self.close_create(RelaxApp_Running, self.visual_set, self.stretch_set)  
 
-            self.time_left_VO_MM_label = ctk.CTkLabel(self.frame_visual, textvariable=self.time_left_MM_VO, font=(font, 24))
-            self.time_left_VO_MM_label.place(rely=0.5, relx=0.3, anchor="w")
 
-            self.next_alert_VO_title = ctk.CTkLabel(self.frame_visual, text="Alerta", font=(font, 14), justify="center")
-            self.next_alert_VO_title.place(rely=0.15, relx=0.96, anchor="e")
+#######################################################
+###  Class that is showed when RelaxApp is running  ###
+#######################################################
 
-            self.next_alert_VO_MM_label = ctk.CTkLabel(self.frame_visual, textvariable=self.next_alert_MM_VO, font=(font, 16))
-            self.next_alert_VO_MM_label.place(rely=0.4, relx=0.96, anchor="e")
+class RelaxApp_Running(RelaxApp_Running_Structure):
+    
+    def __init__(self, root, visual_set, stretch_set):
+        super().__init__(root)
 
-            self.breaktime_VO_title = ctk.CTkLabel(self.frame_visual, text="Descanso", font=(font, 14), justify="center")
-            self.breaktime_VO_title.place(rely=0.6, relx=0.96, anchor="e")
+        self.root = root
 
-            self.breaktime_VO_MM_label = ctk.CTkLabel(self.frame_visual, textvariable=self.breaktime_MM_VO, font=(font, 16))
-            self.breaktime_VO_MM_label.place(rely=0.8, relx=0.81, anchor="e")
+        self.visual_set = visual_set
+        self.stretch_set = stretch_set
 
-            self.two_points2 = ctk.CTkLabel(self.frame_visual, text=":", font=(font, 16))
-            self.two_points2.place(rely=0.8, relx=0.84, anchor="e")
+        self.start_app = True
+        self.stop_countdown = False
 
-            self.breaktime_VO_SS_label = ctk.CTkLabel(self.frame_visual, textvariable=self.breaktime_SS_VO, font=(font, 16))
-            self.breaktime_VO_SS_label.place(rely=0.8, relx=0.96, anchor="e")
+        # Query method is called to get user's visual options settings.
+        self.get_values_VO = base_datos.consulta(f"SELECT Configuracion_Visual FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}'")
+        base_datos.valor = base_datos.valor[0][0]
 
-            self.start = ctk.CTkButton(self.frame_main, text="Iniciar", font=(font, 20), 
-                                                    command=self.threading, height=70, corner_radius=50, 
-                                                    hover=True, fg_color=colors["soft_green"], hover_color=colors["dark_green"])
-            self.start.place(rely=0.8, relx=0.5, anchor="center")
+        # Dictionary that contains each value of user's visual options settings.
+        self.values_VO = {"time_left_HH" : base_datos.valor[0:2],
+                            "time_left_MM" : base_datos.valor[2:4],
+                            "next_alert_MM" : base_datos.valor[4:6],
+                            "breaktime_MM" : base_datos.valor[6:8],
+                            "breaktime_SS" : base_datos.valor[8:10],
+                            "sound_active" : base_datos.valor[10::]}
+        
+        # Query method is called to get user's stretch options settings.
+        self.get_values_SO = base_datos.consulta(f"SELECT Configuracion_Estirar FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}'")
+        base_datos.valor = base_datos.valor[0][0]
+        
+        # Dictionary that contains each value of user's stretch options settings.
+        self.values_SO = {"time_left_HH" : base_datos.valor[0:2],
+                            "time_left_MM" : base_datos.valor[2:4],
+                            "next_alert_MM" : base_datos.valor[4:6],
+                            "breaktime_MM" : base_datos.valor[6:8],
+                            "breaktime_SS" : base_datos.valor[8:10],
+                            "sound_active" : base_datos.valor[10::]}
 
+        self.time_left_HH_VO = ctk.StringVar(value=self.values_VO["time_left_HH"])
+        self.time_left_MM_VO = ctk.StringVar(value=self.values_VO["time_left_MM"])
+        self.next_alert_MM_VO = ctk.StringVar(value=self.values_VO["next_alert_MM"])
+        self.breaktime_MM_VO = ctk.StringVar(value=self.values_VO["breaktime_MM"])
+        self.breaktime_SS_VO = ctk.StringVar(value=self.values_VO["breaktime_SS"])
+
+        # Frame that contains visual options.
+        self.frame_visual = ctk.CTkFrame(self.frame, height=100, width=250, fg_color=colors["black"], 
+                                            corner_radius=10)
+        self.frame_visual.place(rely=0.2, relx=0.5, anchor="center")
+
+        # Frame that contains stretch options.
+        self.frame_stretch = ctk.CTkFrame(self.frame, height=100, width=250, fg_color=colors["black"], 
+                                            corner_radius=10)
+        self.frame_stretch.place(rely=0.5, relx=0.5, anchor="center")
+
+        self.time_left_VO_title = ctk.CTkLabel(self.frame_visual, text="Tiempo Restante", font=(font, 14))
+        self.time_left_VO_title.place(rely=0.15, relx=0.04, anchor="w")
+
+        self.time_left_VO_HH_label = ctk.CTkLabel(self.frame_visual, textvariable=self.time_left_HH_VO, font=(font, 24))
+        self.time_left_VO_HH_label.place(rely=0.5, relx=0.07, anchor="w")
+
+        self.two_points1 = ctk.CTkLabel(self.frame_visual, text=":", font=(font, 28))
+        self.two_points1.place(rely=0.5, relx=0.24, anchor="w")
+
+        self.time_left_VO_MM_label = ctk.CTkLabel(self.frame_visual, textvariable=self.time_left_MM_VO, font=(font, 24))
+        self.time_left_VO_MM_label.place(rely=0.5, relx=0.3, anchor="w")
+
+        self.next_alert_VO_title = ctk.CTkLabel(self.frame_visual, text="Alerta", font=(font, 14), justify="center")
+        self.next_alert_VO_title.place(rely=0.15, relx=0.96, anchor="e")
+
+        self.next_alert_VO_MM_label = ctk.CTkLabel(self.frame_visual, textvariable=self.next_alert_MM_VO, font=(font, 16))
+        self.next_alert_VO_MM_label.place(rely=0.4, relx=0.96, anchor="e")
+
+        self.breaktime_VO_title = ctk.CTkLabel(self.frame_visual, text="Descanso", font=(font, 14), justify="center")
+        self.breaktime_VO_title.place(rely=0.6, relx=0.96, anchor="e")
+
+        self.breaktime_VO_MM_label = ctk.CTkLabel(self.frame_visual, textvariable=self.breaktime_MM_VO, font=(font, 16))
+        self.breaktime_VO_MM_label.place(rely=0.8, relx=0.81, anchor="e")
+
+        self.two_points2 = ctk.CTkLabel(self.frame_visual, text=":", font=(font, 16))
+        self.two_points2.place(rely=0.8, relx=0.84, anchor="e")
+
+        self.breaktime_VO_SS_label = ctk.CTkLabel(self.frame_visual, textvariable=self.breaktime_SS_VO, font=(font, 16))
+        self.breaktime_VO_SS_label.place(rely=0.8, relx=0.96, anchor="e")
+
+        self.start = ctk.CTkButton(self.root, text="Finalizar", font=(font, 20), 
+                                                command=self.stop_app, height=70, corner_radius=50, 
+                                                hover=True, fg_color=colors["soft_green"], hover_color=colors["dark_green"])
+        self.start.place(rely=0.8, relx=0.5, anchor="center")
+
+        if self.start_app == True:
+            self.test = ctk.CTkButton(self.root, text=None, command=self.threading())
+ 
 
     def threading(self): 
         # Call all countdown funtions. 
@@ -647,18 +745,18 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
                 self.test2.place(rely=0.4, relx=0.96, anchor="e")
                 self.test3 = ctk.CTkLabel(self.frame_visual, text="Finalizado", font=(font, 16))
                 self.test3.place(rely=0.8, relx=0.81, anchor="e")
-                self.stop_app = True
-                return self.stop_app
+                self.stop_countdown = True
+                return self.stop_countdown
 
     def NA_VO_countdown(self):
         
         initial_value = int(self.next_alert_MM_VO.get())
 
-        while self.stop_app == False:
+        while self.stop_countdown == False:
             NA_MM_valor = initial_value
 
             while NA_MM_valor != 0:
-                if self.stop_app == True:
+                if self.stop_countdown == True:
                     break
                 # Verify if values have one or two digits in order to add a "0" in front.
                 if NA_MM_valor > 9:
@@ -676,7 +774,7 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
         initial_value_MM = int(self.breaktime_MM_VO.get())
         initial_value_SS = int(self.breaktime_SS_VO.get())
 
-        while self.stop_app == False:
+        while self.stop_countdown == False:
             BT_MM_valor = initial_value_MM
             BT_SS_valor = initial_value_SS
 
@@ -701,60 +799,21 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
                     self.frame_visual.update()
                     time.sleep(1)
                 else:
-                    break        
+                    break
 
-
-    ###################################################################
-    ###### TO SET ######
-    def load_configuration(self):
-        ###### TO SET ######
-        print("load_configuration EN DESARROLLO")
-        ###### TO SET ######
-
-    ###### TO SET ######
-    def save_configuration(self):
-        ###### TO SET ######
-        print("save_configuration EN DESARROLLO")
-        ###### TO SET ######
-
-    ###### TO SET ######
-    def about_us(self):
-        ###### TO SET ######
-        print("about_us EN DESARROLLO")
-        ###### TO SET ######
-
-    ###### TO SET ######
-    def set_visual_options(self):
-        self.visual_options_values = True
-        RelaxApp_User_Main_Menu_Settings(self.root, self.visual_options_values)
-
-    def set_stretch_options(self):
-        self.stretch_options_values = True
-        RelaxApp_User_Main_Menu_Settings(self.root, None, self.stretch_options_values)
-
-    def start_relaxapp(self):
-        # Get if "self.visual_options_CB" is checked.
-        if self.visual_options_choice.get() == 1:
-            self.visual_set = True
-        else:
-            self.visual_set = False
-        
-        # Get if "self.stretch_options_CB" is checked.
-        if self.stretch_options_choice.get() == 1:
-            self.stretch_set = True
-        else:
-            self.stretch_set = False
-
+    def stop_app(self):
+        self.start_app = False
         self.root.destroy()
-        self.close_create(RelaxApp_User_Main_Menu, True, self.visual_set, self.stretch_set)
-        
-        ###### TO SET ######
-    ###################################################################
+        RelaxApp_Structure.close_create(self, RelaxApp_User_Main_Menu)
 
-    # Function to sign out of the App.
-    def sign_out(self):
-        self.user = user["login"]
-        RelaxApp_MessageBox_Options(self.root, "Sign Out", self.user)
+
+
+
+
+
+
+
+
 
 
 ##########################################################
