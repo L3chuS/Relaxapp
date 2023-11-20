@@ -532,6 +532,7 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
 
         elif self.start == True:
 
+            # Variable to stop or keep running the app.
             self.stop_app = False
 
             # Query method is called to get user's visual options settings.
