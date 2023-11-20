@@ -39,7 +39,7 @@ root.mainloop()
 
 # conectar.editar_tabla("lechus", "usuarios", usuario)
 
-# conectar.consulta("SELECT nombre FROM lechus.usuarios WHERE login = 'lechu4'")
+# conectar.consulta("SELECT Configuracion_Visual FROM lechus.usuarios_configuraciones WHERE login = 'lechu'")
 
 # conectar.editar_tabla("lechus", "usuarios", usuario)
 

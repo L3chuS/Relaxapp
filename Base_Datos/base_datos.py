@@ -270,19 +270,19 @@ la información introducida.")
             # Comando que ejecuta la consulta indicada.
             self.cursor.execute(consulta)
             # Recupera todos los valores de la consulta realizada.
-            valor = self.cursor.fetchall()
+            self.valor = self.cursor.fetchall()
             print(f'El resultado de la consulta "{consulta}" es: \n')
             # Devuelve un mensaje en caso de que no existan resultados para mostrar.
-            if not valor:
+            if not self.valor:
                 print("No hay resultados para mostrar")
                 return
             # Se itera y formatea sobre cada valor de la consulta realizada.
-            for consulta in valor:
+            for consulta in self.valor:
                 for elemento in consulta:
                     print(str(elemento), end=" - ")
                 print("")
             print("")
-
+            return self.valor
         # Excepción lanzada en caso de que la consulta tenga errores de sintaxis.
         except:
             print(f"Imposible realizar la consulta '{consulta}'. Revise \
@@ -443,10 +443,6 @@ Compruebe el nombre indicado.')
         except:
             print("Error! Revise los datos introducidos en el usuario indicado.")
             return
-
-
-    ############################################################
-
     
     @conexion
     @comprobar_bd

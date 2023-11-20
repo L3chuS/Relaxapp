@@ -534,11 +534,35 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
 
             self.stop_app = False
 
-            self.time_left_HH = ctk.StringVar(value="03")
-            self.time_left_MM = ctk.StringVar(value="10")
-            self.next_alert_MM = ctk.StringVar(value="05")
-            self.breaktime_MM = ctk.StringVar(value="01")
-            self.breaktime_SS = ctk.StringVar(value="10")
+            # Query method is called to get user's visual options settings.
+            self.get_values_VO = base_datos.consulta(f"SELECT Configuracion_Visual FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}'")
+            base_datos.valor = base_datos.valor[0][0]
+
+            # Dictionary that contains each value of user's visual options settings.
+            self.values_VO = {"time_left_HH" : base_datos.valor[0:2],
+                              "time_left_MM" : base_datos.valor[2:4],
+                              "next_alert_MM" : base_datos.valor[4:6],
+                              "breaktime_MM" : base_datos.valor[6:8],
+                              "breaktime_SS" : base_datos.valor[8:10],
+                              "sound_active" : base_datos.valor[10::]}
+            
+            # Query method is called to get user's stretch options settings.
+            self.get_values_SO = base_datos.consulta(f"SELECT Configuracion_Estirar FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}'")
+            base_datos.valor = base_datos.valor[0][0]
+            
+            # Dictionary that contains each value of user's stretch options settings.
+            self.values_SO = {"time_left_HH" : base_datos.valor[0:2],
+                              "time_left_MM" : base_datos.valor[2:4],
+                              "next_alert_MM" : base_datos.valor[4:6],
+                              "breaktime_MM" : base_datos.valor[6:8],
+                              "breaktime_SS" : base_datos.valor[8:10],
+                              "sound_active" : base_datos.valor[10::]}
+
+            self.time_left_HH_VO = ctk.StringVar(value=self.values_VO["time_left_HH"])
+            self.time_left_MM_VO = ctk.StringVar(value=self.values_VO["time_left_MM"])
+            self.next_alert_MM_VO = ctk.StringVar(value=self.values_VO["next_alert_MM"])
+            self.breaktime_MM_VO = ctk.StringVar(value=self.values_VO["breaktime_MM"])
+            self.breaktime_SS_VO = ctk.StringVar(value=self.values_VO["breaktime_SS"])
 
             # Frame that contains visual options.
             self.frame_visual = ctk.CTkFrame(self.frame_main, height=100, width=230, fg_color=colors["black"], 
@@ -548,31 +572,31 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
             self.time_left_VO_title = ctk.CTkLabel(self.frame_visual, text="Tiempo Restante", font=(font, 14))
             self.time_left_VO_title.place(rely=0.15, relx=0.04, anchor="w")
 
-            self.time_left_VO_HH_label = ctk.CTkLabel(self.frame_visual, textvariable=self.time_left_HH, font=(font, 24))
+            self.time_left_VO_HH_label = ctk.CTkLabel(self.frame_visual, textvariable=self.time_left_HH_VO, font=(font, 24))
             self.time_left_VO_HH_label.place(rely=0.5, relx=0.07, anchor="w")
 
             self.two_points1 = ctk.CTkLabel(self.frame_visual, text=":", font=(font, 28))
             self.two_points1.place(rely=0.5, relx=0.24, anchor="w")
 
-            self.time_left_VO_MM_label = ctk.CTkLabel(self.frame_visual, textvariable=self.time_left_MM, font=(font, 24))
+            self.time_left_VO_MM_label = ctk.CTkLabel(self.frame_visual, textvariable=self.time_left_MM_VO, font=(font, 24))
             self.time_left_VO_MM_label.place(rely=0.5, relx=0.3, anchor="w")
 
             self.next_alert_VO_title = ctk.CTkLabel(self.frame_visual, text="Alerta", font=(font, 14), justify="center")
             self.next_alert_VO_title.place(rely=0.15, relx=0.96, anchor="e")
 
-            self.next_alert_VO_MM_label = ctk.CTkLabel(self.frame_visual, textvariable=self.next_alert_MM, font=(font, 16))
+            self.next_alert_VO_MM_label = ctk.CTkLabel(self.frame_visual, textvariable=self.next_alert_MM_VO, font=(font, 16))
             self.next_alert_VO_MM_label.place(rely=0.4, relx=0.96, anchor="e")
 
             self.breaktime_VO_title = ctk.CTkLabel(self.frame_visual, text="Descanso", font=(font, 14), justify="center")
             self.breaktime_VO_title.place(rely=0.6, relx=0.96, anchor="e")
 
-            self.breaktime_VO_MM_label = ctk.CTkLabel(self.frame_visual, textvariable=self.breaktime_MM, font=(font, 16))
+            self.breaktime_VO_MM_label = ctk.CTkLabel(self.frame_visual, textvariable=self.breaktime_MM_VO, font=(font, 16))
             self.breaktime_VO_MM_label.place(rely=0.8, relx=0.81, anchor="e")
 
             self.two_points2 = ctk.CTkLabel(self.frame_visual, text=":", font=(font, 16))
             self.two_points2.place(rely=0.8, relx=0.84, anchor="e")
 
-            self.breaktime_VO_SS_label = ctk.CTkLabel(self.frame_visual, textvariable=self.breaktime_SS, font=(font, 16))
+            self.breaktime_VO_SS_label = ctk.CTkLabel(self.frame_visual, textvariable=self.breaktime_SS_VO, font=(font, 16))
             self.breaktime_VO_SS_label.place(rely=0.8, relx=0.96, anchor="e")
 
             self.start = ctk.CTkButton(self.frame_main, text="Iniciar", font=(font, 20), 
@@ -592,19 +616,19 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
 
     def TR_VO_countdown(self):
 
-        TR_HH_valor = int(self.time_left_HH.get())
-        TR_MM_valor = int(self.time_left_MM.get())
+        TR_HH_valor = int(self.time_left_HH_VO.get())
+        TR_MM_valor = int(self.time_left_MM_VO.get())
 
         while True:
             # Verify if values have one or two digits in order to add a "0" in front.
             if TR_MM_valor > 9:
-                self.time_left_MM.set(TR_MM_valor)
+                self.time_left_MM_VO.set(TR_MM_valor)
             else:
-                self.time_left_MM.set("0" + str(TR_MM_valor))
+                self.time_left_MM_VO.set("0" + str(TR_MM_valor))
             if TR_HH_valor > 9:
-                self.time_left_HH.set(TR_HH_valor)
+                self.time_left_HH_VO.set(TR_HH_valor)
             else:
-                self.time_left_HH.set("0" + str(TR_HH_valor))
+                self.time_left_HH_VO.set("0" + str(TR_HH_valor))
 
             if TR_MM_valor > 0:
                 TR_MM_valor -=1
@@ -627,7 +651,7 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
 
     def NA_VO_countdown(self):
         
-        initial_value = int(self.next_alert_MM.get())
+        initial_value = int(self.next_alert_MM_VO.get())
 
         while self.stop_app == False:
             NA_MM_valor = initial_value
@@ -637,9 +661,9 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
                     break
                 # Verify if values have one or two digits in order to add a "0" in front.
                 if NA_MM_valor > 9:
-                    self.next_alert_MM.set(NA_MM_valor)
+                    self.next_alert_MM_VO.set(NA_MM_valor)
                 else:
-                    self.next_alert_MM.set("0" + str(NA_MM_valor))
+                    self.next_alert_MM_VO.set("0" + str(NA_MM_valor))
 
                 if NA_MM_valor > 0:
                     NA_MM_valor -=1
@@ -648,8 +672,8 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
 
     def BT_VO_countdown(self):
 
-        initial_value_MM = int(self.breaktime_MM.get())
-        initial_value_SS = int(self.breaktime_SS.get())
+        initial_value_MM = int(self.breaktime_MM_VO.get())
+        initial_value_SS = int(self.breaktime_SS_VO.get())
 
         while self.stop_app == False:
             BT_MM_valor = initial_value_MM
@@ -658,13 +682,13 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
             while BT_MM_valor > -1:
                 # Verify if values have one or two digits in order to add a "0" in front.
                 if BT_SS_valor > 9:
-                    self.breaktime_SS.set(BT_SS_valor)
+                    self.breaktime_SS_VO.set(BT_SS_valor)
                 else:
-                    self.breaktime_SS.set("0" + str(BT_SS_valor))
+                    self.breaktime_SS_VO.set("0" + str(BT_SS_valor))
                 if BT_MM_valor > 9:
-                    self.breaktime_MM.set(BT_MM_valor)
+                    self.breaktime_MM_VO.set(BT_MM_valor)
                 else:
-                    self.breaktime_MM.set("0" + str(BT_MM_valor))
+                    self.breaktime_MM_VO.set("0" + str(BT_MM_valor))
 
                 if BT_SS_valor > 0:
                     BT_SS_valor -=1
