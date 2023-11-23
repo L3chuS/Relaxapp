@@ -58,7 +58,7 @@ class RelaxApp_Structure:
         
         # Set the title and the logo of the app.
         self.title = self.root.title("RelaxApp")
-        self.icon = self.root.iconbitmap(image_path + "logo.ico")
+        self.root.after(200, lambda: self.root.iconbitmap(image_path + "logo.ico"))
         
     # Method that creates a new root everytime the main root is destroyed.
     def close_create(self, new_window, *args):
@@ -692,12 +692,13 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
         self.breaktime_VO_SS_label = ctk.CTkLabel(self.frame_visual, textvariable=self.breaktime_SS_VO, font=(font, 16))
         self.breaktime_VO_SS_label.place(rely=0.8, relx=0.96, anchor="e")
 
-        self.start = ctk.CTkButton(self.root, text=None, command=self.threading())
+        self.start = ctk.CTkButton(self.root, text=None, command=self.threading(), hover=False, fg_color=colors["soft_grey"])                        
         self.start.place(rely=0.9, relx=0.5, anchor="center")
 
         self.stop = ctk.CTkButton(self.root, text="Finalizar", font=(font, 20), 
-                                                command=self.stop_app, height=70, corner_radius=50, 
-                                                hover=True, fg_color=colors["soft_green"], hover_color=colors["dark_green"])
+                                                command=self.stop_app, height=70, corner_radius=50, hover=True,
+                                                fg_color=colors["soft_green"], hover_color=colors["dark_green"],
+                                                bg_color=colors["soft_grey"])
         self.stop.place(rely=0.8, relx=0.5, anchor="center")
 
 
