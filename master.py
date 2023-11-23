@@ -1,13 +1,16 @@
 import Interfaz.Relaxapp as app
 
+# import pruebas as app
+
 root = app.ctk.CTk()
+
 app = app.RelaxApp_Initial_Frame(root)
 
 root.mainloop()
 
 # import Base_Datos.base_datos as bd
 
-# from Base_Datos.valores_presets import columnas_usuario_default, columnas_configuraciones_default
+# from Base_Datos.valores_presets import columnas_usuario_default, columnas_configuraciones_default1
 
 # conectar = bd.BaseDatos(**bd.acceso_root)
 

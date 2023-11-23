@@ -62,7 +62,8 @@ class RelaxApp_Structure:
         
     # Method that creates a new root everytime the main root is destroyed.
     def close_create(self, new_window, *args):
-        self.root = ctk.CTk()
+        self.root.withdraw()
+        self.root = ctk.CTkToplevel()
         app = new_window(self.root, *args)
         self.root.mainloop()
 
@@ -251,9 +252,8 @@ class RelaxApp_Initial_Frame(RelaxApp_Structure):
         # ###########################################
         # #VARIABLE OCASIONAL PARA ENTRAR SIN USUARIO
         # ###########################################
-        base_datos.validacion_login = True
+        # base_datos.validacion_login = True
         if base_datos.validacion_login:
-            self.root.destroy()
             self.close_create(RelaxApp_User_Main_Menu)
 
         else:
@@ -263,12 +263,10 @@ class RelaxApp_Initial_Frame(RelaxApp_Structure):
    
     # Method that register users.
     def sign_up(self):
-        self.root.destroy()
         self.close_create(RelaxApp_User_Registration)
 
     # Method to change password.
     def change_password(self):
-        self.root.destroy()
         self.close_create(RelaxApp_User_Change_Password)
    
 
@@ -603,8 +601,6 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
         else:
             self.stretch_set = False
 
-
-        self.root.destroy()
         self.close_create(RelaxApp_Running, self.visual_set, self.stretch_set)  
 
 
@@ -631,11 +627,11 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
 
         # Dictionary that contains each value of user's visual options settings.
         self.values_VO = {"time_left_HH" : base_datos.valor[0:2],
-                            "time_left_MM" : base_datos.valor[2:4],
-                            "next_alert_MM" : base_datos.valor[4:6],
-                            "breaktime_MM" : base_datos.valor[6:8],
-                            "breaktime_SS" : base_datos.valor[8:10],
-                            "sound_active" : base_datos.valor[10::]}
+                          "time_left_MM" : base_datos.valor[2:4],
+                          "next_alert_MM" : base_datos.valor[4:6],
+                          "breaktime_MM" : base_datos.valor[6:8],
+                          "breaktime_SS" : base_datos.valor[8:10],
+                          "sound_active" : base_datos.valor[10::]}
         
         # Query method is called to get user's stretch options settings.
         self.get_values_SO = base_datos.consulta(f"SELECT Configuracion_Estirar FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}'")
@@ -643,17 +639,18 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
         
         # Dictionary that contains each value of user's stretch options settings.
         self.values_SO = {"time_left_HH" : base_datos.valor[0:2],
-                            "time_left_MM" : base_datos.valor[2:4],
-                            "next_alert_MM" : base_datos.valor[4:6],
-                            "breaktime_MM" : base_datos.valor[6:8],
-                            "breaktime_SS" : base_datos.valor[8:10],
-                            "sound_active" : base_datos.valor[10::]}
+                          "time_left_MM" : base_datos.valor[2:4],
+                          "next_alert_MM" : base_datos.valor[4:6],
+                          "breaktime_MM" : base_datos.valor[6:8],
+                          "breaktime_SS" : base_datos.valor[8:10],
+                          "sound_active" : base_datos.valor[10::]}
 
         self.time_left_HH_VO = ctk.StringVar(value=self.values_VO["time_left_HH"])
         self.time_left_MM_VO = ctk.StringVar(value=self.values_VO["time_left_MM"])
         self.next_alert_MM_VO = ctk.StringVar(value=self.values_VO["next_alert_MM"])
         self.breaktime_MM_VO = ctk.StringVar(value=self.values_VO["breaktime_MM"])
         self.breaktime_SS_VO = ctk.StringVar(value=self.values_VO["breaktime_SS"])
+
 
         # Frame that contains visual options.
         self.frame_visual = ctk.CTkFrame(self.frame, height=100, width=250, fg_color=colors["black"], 
@@ -695,14 +692,14 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
         self.breaktime_VO_SS_label = ctk.CTkLabel(self.frame_visual, textvariable=self.breaktime_SS_VO, font=(font, 16))
         self.breaktime_VO_SS_label.place(rely=0.8, relx=0.96, anchor="e")
 
-        self.start = ctk.CTkButton(self.root, text="Finalizar", font=(font, 20), 
+        self.start = ctk.CTkButton(self.root, text=None, command=self.threading())
+        self.start.place(rely=0.9, relx=0.5, anchor="center")
+
+        self.stop = ctk.CTkButton(self.root, text="Finalizar", font=(font, 20), 
                                                 command=self.stop_app, height=70, corner_radius=50, 
                                                 hover=True, fg_color=colors["soft_green"], hover_color=colors["dark_green"])
-        self.start.place(rely=0.8, relx=0.5, anchor="center")
+        self.stop.place(rely=0.8, relx=0.5, anchor="center")
 
-        if self.start_app == True:
-            self.test = ctk.CTkButton(self.root, text=None, command=self.threading())
- 
 
     def threading(self): 
         # Call all countdown funtions. 
@@ -803,8 +800,7 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
 
     def stop_app(self):
         self.start_app = False
-        self.root.destroy()
-        RelaxApp_Structure.close_create(self, RelaxApp_User_Main_Menu)
+        RelaxApp_Structure.close_create(self, RelaxApp_User_Main_Menu, False, False)
 
 
 
@@ -1141,7 +1137,7 @@ class RelaxApp_MessageBox_Options(RelaxApp_MessageBox_Structure):
 
         # User registration is canceled and turn back to main menu.
         elif message == "Cancel" or message == "Cancel Change PW" or message == "Sign Out":
-            self.root.destroy()
+            self.window.destroy()
             RelaxApp_Structure.close_create(self, RelaxApp_Initial_Frame)
 
         # User is registered.
@@ -1163,7 +1159,7 @@ class RelaxApp_MessageBox_Options(RelaxApp_MessageBox_Structure):
         self.window.destroy()
 
     def continue_button(self):
-        self.root.destroy()
+        self.window.destroy()
         RelaxApp_Structure.close_create(self, RelaxApp_Initial_Frame)
 
     def return_button(self):
