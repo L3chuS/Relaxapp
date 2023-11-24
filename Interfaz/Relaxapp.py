@@ -809,7 +809,7 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
         while self.stop_countdown_VO == False:
             NA_MM_valor = initial_value
 
-            while NA_MM_valor != 0:
+            while NA_MM_valor != -1:
                 if self.stop_countdown_VO == True:
                     break
                 # Verify if values have one or two digits in order to add a "0" in front.
@@ -818,7 +818,7 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
                 else:
                     self.next_alert_MM_VO.set("0" + str(NA_MM_valor))
 
-                if NA_MM_valor > 0:
+                if NA_MM_valor > -1:
                     NA_MM_valor -=1
                     self.frame_visual.update()
                     time.sleep(1)
@@ -847,7 +847,7 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
                     BT_SS_valor -=1
                     self.frame_visual.update()
                     time.sleep(1)
-                elif BT_MM_valor > 0:     
+                elif BT_MM_valor > -1:     
                     BT_MM_valor -=1
                     BT_SS_valor = 59
                     self.frame_visual.update()
@@ -897,7 +897,7 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
         while self.stop_countdown_SO == False:
             NA_MM_valor = initial_value
 
-            while NA_MM_valor != 0:
+            while NA_MM_valor != -1:
                 if self.stop_countdown_SO == True:
                     break
                 # Verify if values have one or two digits in order to add a "0" in front.
@@ -906,7 +906,7 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
                 else:
                     self.next_alert_MM_SO.set("0" + str(NA_MM_valor))
 
-                if NA_MM_valor > 0:
+                if NA_MM_valor > -1:
                     NA_MM_valor -=1
                     self.frame_stretch.update()
                     time.sleep(1)
@@ -935,7 +935,7 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
                     BT_SS_valor -=1
                     self.frame_stretch.update()
                     time.sleep(1)
-                elif BT_MM_valor > 0:     
+                elif BT_MM_valor > -1:     
                     BT_MM_valor -=1
                     BT_SS_valor = 59
                     self.frame_stretch.update()
@@ -1116,6 +1116,10 @@ class RelaxApp_User_Main_Menu_Settings(RelaxApp_User_Settings_Structure):
         elif int(self.lenght_entryMM.get()) > 60 or int(self.lapse_entry.get()) > 60 or  \
         int(self.break_time_entryMM.get()) > 60 or int(self.break_time_entrySS.get()) > 60:
             RelaxApp_MessageBox_Options(self.root, "Invalid Time")
+        elif len(self.lenght_entryHH.get()) == 1 or len(self.lenght_entryMM.get()) == 1 or \
+        len(self.lapse_entry.get()) == 1 or len(self.break_time_entryMM.get()) == 1 or \
+        len(self.break_time_entrySS.get()) == 1:
+            RelaxApp_MessageBox_Options(self.root, "One Value")
 
         else:
             # All entries are concatenated in one string.
@@ -1238,7 +1242,14 @@ class RelaxApp_MessageBox_Options(RelaxApp_MessageBox_Structure):
                                                    font=(font,14), bg_color=colors["soft_grey"])
             self.invalid_time_label.place(rely=0.3, relx=0.5, anchor="center")
             self.select_button3 = True
-        
+
+        elif message == "One Value":
+            # Label ask/cancel to alert not to work extra hours.
+            self.one_value_label = ctk.CTkLabel(self.window, text="Cada campo a configurar debe tener 2 valores.", 
+                                                   font=(font,14), bg_color=colors["soft_grey"])
+            self.one_value_label.place(rely=0.3, relx=0.5, anchor="center")
+            self.select_button3 = True
+ 
         elif message == "No Settings":
             # Label ask/cancel to alert not to work extra hours.
             self.no_settings_label = ctk.CTkLabel(self.window, text="Debes seleccionar al menos una opción antes de iniciar la aplicación.", 
