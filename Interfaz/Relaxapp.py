@@ -823,8 +823,7 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
                 time.sleep(1)
             else:
                 if self.sound_VO == "True":
-                    pygame.mixer.music.load(sounds_path + "Final.mp3")  
-                    pygame.mixer.music.play(loops=0)
+                    self.play_sounds(1)
                 self.time_left_HH_VO.set("")
                 self.time_left_MM_VO.set("")
                 self.two_points_VO_1.place_forget()
@@ -872,8 +871,7 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
                     time.sleep(1)
                 else:
                     if self.sound_VO == "True":
-                        pygame.mixer.music.load(sounds_path + "Lapse.mp3")  
-                        pygame.mixer.music.play(loops=0)
+                        self.play_sounds(2)       
                     break
 
     def BT_VO_countdown(self):
@@ -937,8 +935,7 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
                 time.sleep(1)
             else:
                 if self.sound_SO == "True":
-                    pygame.mixer.music.load(sounds_path + "Final.mp3")  
-                    pygame.mixer.music.play(loops=0)
+                    self.play_sounds(1)
                 self.time_left_HH_SO.set("")
                 self.time_left_MM_SO.set("")
                 self.two_points_SO_1.place_forget()
@@ -985,8 +982,7 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
                     time.sleep(1)
                 else:
                     if self.sound_SO == "True":
-                        pygame.mixer.music.load(sounds_path + "Lapse.mp3")  
-                        pygame.mixer.music.play(loops=0)
+                        self.play_sounds(2)
                     break
 
     def BT_SO_countdown(self):
@@ -1029,11 +1025,11 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
 
     def play_sounds(self, value):
         if value == 1:
-            pass
+            pygame.mixer.music.load(sounds_path + "Final.mp3")  
+            pygame.mixer.music.play(loops=0)
         elif value == 2:
-            pass
-        elif value == 3:
-            pass
+            pygame.mixer.music.load(sounds_path + "Lapse.mp3")  
+            pygame.mixer.music.play(loops=0)
 
 
 
