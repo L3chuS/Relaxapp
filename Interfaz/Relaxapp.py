@@ -653,12 +653,14 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
         self.time_left_HH_VO = ctk.StringVar(value=self.values_VO["time_left_HH"])
         self.time_left_MM_VO = ctk.StringVar(value=self.values_VO["time_left_MM"])
         self.next_alert_MM_VO = ctk.StringVar(value=self.values_VO["next_alert_MM"])
+        self.next_alert_SS_VO = ctk.StringVar(value="00")
         self.breaktime_MM_VO = ctk.StringVar(value=self.values_VO["breaktime_MM"])
         self.breaktime_SS_VO = ctk.StringVar(value=self.values_VO["breaktime_SS"])
 
         self.time_left_HH_SO = ctk.StringVar(value=self.values_SO["time_left_HH"])
         self.time_left_MM_SO = ctk.StringVar(value=self.values_SO["time_left_MM"])
         self.next_alert_MM_SO = ctk.StringVar(value=self.values_SO["next_alert_MM"])
+        self.next_alert_SS_SO = ctk.StringVar(value="00")
         self.breaktime_MM_SO = ctk.StringVar(value=self.values_SO["breaktime_MM"])
         self.breaktime_SS_SO = ctk.StringVar(value=self.values_SO["breaktime_SS"])
 
@@ -679,35 +681,41 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
             self.visual_title = ctk.CTkLabel(self.frame, text="Descanso Visual", font=(font, 16))
             self.visual_title.place(rely=0.07, relx=0.5, anchor="center")
 
-            self.time_left_VO_title = ctk.CTkLabel(self.frame_visual, text="Tiempo Restante", font=(font, 14))
-            self.time_left_VO_title.place(rely=0.15, relx=0.04, anchor="w")
+            self.time_left_title_VO = ctk.CTkLabel(self.frame_visual, text="Tiempo Restante", font=(font, 14))
+            self.time_left_title_VO.place(rely=0.15, relx=0.04, anchor="w")
 
-            self.time_left_VO_HH_label = ctk.CTkLabel(self.frame_visual, textvariable=self.time_left_HH_VO, font=(font, 24))
-            self.time_left_VO_HH_label.place(rely=0.5, relx=0.11, anchor="w")
+            self.time_left_HH_VO_label = ctk.CTkLabel(self.frame_visual, textvariable=self.time_left_HH_VO, font=(font, 24))
+            self.time_left_HH_VO_label.place(rely=0.5, relx=0.11, anchor="w")
 
             self.two_points_VO_1 = ctk.CTkLabel(self.frame_visual, text=":", font=(font, 28))
             self.two_points_VO_1.place(rely=0.5, relx=0.27, anchor="w")
 
-            self.time_left_VO_MM_label = ctk.CTkLabel(self.frame_visual, textvariable=self.time_left_MM_VO, font=(font, 24))
-            self.time_left_VO_MM_label.place(rely=0.5, relx=0.32, anchor="w")
+            self.time_left_MM_VO_label = ctk.CTkLabel(self.frame_visual, textvariable=self.time_left_MM_VO, font=(font, 24))
+            self.time_left_MM_VO_label.place(rely=0.5, relx=0.32, anchor="w")
 
-            self.next_alert_VO_title = ctk.CTkLabel(self.frame_visual, text="Alerta", font=(font, 14), justify="center")
-            self.next_alert_VO_title.place(rely=0.15, relx=0.96, anchor="e")
+            self.next_alert_title_VO = ctk.CTkLabel(self.frame_visual, text="Alerta", font=(font, 14), justify="center")
+            self.next_alert_title_VO.place(rely=0.15, relx=0.96, anchor="e")
 
-            self.next_alert_VO_MM_label = ctk.CTkLabel(self.frame_visual, textvariable=self.next_alert_MM_VO, font=(font, 16))
-            self.next_alert_VO_MM_label.place(rely=0.4, relx=0.96, anchor="e")
-
-            self.breaktime_VO_title = ctk.CTkLabel(self.frame_visual, text="Descanso", font=(font, 14), justify="center")
-            self.breaktime_VO_title.place(rely=0.6, relx=0.96, anchor="e")
-
-            self.breaktime_VO_MM_label = ctk.CTkLabel(self.frame_visual, textvariable=self.breaktime_MM_VO, font=(font, 16))
-            self.breaktime_VO_MM_label.place(rely=0.8, relx=0.81, anchor="e")
+            self.next_alert_MM_VO_label = ctk.CTkLabel(self.frame_visual, textvariable=self.next_alert_MM_VO, font=(font, 16))
+            self.next_alert_MM_VO_label.place(rely=0.4, relx=0.81, anchor="e")
 
             self.two_points_VO_2 = ctk.CTkLabel(self.frame_visual, text=":", font=(font, 16))
-            self.two_points_VO_2.place(rely=0.8, relx=0.85, anchor="e")
+            self.two_points_VO_2.place(rely=0.4, relx=0.85, anchor="e")
 
-            self.breaktime_VO_SS_label = ctk.CTkLabel(self.frame_visual, textvariable=self.breaktime_SS_VO, font=(font, 16))
-            self.breaktime_VO_SS_label.place(rely=0.8, relx=0.96, anchor="e")
+            self.next_alert_SS_VO_label = ctk.CTkLabel(self.frame_visual, textvariable=self.next_alert_SS_VO, font=(font, 16))
+            self.next_alert_SS_VO_label.place(rely=0.4, relx=0.96, anchor="e")
+
+            self.breaktime_title_VO = ctk.CTkLabel(self.frame_visual, text="Descanso", font=(font, 14), justify="center")
+            self.breaktime_title_VO.place(rely=0.6, relx=0.96, anchor="e")
+
+            self.breaktime_MM_VO_label = ctk.CTkLabel(self.frame_visual, textvariable=self.breaktime_MM_VO, font=(font, 16))
+            self.breaktime_MM_VO_label.place(rely=0.8, relx=0.81, anchor="e")
+
+            self.two_points_VO_3 = ctk.CTkLabel(self.frame_visual, text=":", font=(font, 16))
+            self.two_points_VO_3.place(rely=0.8, relx=0.85, anchor="e")
+
+            self.breaktime_SS_VO_label = ctk.CTkLabel(self.frame_visual, textvariable=self.breaktime_SS_VO, font=(font, 16))
+            self.breaktime_SS_VO_label.place(rely=0.8, relx=0.96, anchor="e")
 
         if self.stretch_set == True:
             # Frame that contains stretch options.
@@ -718,35 +726,41 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
             self.stretch_title = ctk.CTkLabel(self.frame, text="Estirar", font=(font, 16))
             self.stretch_title.place(rely=self.stretch_title_rely, relx=0.5, anchor="center")
 
-            self.time_left_SO_title = ctk.CTkLabel(self.frame_stretch, text="Tiempo Restante", font=(font, 14))
-            self.time_left_SO_title.place(rely=0.15, relx=0.04, anchor="w")
+            self.time_left_title_SO = ctk.CTkLabel(self.frame_stretch, text="Tiempo Restante", font=(font, 14))
+            self.time_left_title_SO.place(rely=0.15, relx=0.04, anchor="w")
 
-            self.time_left_SO_HH_label = ctk.CTkLabel(self.frame_stretch, textvariable=self.time_left_HH_SO, font=(font, 24))
-            self.time_left_SO_HH_label.place(rely=0.5, relx=0.11, anchor="w")
+            self.time_left_HH_SO_label = ctk.CTkLabel(self.frame_stretch, textvariable=self.time_left_HH_SO, font=(font, 24))
+            self.time_left_HH_SO_label.place(rely=0.5, relx=0.11, anchor="w")
 
             self.two_points_SO_1 = ctk.CTkLabel(self.frame_stretch, text=":", font=(font, 28))
             self.two_points_SO_1.place(rely=0.5, relx=0.27, anchor="w")
 
-            self.time_left_SO_MM_label = ctk.CTkLabel(self.frame_stretch, textvariable=self.time_left_MM_SO, font=(font, 24))
-            self.time_left_SO_MM_label.place(rely=0.5, relx=0.32, anchor="w")
+            self.time_left_MM_SO_label = ctk.CTkLabel(self.frame_stretch, textvariable=self.time_left_MM_SO, font=(font, 24))
+            self.time_left_MM_SO_label.place(rely=0.5, relx=0.32, anchor="w")
 
-            self.next_alert_SO_title = ctk.CTkLabel(self.frame_stretch, text="Alerta", font=(font, 14), justify="center")
-            self.next_alert_SO_title.place(rely=0.15, relx=0.96, anchor="e")
+            self.next_alert_title_SO = ctk.CTkLabel(self.frame_stretch, text="Alerta", font=(font, 14), justify="center")
+            self.next_alert_title_SO.place(rely=0.15, relx=0.96, anchor="e")
 
-            self.next_alert_SO_MM_label = ctk.CTkLabel(self.frame_stretch, textvariable=self.next_alert_MM_SO, font=(font, 16))
-            self.next_alert_SO_MM_label.place(rely=0.4, relx=0.96, anchor="e")
-
-            self.breaktime_SO_title = ctk.CTkLabel(self.frame_stretch, text="Descanso", font=(font, 14), justify="center")
-            self.breaktime_SO_title.place(rely=0.6, relx=0.96, anchor="e")
-
-            self.breaktime_SO_MM_label = ctk.CTkLabel(self.frame_stretch, textvariable=self.breaktime_MM_SO, font=(font, 16))
-            self.breaktime_SO_MM_label.place(rely=0.8, relx=0.81, anchor="e")
+            self.next_alert_MM_SO_label = ctk.CTkLabel(self.frame_stretch, textvariable=self.next_alert_MM_SO, font=(font, 16))
+            self.next_alert_MM_SO_label.place(rely=0.4, relx=0.81, anchor="e")
 
             self.two_points_SO_2 = ctk.CTkLabel(self.frame_stretch, text=":", font=(font, 16))
-            self.two_points_SO_2.place(rely=0.8, relx=0.85, anchor="e")
+            self.two_points_SO_2.place(rely=0.4, relx=0.85, anchor="e")
 
-            self.breaktime_SO_SS_label = ctk.CTkLabel(self.frame_stretch, textvariable=self.breaktime_SS_SO, font=(font, 16))
-            self.breaktime_SO_SS_label.place(rely=0.8, relx=0.96, anchor="e")
+            self.next_alert_SS_SO_label = ctk.CTkLabel(self.frame_stretch, textvariable=self.next_alert_SS_SO, font=(font, 16))
+            self.next_alert_SS_SO_label.place(rely=0.4, relx=0.96, anchor="e")
+
+            self.breaktime_title_SO = ctk.CTkLabel(self.frame_stretch, text="Descanso", font=(font, 14), justify="center")
+            self.breaktime_title_SO.place(rely=0.6, relx=0.96, anchor="e")
+
+            self.breaktime_MM_SO_label = ctk.CTkLabel(self.frame_stretch, textvariable=self.breaktime_MM_SO, font=(font, 16))
+            self.breaktime_MM_SO_label.place(rely=0.8, relx=0.81, anchor="e")
+
+            self.two_points_SO_3 = ctk.CTkLabel(self.frame_stretch, text=":", font=(font, 16))
+            self.two_points_SO_3.place(rely=0.8, relx=0.85, anchor="e")
+
+            self.breaktime_SS_SO_label = ctk.CTkLabel(self.frame_stretch, textvariable=self.breaktime_SS_SO, font=(font, 16))
+            self.breaktime_SS_SO_label.place(rely=0.8, relx=0.96, anchor="e")
 
         self.start = ctk.CTkButton(self.root, text=None, command=self.threading(), hover=False, fg_color=colors["soft_grey"],
                                    bg_color=colors["soft_grey"])                        
@@ -808,6 +822,7 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
                                                  fg_color=colors["soft_green"])
                 finished_label_VO.place(rely=0.55, relx=0.06, anchor="w")
                 self.next_alert_MM_VO.set("00")
+                self.next_alert_SS_VO.set("00")
                 self.breaktime_MM_VO.set("00")
                 self.breaktime_SS_VO.set("00")
                 self.stop_countdown_VO = True
@@ -815,24 +830,38 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
 
     def NA_VO_countdown(self):
         
-        initial_value = int(self.next_alert_MM_VO.get())
-
+        initial_value_MM = int(self.next_alert_MM_VO.get())
+        initial_value_SS = int(self.next_alert_SS_VO.get())
+        
         while self.stop_countdown_VO == False:
-            NA_MM_valor = initial_value
+            NA_MM_valor = initial_value_MM
+            NA_SS_valor = initial_value_SS
 
-            while NA_MM_valor != 0:
+            while NA_MM_valor > -1:
                 if self.stop_countdown_VO == True:
                     break
+
                 # Verify if values have one or two digits in order to add a "0" in front.
+                elif NA_SS_valor > 9:
+                    self.next_alert_SS_VO.set(NA_SS_valor)
+                else:
+                    self.next_alert_SS_VO.set("0" + str(NA_SS_valor))
                 if NA_MM_valor > 9:
                     self.next_alert_MM_VO.set(NA_MM_valor)
                 else:
                     self.next_alert_MM_VO.set("0" + str(NA_MM_valor))
 
-                if NA_MM_valor > 0:
-                    NA_MM_valor -=1
+                if NA_SS_valor > 0:
+                    NA_SS_valor -=1
                     self.frame_visual.update()
                     time.sleep(1)
+                elif NA_MM_valor > 0:
+                    NA_MM_valor -= 1
+                    NA_SS_valor = 59
+                    self.frame_visual.update()
+                    time.sleep(1)
+                else:
+                    break
 
     def BT_VO_countdown(self):
 
@@ -901,31 +930,45 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
                                                  fg_color=colors["soft_green"])
                 finished_label_SO.place(rely=0.55, relx=0.06, anchor="w")
                 self.next_alert_MM_SO.set("00")
+                self.next_alert_SS_SO.set("00")
                 self.breaktime_MM_SO.set("00")
                 self.breaktime_SS_SO.set("00")
                 self.stop_countdown_SO = True
                 break
             
     def NA_SO_countdown(self):
-        
-        initial_value = int(self.next_alert_MM_SO.get())
+
+        initial_value_MM = int(self.next_alert_MM_SO.get())
+        initial_value_SS = int(self.next_alert_SS_SO.get())
 
         while self.stop_countdown_SO == False:
-            NA_MM_valor = initial_value
+            NA_MM_valor = initial_value_MM
+            NA_SS_valor = initial_value_SS
 
-            while NA_MM_valor != 0:
+            while NA_MM_valor > -1:
                 if self.stop_countdown_SO == True:
                     break
                 # Verify if values have one or two digits in order to add a "0" in front.
+                elif NA_SS_valor > 9:
+                    self.next_alert_SS_SO.set(NA_SS_valor)
+                else:
+                    self.next_alert_SS_SO.set("0" + str(NA_SS_valor))         
                 if NA_MM_valor > 9:
                     self.next_alert_MM_SO.set(NA_MM_valor)
                 else:
                     self.next_alert_MM_SO.set("0" + str(NA_MM_valor))
 
-                if NA_MM_valor > 0:
-                    NA_MM_valor -=1
+                if NA_SS_valor > 0:
+                    NA_SS_valor -=1
                     self.frame_stretch.update()
                     time.sleep(1)
+                elif NA_MM_valor > 0:
+                    NA_MM_valor -= 1
+                    NA_SS_valor = 59
+                    self.frame_stretch.update()
+                    time.sleep(1)
+                else:
+                    break
 
     def BT_SO_countdown(self):
 
