@@ -6,7 +6,7 @@ from os import path
 import ctypes
 import time
 import threading
-from pygame import mixer as mx
+import pygame
 
 # Connect to the database.
 base_datos = bd.BaseDatos(**bd.acceso_root)
@@ -18,6 +18,7 @@ user32.SetProcessDPIAware()
 # Get the parent folder path and the image folder path.
 main_path = path.dirname(__file__)
 image_path = main_path + "/Imagenes/"
+sounds_path = main_path + "/Sonidos/"
 
 # Set appearance.
 appearance = ctk.set_appearance_mode("dark")
@@ -625,6 +626,8 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
         self.start_app = True
         self.stop_countdown_VO = False
         self.stop_countdown_SO = False
+        
+        pygame.mixer.init()
 
         # Query method is called to get user's visual options settings.
         self.get_values_VO = base_datos.consulta(f"SELECT Configuracion_Visual FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}'")
@@ -656,6 +659,7 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
         self.next_alert_SS_VO = ctk.StringVar(value="00")
         self.breaktime_MM_VO = ctk.StringVar(value=self.values_VO["breaktime_MM"])
         self.breaktime_SS_VO = ctk.StringVar(value=self.values_VO["breaktime_SS"])
+        self.sound_active_VO = ctk.StringVar(value=self.values_VO["sound_active"])
 
         self.time_left_HH_SO = ctk.StringVar(value=self.values_SO["time_left_HH"])
         self.time_left_MM_SO = ctk.StringVar(value=self.values_SO["time_left_MM"])
@@ -663,6 +667,10 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
         self.next_alert_SS_SO = ctk.StringVar(value="00")
         self.breaktime_MM_SO = ctk.StringVar(value=self.values_SO["breaktime_MM"])
         self.breaktime_SS_SO = ctk.StringVar(value=self.values_SO["breaktime_SS"])
+        self.sound_active_SO = ctk.StringVar(value=self.values_SO["sound_active"])
+
+        self.sound_VO = self.sound_active_VO.get()
+        self.sound_SO = self.sound_active_SO.get()
 
         self.frame_visual_rely = 0.25
         self.frame_stretch_rely = 0.62
@@ -814,7 +822,9 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
                 self.frame_visual.update()
                 time.sleep(1)
             else:
-
+                if self.sound_VO == "True":
+                    pygame.mixer.music.load(sounds_path + "Final.mp3")  
+                    pygame.mixer.music.play(loops=0)
                 self.time_left_HH_VO.set("")
                 self.time_left_MM_VO.set("")
                 self.two_points_VO_1.place_forget()
@@ -836,7 +846,7 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
         while self.stop_countdown_VO == False:
             NA_MM_valor = initial_value_MM
             NA_SS_valor = initial_value_SS
-
+            
             while NA_MM_valor > -1:
                 if self.stop_countdown_VO == True:
                     break
@@ -861,6 +871,9 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
                     self.frame_visual.update()
                     time.sleep(1)
                 else:
+                    if self.sound_VO == "True":
+                        pygame.mixer.music.load(sounds_path + "Lapse.mp3")  
+                        pygame.mixer.music.play(loops=0)
                     break
 
     def BT_VO_countdown(self):
@@ -923,6 +936,9 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
                 self.frame_stretch.update()
                 time.sleep(1)
             else:
+                if self.sound_SO == "True":
+                    pygame.mixer.music.load(sounds_path + "Final.mp3")  
+                    pygame.mixer.music.play(loops=0)
                 self.time_left_HH_SO.set("")
                 self.time_left_MM_SO.set("")
                 self.two_points_SO_1.place_forget()
@@ -968,6 +984,9 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
                     self.frame_stretch.update()
                     time.sleep(1)
                 else:
+                    if self.sound_SO == "True":
+                        pygame.mixer.music.load(sounds_path + "Lapse.mp3")  
+                        pygame.mixer.music.play(loops=0)
                     break
 
     def BT_SO_countdown(self):
