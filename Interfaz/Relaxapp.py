@@ -7,6 +7,7 @@ import ctypes
 import time
 import threading
 import pygame
+from multiprocessing import process
 
 # Connect to the database.
 base_datos = bd.BaseDatos(**bd.acceso_root)
@@ -622,12 +623,11 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
 
         self.visual_set = visual_set
         self.stretch_set = stretch_set
-
-        self.start_app = True
-        self.stop_countdown_VO = False
-        self.stop_countdown_SO = False
         
         pygame.mixer.init()
+        
+        self.stop_countdown_VO = False
+        self.stop_countdown_SO = False
 
         # Query method is called to get user's visual options settings.
         self.get_values_VO = base_datos.consulta(f"SELECT Configuracion_Visual FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}'")
@@ -689,6 +689,9 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
             self.visual_title = ctk.CTkLabel(self.frame, text="Descanso Visual", font=(font, 16))
             self.visual_title.place(rely=0.07, relx=0.5, anchor="center")
 
+            self.bar_VO = ctk.CTkLabel(self.frame_visual, text=None, width=4, height=100, fg_color=colors["soft_grey"])
+            self.bar_VO.place(relx=0.61)
+
             self.time_left_title_VO = ctk.CTkLabel(self.frame_visual, text="Tiempo Restante", font=(font, 14))
             self.time_left_title_VO.place(rely=0.15, relx=0.04, anchor="w")
 
@@ -733,6 +736,9 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
 
             self.stretch_title = ctk.CTkLabel(self.frame, text="Estirar", font=(font, 16))
             self.stretch_title.place(rely=self.stretch_title_rely, relx=0.5, anchor="center")
+
+            self.bar_SO = ctk.CTkLabel(self.frame_stretch, text=None, width=4, height=100, fg_color=colors["soft_grey"])
+            self.bar_SO.place(relx=0.61)
 
             self.time_left_title_SO = ctk.CTkLabel(self.frame_stretch, text="Tiempo Restante", font=(font, 14))
             self.time_left_title_SO.place(rely=0.15, relx=0.04, anchor="w")
@@ -779,22 +785,23 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
                                   bg_color=colors["soft_grey"])
         self.stop.place(rely=0.85, relx=0.5, anchor="center")
 
+
     def threading(self): 
         # Call all countdown funtions.
         if self.visual_set == True:
-            t1=threading.Thread(target=self.TR_VO_countdown) 
-            t1.start()
-            t2=threading.Thread(target=self.NA_VO_countdown) 
-            t2.start() 
-            t3=threading.Thread(target=self.BT_VO_countdown) 
-            t3.start()
+            self.t1=threading.Thread(target=self.TR_VO_countdown) 
+            self.t1.start()
+            self.t2=threading.Thread(target=self.NA_VO_countdown) 
+            self.t2.start() 
+            self.t3=threading.Thread(target=self.BT_VO_countdown) 
+            self.t3.start()
         if self.stretch_set == True:
-            t4=threading.Thread(target=self.TR_SO_countdown) 
-            t4.start()
-            t5=threading.Thread(target=self.NA_SO_countdown) 
-            t5.start() 
-            t6=threading.Thread(target=self.BT_SO_countdown) 
-            t6.start()
+            self.t4=threading.Thread(target=self.TR_SO_countdown) 
+            self.t4.start()
+            self.t5=threading.Thread(target=self.NA_SO_countdown) 
+            self.t5.start() 
+            self.t6=threading.Thread(target=self.BT_SO_countdown) 
+            self.t6.start()
 
     def TR_VO_countdown(self):
 
@@ -1020,18 +1027,24 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
                     break
 
     def stop_app(self):
-        self.start_app = False
+        self.close()
         RelaxApp_Structure.close_create(self, RelaxApp_User_Main_Menu, False, False)
 
     def play_sounds(self, value):
-        if value == 1:
-            pygame.mixer.music.load(sounds_path + "Final.mp3")  
-            pygame.mixer.music.play(loops=0)
-        elif value == 2:
-            pygame.mixer.music.load(sounds_path + "Lapse.mp3")  
-            pygame.mixer.music.play(loops=0)
+        try:
+            if value == 1:
+                pygame.mixer.music.load(sounds_path + "Final.mp3")  
+                pygame.mixer.music.play(loops=-1)
+            
+            elif value == 2:
+                pygame.mixer.music.load(sounds_path + "Lapse.mp3")  
+                pygame.mixer.music.play(loops=0)
+        except:
+            pass
 
-
+    def close(self):
+        pygame.mixer.quit()
+       
 
 
 
