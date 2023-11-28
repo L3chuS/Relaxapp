@@ -785,6 +785,7 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
                                   bg_color=colors["soft_grey"])
         self.stop.place(rely=0.85, relx=0.5, anchor="center")
 
+        self.app_running = True
 
     def threading(self): 
         # Call all countdown funtions.
@@ -809,40 +810,44 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
         TR_MM_valor = int(self.time_left_MM_VO.get())
 
         while True:
-            # Verify if values have one or two digits in order to add a "0" in front.
-            if TR_MM_valor > 9:
-                self.time_left_MM_VO.set(TR_MM_valor)
-            else:
-                self.time_left_MM_VO.set("0" + str(TR_MM_valor))
-            if TR_HH_valor > 9:
-                self.time_left_HH_VO.set(TR_HH_valor)
-            else:
-                self.time_left_HH_VO.set("0" + str(TR_HH_valor))
-
-            if TR_MM_valor > 0:
-                TR_MM_valor -=1
-                self.frame_visual.update()
-                time.sleep(1)
-            elif TR_HH_valor > 0:     
-                TR_HH_valor -=1
-                TR_MM_valor = 59
-                self.frame_visual.update()
-                time.sleep(1)
-            else:
-                if self.sound_VO == "True":
-                    self.play_sounds(1)
-                self.time_left_HH_VO.set("")
-                self.time_left_MM_VO.set("")
-                self.two_points_VO_1.place_forget()
-                finished_label_VO = ctk.CTkLabel(self.frame_visual, text="Finalizado", font=(font, 20), corner_radius=5,
-                                                 fg_color=colors["soft_green"])
-                finished_label_VO.place(rely=0.55, relx=0.06, anchor="w")
-                self.next_alert_MM_VO.set("00")
-                self.next_alert_SS_VO.set("00")
-                self.breaktime_MM_VO.set("00")
-                self.breaktime_SS_VO.set("00")
+            if self.app_running == False:
                 self.stop_countdown_VO = True
-                break
+                break     
+            else:
+                # Verify if values have one or two digits in order to add a "0" in front.
+                if TR_MM_valor > 9:
+                    self.time_left_MM_VO.set(TR_MM_valor)
+                else:
+                    self.time_left_MM_VO.set("0" + str(TR_MM_valor))
+                if TR_HH_valor > 9:
+                    self.time_left_HH_VO.set(TR_HH_valor)
+                else:
+                    self.time_left_HH_VO.set("0" + str(TR_HH_valor))
+
+                if TR_MM_valor > 0:
+                    TR_MM_valor -=1
+                    self.frame_visual.update()
+                    time.sleep(1)
+                elif TR_HH_valor > 0:     
+                    TR_HH_valor -=1
+                    TR_MM_valor = 59
+                    self.frame_visual.update()
+                    time.sleep(1)
+                else:
+                    if self.sound_VO == "True":
+                        self.play_sounds(1)
+                    self.time_left_HH_VO.set("")
+                    self.time_left_MM_VO.set("")
+                    self.two_points_VO_1.place_forget()
+                    finished_label_VO = ctk.CTkLabel(self.frame_visual, text="Finalizado", font=(font, 20), corner_radius=5,
+                                                    fg_color=colors["soft_green"])
+                    finished_label_VO.place(rely=0.55, relx=0.06, anchor="w")
+                    self.next_alert_MM_VO.set("00")
+                    self.next_alert_SS_VO.set("00")
+                    self.breaktime_MM_VO.set("00")
+                    self.breaktime_SS_VO.set("00")
+                    self.stop_countdown_VO = True
+                    break
 
     def NA_VO_countdown(self):
         
@@ -856,7 +861,6 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
             while NA_MM_valor > -1:
                 if self.stop_countdown_VO == True:
                     break
-
                 # Verify if values have one or two digits in order to add a "0" in front.
                 elif NA_SS_valor > 9:
                     self.next_alert_SS_VO.set(NA_SS_valor)
@@ -921,40 +925,44 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
         TR_MM_valor = int(self.time_left_MM_SO.get())
 
         while True:
-            # Verify if values have one or two digits in order to add a "0" in front.
-            if TR_MM_valor > 9:
-                self.time_left_MM_SO.set(TR_MM_valor)
-            else:
-                self.time_left_MM_SO.set("0" + str(TR_MM_valor))
-            if TR_HH_valor > 9:
-                self.time_left_HH_SO.set(TR_HH_valor)
-            else:
-                self.time_left_HH_SO.set("0" + str(TR_HH_valor))
-
-            if TR_MM_valor > 0:
-                TR_MM_valor -=1
-                self.frame_stretch.update()
-                time.sleep(1)
-            elif TR_HH_valor > 0:     
-                TR_HH_valor -=1
-                TR_MM_valor = 59
-                self.frame_stretch.update()
-                time.sleep(1)
-            else:
-                if self.sound_SO == "True":
-                    self.play_sounds(1)
-                self.time_left_HH_SO.set("")
-                self.time_left_MM_SO.set("")
-                self.two_points_SO_1.place_forget()
-                finished_label_SO = ctk.CTkLabel(self.frame_stretch, text="Finalizado", font=(font, 20), corner_radius=5,
-                                                 fg_color=colors["soft_green"])
-                finished_label_SO.place(rely=0.55, relx=0.06, anchor="w")
-                self.next_alert_MM_SO.set("00")
-                self.next_alert_SS_SO.set("00")
-                self.breaktime_MM_SO.set("00")
-                self.breaktime_SS_SO.set("00")
+            if self.app_running == False:
                 self.stop_countdown_SO = True
                 break
+            else:
+                # Verify if values have one or two digits in order to add a "0" in front.
+                if TR_MM_valor > 9:
+                    self.time_left_MM_SO.set(TR_MM_valor)
+                else:
+                    self.time_left_MM_SO.set("0" + str(TR_MM_valor))
+                if TR_HH_valor > 9:
+                    self.time_left_HH_SO.set(TR_HH_valor)
+                else:
+                    self.time_left_HH_SO.set("0" + str(TR_HH_valor))
+
+                if TR_MM_valor > 0:
+                    TR_MM_valor -=1
+                    self.frame_stretch.update()
+                    time.sleep(1)
+                elif TR_HH_valor > 0:     
+                    TR_HH_valor -=1
+                    TR_MM_valor = 59
+                    self.frame_stretch.update()
+                    time.sleep(1)
+                else:
+                    if self.sound_SO == "True":
+                        self.play_sounds(1)
+                    self.time_left_HH_SO.set("")
+                    self.time_left_MM_SO.set("")
+                    self.two_points_SO_1.place_forget()
+                    finished_label_SO = ctk.CTkLabel(self.frame_stretch, text="Finalizado", font=(font, 20), corner_radius=5,
+                                                    fg_color=colors["soft_green"])
+                    finished_label_SO.place(rely=0.55, relx=0.06, anchor="w")
+                    self.next_alert_MM_SO.set("00")
+                    self.next_alert_SS_SO.set("00")
+                    self.breaktime_MM_SO.set("00")
+                    self.breaktime_SS_SO.set("00")
+                    self.stop_countdown_SO = True
+                    break
             
     def NA_SO_countdown(self):
 
@@ -1028,19 +1036,17 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
 
     def stop_app(self):
         self.close()
+        self.app_running = False
         RelaxApp_Structure.close_create(self, RelaxApp_User_Main_Menu, False, False)
 
     def play_sounds(self, value):
-        try:
-            if value == 1:
-                pygame.mixer.music.load(sounds_path + "Final.mp3")  
-                pygame.mixer.music.play(loops=-1)
-            
-            elif value == 2:
-                pygame.mixer.music.load(sounds_path + "Lapse.mp3")  
-                pygame.mixer.music.play(loops=0)
-        except:
-            pass
+        if value == 1:
+            pygame.mixer.music.load(sounds_path + "Final.mp3")  
+            pygame.mixer.music.play(loops=0)
+        
+        elif value == 2:
+            pygame.mixer.music.load(sounds_path + "Lapse.mp3")  
+            pygame.mixer.music.play(loops=0)
 
     def close(self):
         pygame.mixer.quit()
