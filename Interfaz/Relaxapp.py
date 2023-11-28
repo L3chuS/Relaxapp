@@ -621,11 +621,12 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
 
         self.root = root
 
+        pygame.mixer.init()
+
         self.visual_set = visual_set
         self.stretch_set = stretch_set
         
-        pygame.mixer.init()
-        
+        self.app_running = True
         self.stop_countdown_VO = False
         self.stop_countdown_SO = False
 
@@ -784,8 +785,6 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
                                   corner_radius=90, hover=True, fg_color=colors["soft_green"], hover_color=colors["dark_green"],
                                   bg_color=colors["soft_grey"])
         self.stop.place(rely=0.85, relx=0.5, anchor="center")
-
-        self.app_running = True
 
     def threading(self): 
         # Call all countdown funtions.
@@ -1035,8 +1034,8 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
                     break
 
     def stop_app(self):
-        self.close()
         self.app_running = False
+        pygame.mixer.quit()
         RelaxApp_Structure.close_create(self, RelaxApp_User_Main_Menu, False, False)
 
     def play_sounds(self, value):
@@ -1047,9 +1046,7 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
         elif value == 2:
             pygame.mixer.music.load(sounds_path + "Lapse.mp3")  
             pygame.mixer.music.play(loops=0)
-
-    def close(self):
-        pygame.mixer.quit()
+        
        
 
 
