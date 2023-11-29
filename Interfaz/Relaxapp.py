@@ -623,10 +623,13 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
 
         pygame.mixer.init()
 
+        # Variables to set which threading is started.
         self.visual_set = visual_set
         self.stretch_set = stretch_set
         
+        # Variable to stop bucles when return button is used after countdown is finished.
         self.app_running = True
+        # Variables to stop bucles when function TR_VO_countdown or TR_SO_countdown are finished.
         self.stop_countdown_VO = False
         self.stop_countdown_SO = False
 
@@ -654,6 +657,7 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
                           "breaktime_SS" : base_datos.valor[8:10],
                           "sound_active" : base_datos.valor[10::]}
 
+        # Initial values of all visual options settings.
         self.time_left_HH_VO = ctk.StringVar(value=self.values_VO["time_left_HH"])
         self.time_left_MM_VO = ctk.StringVar(value=self.values_VO["time_left_MM"])
         self.next_alert_MM_VO = ctk.StringVar(value=self.values_VO["next_alert_MM"])
@@ -662,6 +666,7 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
         self.breaktime_SS_VO = ctk.StringVar(value=self.values_VO["breaktime_SS"])
         self.sound_active_VO = ctk.StringVar(value=self.values_VO["sound_active"])
 
+        # Initial values of all stretch options settings.
         self.time_left_HH_SO = ctk.StringVar(value=self.values_SO["time_left_HH"])
         self.time_left_MM_SO = ctk.StringVar(value=self.values_SO["time_left_MM"])
         self.next_alert_MM_SO = ctk.StringVar(value=self.values_SO["next_alert_MM"])
@@ -670,13 +675,16 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
         self.breaktime_SS_SO = ctk.StringVar(value=self.values_SO["breaktime_SS"])
         self.sound_active_SO = ctk.StringVar(value=self.values_SO["sound_active"])
 
+        # Varibales that get the sound value set to active or deactive sound alert.
         self.sound_VO = self.sound_active_VO.get()
         self.sound_SO = self.sound_active_SO.get()
 
+        # Variables that set the position in "Y" when both visual options and stretch options are active.
         self.frame_visual_rely = 0.25
         self.frame_stretch_rely = 0.62
         self.stretch_title_rely = 0.44
 
+        # Variables that set the position in "Y" when visual options is deactive and stretch options is active.
         if self.visual_set == False and self.stretch_set == True:
             self.frame_stretch_rely = 0.25
             self.stretch_title_rely = 0.07
@@ -687,15 +695,19 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
                                                 corner_radius=10)
             self.frame_visual.place(rely=self.frame_visual_rely, relx=0.5, anchor="center")
 
+            # Main title of the frame.
             self.visual_title = ctk.CTkLabel(self.frame, text="Descanso Visual", font=(font, 16))
             self.visual_title.place(rely=0.07, relx=0.5, anchor="center")
 
+            # Vertical bar between time left and alert.
             self.bar_VO = ctk.CTkLabel(self.frame_visual, text=None, width=4, height=100, fg_color=colors["soft_grey"])
             self.bar_VO.place(relx=0.61)
 
+            # Time left title.
             self.time_left_title_VO = ctk.CTkLabel(self.frame_visual, text="Tiempo Restante", font=(font, 14))
             self.time_left_title_VO.place(rely=0.15, relx=0.04, anchor="w")
 
+            # Labels that contains "HH", ":" and "MM" of the time left.
             self.time_left_HH_VO_label = ctk.CTkLabel(self.frame_visual, textvariable=self.time_left_HH_VO, font=(font, 24))
             self.time_left_HH_VO_label.place(rely=0.5, relx=0.11, anchor="w")
 
@@ -705,9 +717,11 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
             self.time_left_MM_VO_label = ctk.CTkLabel(self.frame_visual, textvariable=self.time_left_MM_VO, font=(font, 24))
             self.time_left_MM_VO_label.place(rely=0.5, relx=0.32, anchor="w")
 
+            # Next alert title.
             self.next_alert_title_VO = ctk.CTkLabel(self.frame_visual, text="Alerta", font=(font, 14), justify="center")
             self.next_alert_title_VO.place(rely=0.15, relx=0.96, anchor="e")
 
+            # Labels that contains "MM", ":" and "SS" of the next alert.
             self.next_alert_MM_VO_label = ctk.CTkLabel(self.frame_visual, textvariable=self.next_alert_MM_VO, font=(font, 16))
             self.next_alert_MM_VO_label.place(rely=0.4, relx=0.81, anchor="e")
 
@@ -717,9 +731,11 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
             self.next_alert_SS_VO_label = ctk.CTkLabel(self.frame_visual, textvariable=self.next_alert_SS_VO, font=(font, 16))
             self.next_alert_SS_VO_label.place(rely=0.4, relx=0.96, anchor="e")
 
+            # Break time title.
             self.breaktime_title_VO = ctk.CTkLabel(self.frame_visual, text="Descanso", font=(font, 14), justify="center")
             self.breaktime_title_VO.place(rely=0.6, relx=0.96, anchor="e")
 
+            # Labels that contains "MM", ":" and "SS" of the break time.
             self.breaktime_MM_VO_label = ctk.CTkLabel(self.frame_visual, textvariable=self.breaktime_MM_VO, font=(font, 16))
             self.breaktime_MM_VO_label.place(rely=0.8, relx=0.81, anchor="e")
 
@@ -735,15 +751,19 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
                                                 corner_radius=10)
             self.frame_stretch.place(rely=self.frame_stretch_rely, relx=0.5, anchor="center")
 
+            # Main title of the frame.
             self.stretch_title = ctk.CTkLabel(self.frame, text="Estirar", font=(font, 16))
             self.stretch_title.place(rely=self.stretch_title_rely, relx=0.5, anchor="center")
 
+            # Vertical bar between time left and alert.
             self.bar_SO = ctk.CTkLabel(self.frame_stretch, text=None, width=4, height=100, fg_color=colors["soft_grey"])
             self.bar_SO.place(relx=0.61)
 
+            # Time left title.
             self.time_left_title_SO = ctk.CTkLabel(self.frame_stretch, text="Tiempo Restante", font=(font, 14))
             self.time_left_title_SO.place(rely=0.15, relx=0.04, anchor="w")
 
+            # Labels that contains "HH", ":" and "MM" of the time left.
             self.time_left_HH_SO_label = ctk.CTkLabel(self.frame_stretch, textvariable=self.time_left_HH_SO, font=(font, 24))
             self.time_left_HH_SO_label.place(rely=0.5, relx=0.11, anchor="w")
 
@@ -753,9 +773,11 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
             self.time_left_MM_SO_label = ctk.CTkLabel(self.frame_stretch, textvariable=self.time_left_MM_SO, font=(font, 24))
             self.time_left_MM_SO_label.place(rely=0.5, relx=0.32, anchor="w")
 
+            # Next alert title.
             self.next_alert_title_SO = ctk.CTkLabel(self.frame_stretch, text="Alerta", font=(font, 14), justify="center")
             self.next_alert_title_SO.place(rely=0.15, relx=0.96, anchor="e")
 
+            # Labels that contains "MM", ":" and "SS" of the next alert.
             self.next_alert_MM_SO_label = ctk.CTkLabel(self.frame_stretch, textvariable=self.next_alert_MM_SO, font=(font, 16))
             self.next_alert_MM_SO_label.place(rely=0.4, relx=0.81, anchor="e")
 
@@ -765,9 +787,11 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
             self.next_alert_SS_SO_label = ctk.CTkLabel(self.frame_stretch, textvariable=self.next_alert_SS_SO, font=(font, 16))
             self.next_alert_SS_SO_label.place(rely=0.4, relx=0.96, anchor="e")
 
+            # Break time title.
             self.breaktime_title_SO = ctk.CTkLabel(self.frame_stretch, text="Descanso", font=(font, 14), justify="center")
             self.breaktime_title_SO.place(rely=0.6, relx=0.96, anchor="e")
 
+            # Labels that contains "MM", ":" and "SS" of the break time.
             self.breaktime_MM_SO_label = ctk.CTkLabel(self.frame_stretch, textvariable=self.breaktime_MM_SO, font=(font, 16))
             self.breaktime_MM_SO_label.place(rely=0.8, relx=0.81, anchor="e")
 
@@ -776,11 +800,13 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
 
             self.breaktime_SS_SO_label = ctk.CTkLabel(self.frame_stretch, textvariable=self.breaktime_SS_SO, font=(font, 16))
             self.breaktime_SS_SO_label.place(rely=0.8, relx=0.96, anchor="e")
-
+        
+        # Hidden button that init the countdown when this class is called.
         self.start = ctk.CTkButton(self.root, text=None, command=self.threading(), hover=False, fg_color=colors["soft_grey"],
                                    bg_color=colors["soft_grey"])                        
         self.start.place(rely=0.9, relx=0.5, anchor="center")
 
+        # Button that returns to the user's main menu.
         self.stop = ctk.CTkButton(self.root, text="Volver", font=(font, 20), command=self.stop_app, width=100, height=20, 
                                   corner_radius=90, hover=True, fg_color=colors["soft_green"], hover_color=colors["dark_green"],
                                   bg_color=colors["soft_grey"])
@@ -951,7 +977,6 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
                     TR_HH_valor -=1
                     TR_MM_valor = 59
                     self.frame_stretch.update()
-
                 else:
                     if self.sound_SO == "True":
                         self.play_sounds(1)
