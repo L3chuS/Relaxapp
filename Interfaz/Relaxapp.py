@@ -791,17 +791,14 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
         if self.visual_set == True:
             self.t1=threading.Thread(target=self.TR_VO_countdown) 
             self.t1.start()
-            self.t2=threading.Thread(target=self.NA_VO_countdown) 
-            self.t2.start() 
-            self.t3=threading.Thread(target=self.BT_VO_countdown) 
-            self.t3.start()
+            self.t2= threading.Thread(target=self.NA_VO_countdown)
+            self.t2.start()
+
         if self.stretch_set == True:
-            self.t4=threading.Thread(target=self.TR_SO_countdown) 
-            self.t4.start()
-            self.t5=threading.Thread(target=self.NA_SO_countdown) 
-            self.t5.start() 
-            self.t6=threading.Thread(target=self.BT_SO_countdown) 
-            self.t6.start()
+            self.t3=threading.Thread(target=self.TR_SO_countdown) 
+            self.t3.start()
+            self.t4=threading.Thread(target=self.NA_SO_countdown) 
+            self.t4.start() 
 
     def TR_VO_countdown(self):
 
@@ -811,7 +808,7 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
         while True:
             if self.app_running == False:
                 self.stop_countdown_VO = True
-                break     
+                break              
             else:
                 # Verify if values have one or two digits in order to add a "0" in front.
                 if TR_MM_valor > 9:
@@ -826,12 +823,11 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
                 if TR_MM_valor > 0:
                     TR_MM_valor -=1
                     self.frame_visual.update()
-                    time.sleep(1)
+                    time.sleep(60)
                 elif TR_HH_valor > 0:     
                     TR_HH_valor -=1
                     TR_MM_valor = 59
                     self.frame_visual.update()
-                    time.sleep(1)
                 else:
                     if self.sound_VO == "True":
                         self.play_sounds(1)
@@ -850,73 +846,82 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
 
     def NA_VO_countdown(self):
         
-        initial_value_MM = int(self.next_alert_MM_VO.get())
-        initial_value_SS = int(self.next_alert_SS_VO.get())
-        
-        while self.stop_countdown_VO == False:
-            NA_MM_valor = initial_value_MM
-            NA_SS_valor = initial_value_SS
-            
-            while NA_MM_valor > -1:
-                if self.stop_countdown_VO == True:
-                    break
-                # Verify if values have one or two digits in order to add a "0" in front.
-                elif NA_SS_valor > 9:
-                    self.next_alert_SS_VO.set(NA_SS_valor)
-                else:
-                    self.next_alert_SS_VO.set("0" + str(NA_SS_valor))
-                if NA_MM_valor > 9:
-                    self.next_alert_MM_VO.set(NA_MM_valor)
-                else:
-                    self.next_alert_MM_VO.set("0" + str(NA_MM_valor))
+        initial_value_MM = self.next_alert_MM_VO.get()
+        initial_value_SS = self.next_alert_SS_VO.get()
 
-                if NA_SS_valor > 0:
-                    NA_SS_valor -=1
-                    self.frame_visual.update()
-                    time.sleep(1)
-                elif NA_MM_valor > 0:
-                    NA_MM_valor -= 1
-                    NA_SS_valor = 59
-                    self.frame_visual.update()
-                    time.sleep(1)
-                else:
-                    if self.sound_VO == "True":
-                        self.play_sounds(2)       
-                    break
+        NA_MM_valor = int(initial_value_MM)
+        NA_SS_valor = int(initial_value_SS)
+        
+        while NA_MM_valor > -1:
+            if self.stop_countdown_VO == True:
+                break
+            # Verify if values have one or two digits in order to add a "0" in front.
+            elif NA_SS_valor > 9:
+                self.next_alert_SS_VO.set(NA_SS_valor)
+            else:
+                self.next_alert_SS_VO.set("0" + str(NA_SS_valor))
+            if NA_MM_valor > 9:
+                self.next_alert_MM_VO.set(NA_MM_valor)
+            else:
+                self.next_alert_MM_VO.set("0" + str(NA_MM_valor))
+
+            if NA_SS_valor > 0:
+                NA_SS_valor -=1
+                self.frame_visual.update()
+                time.sleep(1)
+            elif NA_MM_valor > 0:
+                NA_MM_valor -= 1
+                NA_SS_valor = 59
+                self.frame_visual.update()
+                time.sleep(1)
+            else:
+                if self.sound_VO == "True":
+                    self.play_sounds(2)
+                threading.Thread(target=self.BT_VO_countdown).start()
+                self.next_alert_SS_VO.set(initial_value_SS)
+                self.next_alert_MM_VO.set(initial_value_MM)
+                break
 
     def BT_VO_countdown(self):
 
-        initial_value_MM = int(self.breaktime_MM_VO.get())
-        initial_value_SS = int(self.breaktime_SS_VO.get())
+        initial_value_MM = self.breaktime_MM_VO.get()
+        initial_value_SS = self.breaktime_SS_VO.get()
 
-        while self.stop_countdown_VO == False:
-            BT_MM_valor = initial_value_MM
-            BT_SS_valor = initial_value_SS
+        BT_MM_valor = int(initial_value_MM)
+        BT_SS_valor = int(initial_value_SS)
 
-            while BT_MM_valor > -1:
-                if self.stop_countdown_VO == True:
-                    break
-                # Verify if values have one or two digits in order to add a "0" in front.
-                elif BT_SS_valor > 9:
-                    self.breaktime_SS_VO.set(BT_SS_valor)
-                else:
-                    self.breaktime_SS_VO.set("0" + str(BT_SS_valor))
-                if BT_MM_valor > 9:
-                    self.breaktime_MM_VO.set(BT_MM_valor)
-                else:
-                    self.breaktime_MM_VO.set("0" + str(BT_MM_valor))
+        self.start_breaktime_VO = True
 
-                if BT_SS_valor > 0:
-                    BT_SS_valor -=1
-                    self.frame_visual.update()
-                    time.sleep(1)
-                elif BT_MM_valor > 0:     
-                    BT_MM_valor -=1
-                    BT_SS_valor = 59
-                    self.frame_visual.update()
-                    time.sleep(1)
-                else:
-                    break
+        while BT_MM_valor > -1:
+            if self.stop_countdown_VO == True:
+                break
+            # Verify if values have one or two digits in order to add a "0" in front.
+            if BT_MM_valor > 9:
+                self.breaktime_MM_VO.set(BT_MM_valor)
+            else:
+                self.breaktime_MM_VO.set("0" + str(BT_MM_valor))
+            if BT_SS_valor > 9:
+                self.breaktime_SS_VO.set(BT_SS_valor)
+            else:
+                self.breaktime_SS_VO.set("0" + str(BT_SS_valor))
+
+            if BT_SS_valor > 0:
+                BT_SS_valor -=1
+                self.frame_visual.update()
+                time.sleep(1)
+            elif BT_MM_valor > 0:     
+                BT_MM_valor -=1
+                BT_SS_valor = 59
+                self.frame_visual.update()
+                time.sleep(1)
+            else:
+                if self.sound_VO == "True":
+                    self.play_sounds(2)
+                self.breaktime_SS_VO.set(initial_value_SS)
+                self.breaktime_MM_VO.set(initial_value_MM)
+                self.start_breaktime_VO = False
+                threading.Thread(target=self.NA_VO_countdown).start()
+                break
 
     def TR_SO_countdown(self):
 
@@ -941,12 +946,12 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
                 if TR_MM_valor > 0:
                     TR_MM_valor -=1
                     self.frame_stretch.update()
-                    time.sleep(1)
+                    time.sleep(60)
                 elif TR_HH_valor > 0:     
                     TR_HH_valor -=1
                     TR_MM_valor = 59
                     self.frame_stretch.update()
-                    time.sleep(1)
+
                 else:
                     if self.sound_SO == "True":
                         self.play_sounds(1)
@@ -965,73 +970,80 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
             
     def NA_SO_countdown(self):
 
-        initial_value_MM = int(self.next_alert_MM_SO.get())
-        initial_value_SS = int(self.next_alert_SS_SO.get())
+        initial_value_MM = self.next_alert_MM_SO.get()
+        initial_value_SS = self.next_alert_SS_SO.get()
+        
+        NA_MM_valor = int(initial_value_MM)
+        NA_SS_valor = int(initial_value_SS)
 
-        while self.stop_countdown_SO == False:
-            NA_MM_valor = initial_value_MM
-            NA_SS_valor = initial_value_SS
+        while NA_MM_valor > -1:
+            if self.stop_countdown_SO == True:
+                break
+            # Verify if values have one or two digits in order to add a "0" in front.
+            elif NA_SS_valor > 9:
+                self.next_alert_SS_SO.set(NA_SS_valor)
+            else:
+                self.next_alert_SS_SO.set("0" + str(NA_SS_valor))         
+            if NA_MM_valor > 9:
+                self.next_alert_MM_SO.set(NA_MM_valor)
+            else:
+                self.next_alert_MM_SO.set("0" + str(NA_MM_valor))
 
-            while NA_MM_valor > -1:
-                if self.stop_countdown_SO == True:
-                    break
-                # Verify if values have one or two digits in order to add a "0" in front.
-                elif NA_SS_valor > 9:
-                    self.next_alert_SS_SO.set(NA_SS_valor)
-                else:
-                    self.next_alert_SS_SO.set("0" + str(NA_SS_valor))         
-                if NA_MM_valor > 9:
-                    self.next_alert_MM_SO.set(NA_MM_valor)
-                else:
-                    self.next_alert_MM_SO.set("0" + str(NA_MM_valor))
-
-                if NA_SS_valor > 0:
-                    NA_SS_valor -=1
-                    self.frame_stretch.update()
-                    time.sleep(1)
-                elif NA_MM_valor > 0:
-                    NA_MM_valor -= 1
-                    NA_SS_valor = 59
-                    self.frame_stretch.update()
-                    time.sleep(1)
-                else:
-                    if self.sound_SO == "True":
-                        self.play_sounds(2)
-                    break
+            if NA_SS_valor > 0:
+                NA_SS_valor -=1
+                self.frame_stretch.update()
+                time.sleep(1)
+            elif NA_MM_valor > 0:
+                NA_MM_valor -= 1
+                NA_SS_valor = 59
+                self.frame_stretch.update()
+                time.sleep(1)
+            else:
+                if self.sound_SO == "True":
+                    self.play_sounds(2)
+                threading.Thread(target=self.BT_SO_countdown).start()
+                self.next_alert_SS_SO.set(initial_value_SS)
+                self.next_alert_MM_SO.set(initial_value_MM)
+                break
 
     def BT_SO_countdown(self):
 
-        initial_value_MM = int(self.breaktime_MM_SO.get())
-        initial_value_SS = int(self.breaktime_SS_SO.get())
+        initial_value_MM = self.breaktime_MM_SO.get()
+        initial_value_SS = self.breaktime_SS_SO.get()
 
-        while self.stop_countdown_SO == False:
-            BT_MM_valor = initial_value_MM
-            BT_SS_valor = initial_value_SS
+        BT_MM_valor = int(initial_value_MM)
+        BT_SS_valor = int(initial_value_SS)
 
-            while BT_MM_valor > -1:
-                if self.stop_countdown_SO == True:
-                    break
-                # Verify if values have one or two digits in order to add a "0" in front.
-                if BT_SS_valor > 9:
-                    self.breaktime_SS_SO.set(BT_SS_valor)
-                else:
-                    self.breaktime_SS_SO.set("0" + str(BT_SS_valor))
-                if BT_MM_valor > 9:
-                    self.breaktime_MM_SO.set(BT_MM_valor)
-                else:
-                    self.breaktime_MM_SO.set("0" + str(BT_MM_valor))
+        self.start_breaktime_SO = True
 
-                if BT_SS_valor > 0:
-                    BT_SS_valor -=1
-                    self.frame_stretch.update()
-                    time.sleep(1)
-                elif BT_MM_valor > 0:
-                    BT_MM_valor -=1
-                    BT_SS_valor = 59
-                    self.frame_stretch.update()
-                    time.sleep(1)
-                else:
-                    break
+        while BT_MM_valor > -1:
+            if self.stop_countdown_SO == True:
+                break
+            # Verify if values have one or two digits in order to add a "0" in front.
+            if BT_SS_valor > 9:
+                self.breaktime_SS_SO.set(BT_SS_valor)
+            else:
+                self.breaktime_SS_SO.set("0" + str(BT_SS_valor))
+            if BT_MM_valor > 9:
+                self.breaktime_MM_SO.set(BT_MM_valor)
+            else:
+                self.breaktime_MM_SO.set("0" + str(BT_MM_valor))
+
+            if BT_SS_valor > 0:
+                BT_SS_valor -=1
+                self.frame_stretch.update()
+                time.sleep(1)
+            elif BT_MM_valor > 0:
+                BT_MM_valor -=1
+                BT_SS_valor = 59
+                self.frame_stretch.update()
+                time.sleep(1)
+            else:
+                self.breaktime_SS_SO.set(initial_value_SS)
+                self.breaktime_MM_SO.set(initial_value_MM)
+                self.start_breaktime_SO = False
+                threading.Thread(target=self.NA_SO_countdown).start()
+                break
 
     def stop_app(self):
         self.app_running = False
@@ -1047,14 +1059,6 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
             pygame.mixer.music.load(sounds_path + "Lapse.mp3")  
             pygame.mixer.music.play(loops=0)
         
-       
-
-
-
-
-
-
-
 
 ##########################################################
 ###  Class that contains the user's personal settings  ###
