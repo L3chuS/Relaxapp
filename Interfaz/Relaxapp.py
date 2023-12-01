@@ -559,9 +559,7 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
     ###################################################################
     ###### TO SET ######
     def load_configuration(self):
-        ###### TO SET ######
-        print("load_configuration EN DESARROLLO")
-        ###### TO SET ######
+        RelaxApp_User_Main_Menu_Load(self.root)
 
     ###### TO SET ######
     def save_configuration(self):
@@ -615,6 +613,8 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
 #######################################################
 
 class RelaxApp_Running(RelaxApp_Running_Structure):
+    """This class start RelaxApp. All countdown are executed depending on previus
+       values choosen. Inherit all structure from parent."""
     
     def __init__(self, root, visual_set, stretch_set):
         super().__init__(root)
@@ -1116,7 +1116,7 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
 
 class RelaxApp_User_Main_Menu_Settings(RelaxApp_User_Settings_Structure):
     """This class opens a new window to set the user's personal settings 
-    of the App. Inherit all structure from parent."""
+       of the App. Inherit all structure from parent."""
     
     def __init__(self, root, visual_values=None, stretch_values=None):
         super().__init__(root)
@@ -1179,8 +1179,8 @@ class RelaxApp_User_Main_Menu_Settings(RelaxApp_User_Settings_Structure):
         self.lenght_entryHH.bind("<Button-1>", lambda remove: self.lenght_entryHH.delete(0, tk.END))
 
         # Two points separator.
-        self.twopoints_lenght_entry = ctk.CTkLabel(self.frame2, text=":", font=(font, 14))
-        self.twopoints_lenght_entry.place(rely=0.5, relx=0.79, anchor="e")
+        self.colon_lenght_entry = ctk.CTkLabel(self.frame2, text=":", font=(font, 14))
+        self.colon_lenght_entry.place(rely=0.5, relx=0.79, anchor="e")
 
         # Lenght entry minutes.
         self.lenght_entryMM = ctk.CTkEntry(self.frame2, font=(font,14), width=40, justify="center",
@@ -1213,8 +1213,8 @@ class RelaxApp_User_Main_Menu_Settings(RelaxApp_User_Settings_Structure):
         self.break_time_entryMM.bind("<Button-1>", lambda remove: self.break_time_entryMM.delete(0, tk.END))
 
         # Two points separator.
-        self.twopoints_break_time_entry = ctk.CTkLabel(self.frame4, text=":", font=(font, 14))
-        self.twopoints_break_time_entry.place(rely=0.5, relx=0.79, anchor="e")
+        self.colon_break_time_entry = ctk.CTkLabel(self.frame4, text=":", font=(font, 14))
+        self.colon_break_time_entry.place(rely=0.5, relx=0.79, anchor="e")
 
         # Break time entry seconds.
         self.break_time_entrySS = ctk.CTkEntry(self.frame4, font=(font,14), width=40, justify="center",
@@ -1321,6 +1321,87 @@ class RelaxApp_User_Main_Menu_Settings(RelaxApp_User_Settings_Structure):
 
             self.window.destroy()
         
+    def cancel_settings(self):
+        self.window.destroy()
+
+
+##########################################################################
+###  Class that contains the options to load user's personal settings  ###
+##########################################################################
+
+class RelaxApp_User_Main_Menu_Load(RelaxApp_User_Settings_Structure):
+    """This class opens a new window to load the user's personal settings
+       of the App. Inherit all structure from parent."""
+
+    def __init__(self, root):
+        super().__init__(root)
+        self.root = root
+
+        # Frame at the back.
+        self.frame.configure(fg_color=colors["black"])
+        self.frame.pack(pady=0, padx=0, fill="both")
+
+        # Frame that contains the load configuration label.
+        self.frame1 = ctk.CTkFrame(self.frame, height=50, width=250, fg_color=colors["soft_grey"], corner_radius=3)
+        self.frame1.pack(pady=10, padx=10)
+
+        # Frame that contains the visual configuration label.
+        self.frame2 = ctk.CTkFrame(self.frame, height=40, width=250, fg_color=colors["soft_grey"], corner_radius=3)
+        self.frame2.pack(pady=1, padx=10)
+
+        # Frame that contains the stretch configuration label.
+        self.frame3 = ctk.CTkFrame(self.frame, height=40, width=250, fg_color=colors["soft_grey"], corner_radius=3)
+        self.frame3.pack(pady=1, padx=10)
+
+        # Frame that contains the final sound options.
+        self.frame4 = ctk.CTkFrame(self.frame, height=40, width=250, fg_color=colors["soft_grey"], corner_radius=3)
+        self.frame4.pack(pady=1, padx=10)
+
+        # Frame that contains the sound alert options.
+        self.frame5 = ctk.CTkFrame(self.frame, height=40, width=250, fg_color=colors["soft_grey"], corner_radius=3)
+        self.frame5.pack(pady=1, padx=10)
+
+        # Frame that contains the save and cancel buttons.
+        self.frame6 = ctk.CTkFrame(self.frame, height=40, width=250, fg_color=colors["soft_grey"], corner_radius=3)
+        self.frame6.pack(pady=10, padx=10)
+
+        # Load configuration label.
+        self.setting_title = ctk.CTkLabel(self.frame1, text="Cargar Configuración", font=(font, 15), 
+                                          corner_radius=10, fg_color=colors["soft_green"])
+        self.setting_title.place(rely=0.5, relx=0.5, anchor="center")
+
+        # Visual rest label.
+        self.visual = ctk.CTkLabel(self.frame2, text="Descanso Visual", font=(font, 14))
+        self.visual.place(rely=0.5, relx=0.03, anchor="w")
+
+        # Stretch label.
+        self.stretch = ctk.CTkLabel(self.frame3, text="Estirar", font=(font, 14))
+        self.stretch.place(rely=0.5, relx=0.03, anchor="w")
+
+        # Final sound label.
+        self.final_sound = ctk.CTkLabel(self.frame4, text="Sonido al finalizar", font=(font, 14))
+        self.final_sound.place(rely=0.5, relx=0.03, anchor="w")
+
+        # Sound alert label.
+        self.sound_alert = ctk.CTkLabel(self.frame5, text="Sonido para alertas", font=(font, 14))
+        self.sound_alert.place(rely=0.5, relx=0.03, anchor="w")
+
+        # Save button.
+        self.save_button = ctk.CTkButton(self.frame6, width=10, height=10, text="Guardar", font=(font,14), 
+                                              command=self.save_settings, corner_radius=10, hover=True, 
+                                              fg_color=colors["soft_grey"], hover_color=colors["dark_green"])
+        self.save_button.place(rely=0.5, relx=0.1, anchor="w")
+
+        # Cancel button.
+        self.cancel_button = ctk.CTkButton(self.frame6, width=10, height=10, text="Cancelar", font=(font,14),
+                                           command=self.cancel_settings, corner_radius=10, hover=True, 
+                                           fg_color=colors["soft_grey"], hover_color=colors["dark_green"])
+        self.cancel_button.place(rely=0.5, relx=0.9, anchor="e")
+
+    # Funtions to save settings in the user's main menu.
+    def save_settings(self):
+        pass
+
     def cancel_settings(self):
         self.window.destroy()
 
