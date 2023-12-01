@@ -711,8 +711,8 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
             self.time_left_HH_VO_label = ctk.CTkLabel(self.frame_visual, textvariable=self.time_left_HH_VO, font=(font, 24))
             self.time_left_HH_VO_label.place(rely=0.5, relx=0.11, anchor="w")
 
-            self.two_points_VO_1 = ctk.CTkLabel(self.frame_visual, text=":", font=(font, 28))
-            self.two_points_VO_1.place(rely=0.5, relx=0.27, anchor="w")
+            self.colon_VO_1 = ctk.CTkLabel(self.frame_visual, text=":", font=(font, 28))
+            self.colon_VO_1.place(rely=0.5, relx=0.27, anchor="w")
 
             self.time_left_MM_VO_label = ctk.CTkLabel(self.frame_visual, textvariable=self.time_left_MM_VO, font=(font, 24))
             self.time_left_MM_VO_label.place(rely=0.5, relx=0.32, anchor="w")
@@ -725,8 +725,8 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
             self.next_alert_MM_VO_label = ctk.CTkLabel(self.frame_visual, textvariable=self.next_alert_MM_VO, font=(font, 16))
             self.next_alert_MM_VO_label.place(rely=0.4, relx=0.81, anchor="e")
 
-            self.two_points_VO_2 = ctk.CTkLabel(self.frame_visual, text=":", font=(font, 16))
-            self.two_points_VO_2.place(rely=0.4, relx=0.85, anchor="e")
+            self.colon_VO_2 = ctk.CTkLabel(self.frame_visual, text=":", font=(font, 16))
+            self.colon_VO_2.place(rely=0.4, relx=0.85, anchor="e")
 
             self.next_alert_SS_VO_label = ctk.CTkLabel(self.frame_visual, textvariable=self.next_alert_SS_VO, font=(font, 16))
             self.next_alert_SS_VO_label.place(rely=0.4, relx=0.96, anchor="e")
@@ -739,8 +739,8 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
             self.breaktime_MM_VO_label = ctk.CTkLabel(self.frame_visual, textvariable=self.breaktime_MM_VO, font=(font, 16))
             self.breaktime_MM_VO_label.place(rely=0.8, relx=0.81, anchor="e")
 
-            self.two_points_VO_3 = ctk.CTkLabel(self.frame_visual, text=":", font=(font, 16))
-            self.two_points_VO_3.place(rely=0.8, relx=0.85, anchor="e")
+            self.colon_VO_3 = ctk.CTkLabel(self.frame_visual, text=":", font=(font, 16))
+            self.colon_VO_3.place(rely=0.8, relx=0.85, anchor="e")
 
             self.breaktime_SS_VO_label = ctk.CTkLabel(self.frame_visual, textvariable=self.breaktime_SS_VO, font=(font, 16))
             self.breaktime_SS_VO_label.place(rely=0.8, relx=0.96, anchor="e")
@@ -767,8 +767,8 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
             self.time_left_HH_SO_label = ctk.CTkLabel(self.frame_stretch, textvariable=self.time_left_HH_SO, font=(font, 24))
             self.time_left_HH_SO_label.place(rely=0.5, relx=0.11, anchor="w")
 
-            self.two_points_SO_1 = ctk.CTkLabel(self.frame_stretch, text=":", font=(font, 28))
-            self.two_points_SO_1.place(rely=0.5, relx=0.27, anchor="w")
+            self.colon_SO_1 = ctk.CTkLabel(self.frame_stretch, text=":", font=(font, 28))
+            self.colon_SO_1.place(rely=0.5, relx=0.27, anchor="w")
 
             self.time_left_MM_SO_label = ctk.CTkLabel(self.frame_stretch, textvariable=self.time_left_MM_SO, font=(font, 24))
             self.time_left_MM_SO_label.place(rely=0.5, relx=0.32, anchor="w")
@@ -781,8 +781,8 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
             self.next_alert_MM_SO_label = ctk.CTkLabel(self.frame_stretch, textvariable=self.next_alert_MM_SO, font=(font, 16))
             self.next_alert_MM_SO_label.place(rely=0.4, relx=0.81, anchor="e")
 
-            self.two_points_SO_2 = ctk.CTkLabel(self.frame_stretch, text=":", font=(font, 16))
-            self.two_points_SO_2.place(rely=0.4, relx=0.85, anchor="e")
+            self.colon_SO_2 = ctk.CTkLabel(self.frame_stretch, text=":", font=(font, 16))
+            self.colon_SO_2.place(rely=0.4, relx=0.85, anchor="e")
 
             self.next_alert_SS_SO_label = ctk.CTkLabel(self.frame_stretch, textvariable=self.next_alert_SS_SO, font=(font, 16))
             self.next_alert_SS_SO_label.place(rely=0.4, relx=0.96, anchor="e")
@@ -795,8 +795,8 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
             self.breaktime_MM_SO_label = ctk.CTkLabel(self.frame_stretch, textvariable=self.breaktime_MM_SO, font=(font, 16))
             self.breaktime_MM_SO_label.place(rely=0.8, relx=0.81, anchor="e")
 
-            self.two_points_SO_3 = ctk.CTkLabel(self.frame_stretch, text=":", font=(font, 16))
-            self.two_points_SO_3.place(rely=0.8, relx=0.85, anchor="e")
+            self.colon_SO_3 = ctk.CTkLabel(self.frame_stretch, text=":", font=(font, 16))
+            self.colon_SO_3.place(rely=0.8, relx=0.85, anchor="e")
 
             self.breaktime_SS_SO_label = ctk.CTkLabel(self.frame_stretch, textvariable=self.breaktime_SS_SO, font=(font, 16))
             self.breaktime_SS_SO_label.place(rely=0.8, relx=0.96, anchor="e")
@@ -812,30 +812,36 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
                                   bg_color=colors["soft_grey"])
         self.stop.place(rely=0.85, relx=0.5, anchor="center")
 
+    # Function that call 4 of the 6 countdown.
     def threading(self): 
         # Call all countdown funtions.
         if self.visual_set == True:
-            self.t1=threading.Thread(target=self.TR_VO_countdown) 
-            self.t1.start()
-            self.t2= threading.Thread(target=self.NA_VO_countdown)
-            self.t2.start()
+            t1=threading.Thread(target=self.TR_VO_countdown) 
+            t1.start()
+            t2= threading.Thread(target=self.NA_VO_countdown)
+            t2.start()
 
         if self.stretch_set == True:
-            self.t3=threading.Thread(target=self.TR_SO_countdown) 
-            self.t3.start()
-            self.t4=threading.Thread(target=self.NA_SO_countdown) 
-            self.t4.start()
+            t3=threading.Thread(target=self.TR_SO_countdown) 
+            t3.start()
+            t4=threading.Thread(target=self.NA_SO_countdown) 
+            t4.start()
 
+    # Function to start the main countdown "Time Remaining" of the visual options.
     def TR_VO_countdown(self):
+        # Variable to be used to sinchronize countdowns between Time Remaining and both Next Alert and Break Time.
         contador = 0
+        # Hours and minutes of time remaining are gotten.
         TR_HH_valor = int(self.time_left_HH_VO.get())
         TR_MM_valor = int(self.time_left_MM_VO.get())
 
         while True:
+            # This variable change when return button is pressed to stop or not the app.
             if self.app_running == False:
                 self.stop_countdown_VO = True
                 break              
             else:
+                # Timer are sinchronized.
                 self.root.after(30 + contador)
                 # Verify if values have one or two digits in order to add a "0" in front.
                 if TR_MM_valor > 9:
@@ -846,31 +852,41 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
                     self.time_left_HH_VO.set(TR_HH_valor)
                 else:
                     self.time_left_HH_VO.set("0" + str(TR_HH_valor))
+ 
                 time.sleep(60)
                 contador += 2
+                # After 1 minute one is subtracted from the minutes.
                 if TR_MM_valor > 0:
                     TR_MM_valor -=1
+                # When minute is cero one is subtracted from the hours.
                 elif TR_HH_valor > 0:     
                     TR_HH_valor -=1
                     TR_MM_valor = 59
                 else:
+                    # Sound alert is called.
                     if self.sound_VO == "True":
                         self.play_sounds(1)
+                    # Hours,minutes and colon of time remaining are hidden. 
                     self.time_left_HH_VO.set("")
                     self.time_left_MM_VO.set("")
-                    self.two_points_VO_1.place_forget()
+                    self.colon_VO_1.place_forget()
+                    # New label is set to show that the countdown is finished.
                     finished_label_VO = ctk.CTkLabel(self.frame_visual, text="Finalizado", font=(font, 20), corner_radius=5,
-                                                    fg_color=colors["soft_green"])
+                                                     fg_color=colors["soft_green"])
                     finished_label_VO.place(rely=0.55, relx=0.06, anchor="w")
+                    # All label are set as "00"
                     self.next_alert_MM_VO.set("00")
                     self.next_alert_SS_VO.set("00")
                     self.breaktime_MM_VO.set("00")
                     self.breaktime_SS_VO.set("00")
+                    # Varible change to stop next alert and break time countdowns.
                     self.stop_countdown_VO = True
                     break
 
+    # Function to start the countdown "Next Alert" of the visual options.
     def NA_VO_countdown(self):
         
+        # Minutes and seconds of next alert are gotten.
         initial_value_MM = self.next_alert_MM_VO.get()
         initial_value_SS = self.next_alert_SS_VO.get()
 
@@ -878,6 +894,7 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
         NA_SS_valor = int(initial_value_SS)
         
         while NA_MM_valor > -1:
+            # Conditional that stop bucle when time remaining is finished.
             if self.stop_countdown_VO == True:
                 break
             # Verify if values have one or two digits in order to add a "0" in front.
@@ -890,32 +907,38 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
             else:
                 self.next_alert_MM_VO.set("0" + str(NA_MM_valor))
 
+            # After 1 second one is subtracted from the seconds.
             if NA_SS_valor > 0:
                 NA_SS_valor -=1
                 time.sleep(1)
+            # When second is cero one is subtracted from the minutes.
             elif NA_MM_valor > 0:
                 NA_MM_valor -= 1
                 NA_SS_valor = 59
                 time.sleep(1)
             else:
+                # Sound alert is called.
                 if self.sound_VO == "True":
                     self.play_sounds(2)
-                threading.Thread(target=self.BT_VO_countdown).start()
+                # Minutos and second are set as there was at the beggining.
                 self.next_alert_SS_VO.set(initial_value_SS)
                 self.next_alert_MM_VO.set(initial_value_MM)
+                # New threading is run to start BT_VO_countdown function.
+                threading.Thread(target=self.BT_VO_countdown).start()
                 break
 
+    # Function to start the countdown "Break Time" of the visual options.
     def BT_VO_countdown(self):
-
+        
+        # Minutes and seconds of next alert are gotten.
         initial_value_MM = self.breaktime_MM_VO.get()
         initial_value_SS = self.breaktime_SS_VO.get()
 
         BT_MM_valor = int(initial_value_MM)
         BT_SS_valor = int(initial_value_SS)
 
-        self.start_breaktime_VO = True
-
         while BT_MM_valor > -1:
+            # Conditional that stop bucle when time remaining is finished.
             if self.stop_countdown_VO == True:
                 break
             # Verify if values have one or two digits in order to add a "0" in front.
@@ -928,22 +951,27 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
             else:
                 self.breaktime_SS_VO.set("0" + str(BT_SS_valor))
 
+            # After 1 second one is subtracted from the seconds.
             if BT_SS_valor > 0:
                 BT_SS_valor -=1
                 time.sleep(1)
+            # When second is cero one is subtracted from the minutes.
             elif BT_MM_valor > 0:     
                 BT_MM_valor -=1
                 BT_SS_valor = 59
                 time.sleep(1)
             else:
+                # Sound alert is called.
                 if self.sound_VO == "True":
                     self.play_sounds(2)
+                # Minutos and second are set as there was at the beggining.
                 self.breaktime_SS_VO.set(initial_value_SS)
                 self.breaktime_MM_VO.set(initial_value_MM)
-                self.start_breaktime_VO = False
+                # New threading is run to start BT_VO_countdown function.
                 threading.Thread(target=self.NA_VO_countdown).start()
                 break
 
+    # Function to start the main countdown "Time Remaining" of the stretch options.
     def TR_SO_countdown(self):
         contador = 0
         TR_HH_valor = int(self.time_left_HH_SO.get())
@@ -955,7 +983,7 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
                 break
             else:
                 self.root.after(30 + contador)
-                # Verify if values have one or two digits in order to add a "0" in front.
+
                 if TR_MM_valor > 9:
                     self.time_left_MM_SO.set(TR_MM_valor)
                 else:
@@ -977,9 +1005,9 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
                         self.play_sounds(1)
                     self.time_left_HH_SO.set("")
                     self.time_left_MM_SO.set("")
-                    self.two_points_SO_1.place_forget()
+                    self.colon_SO_1.place_forget()
                     finished_label_SO = ctk.CTkLabel(self.frame_stretch, text="Finalizado", font=(font, 20), corner_radius=5,
-                                                    fg_color=colors["soft_green"])
+                                                     fg_color=colors["soft_green"])
                     finished_label_SO.place(rely=0.55, relx=0.06, anchor="w")
                     self.next_alert_MM_SO.set("00")
                     self.next_alert_SS_SO.set("00")
@@ -988,6 +1016,7 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
                     self.stop_countdown_SO = True
                     break
             
+    # Function to start the countdown "Next Alert" of the stretch options.
     def NA_SO_countdown(self):
 
         initial_value_MM = self.next_alert_MM_SO.get()
@@ -999,7 +1028,7 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
         while NA_MM_valor > -1:
             if self.stop_countdown_SO == True:
                 break
-            # Verify if values have one or two digits in order to add a "0" in front.
+
             elif NA_SS_valor > 9:
                 self.next_alert_SS_SO.set(NA_SS_valor)
             else:
@@ -1019,11 +1048,12 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
             else:
                 if self.sound_SO == "True":
                     self.play_sounds(2)
-                threading.Thread(target=self.BT_SO_countdown).start()
                 self.next_alert_SS_SO.set(initial_value_SS)
                 self.next_alert_MM_SO.set(initial_value_MM)
+                threading.Thread(target=self.BT_SO_countdown).start()
                 break
 
+    # Function to start the countdown "Break Time" of the stretch options.
     def BT_SO_countdown(self):
 
         initial_value_MM = self.breaktime_MM_SO.get()
@@ -1032,12 +1062,10 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
         BT_MM_valor = int(initial_value_MM)
         BT_SS_valor = int(initial_value_SS)
 
-        self.start_breaktime_SO = True
-
         while BT_MM_valor > -1:
             if self.stop_countdown_SO == True:
                 break
-            # Verify if values have one or two digits in order to add a "0" in front.
+
             if BT_SS_valor > 9:
                 self.breaktime_SS_SO.set(BT_SS_valor)
             else:
@@ -1059,20 +1087,24 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
                     self.play_sounds(2)
                 self.breaktime_SS_SO.set(initial_value_SS)
                 self.breaktime_MM_SO.set(initial_value_MM)
-                self.start_breaktime_SO = False
                 threading.Thread(target=self.NA_SO_countdown).start()
                 break
 
+    # Function to stop the app when return button is pressed.
     def stop_app(self):
+        # Variable to stop all bucles running.
         self.app_running = False
+        # Method is called to stop the sound alert.
         pygame.mixer.quit()
         RelaxApp_Structure.close_create(self, RelaxApp_User_Main_Menu, False, False)
 
+    # Function to run sounds alerts.
     def play_sounds(self, value):
+        # When value is "1" the sound related to "Time Remaining" is set.
         if value == 1:
             pygame.mixer.music.load(sounds_path + "Final.mp3")  
             pygame.mixer.music.play(loops=0)
-        
+        # When value is "2" the sound related to "Lapse" is set.
         elif value == 2:
             pygame.mixer.music.load(sounds_path + "Lapse.mp3")  
             pygame.mixer.music.play(loops=0)
