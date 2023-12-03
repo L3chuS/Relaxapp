@@ -561,11 +561,22 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
     def load_configuration(self):
         RelaxApp_User_Main_Menu_Load(self.root)
 
-    ###### TO SET ######
+    # Function to save both visual and stretch setting of the user.
     def save_configuration(self):
-        ###### TO SET ######
-        print("save_configuration EN DESARROLLO")
-        ###### TO SET ######
+        try:
+            save_file = ctk.filedialog.asksaveasfile()
+            # Query method is called to get user's visual options settings.
+            base_datos.consulta(f"SELECT Configuracion_Visual FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}'")
+            file_data_get_VO = base_datos.valor[0][0]
+            # Query method is called to get user's stretch options settings.
+            base_datos.consulta(f"SELECT Configuracion_Estirar FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}'")
+            file_data_get_SO = base_datos.valor[0][0]
+            # Both settings are concatenated in one line.
+            file_to_save = file_data_get_VO + file_data_get_SO
+            # File is saved.
+            save_file.write(file_to_save)
+        except:
+            RelaxApp_MessageBox_Options(self.root, "Save Unsuccessfull")
 
     ###### TO SET ######
     def about_us(self):
@@ -1374,6 +1385,11 @@ class RelaxApp_User_Main_Menu_Load(RelaxApp_User_Settings_Structure):
         self.visual = ctk.CTkLabel(self.frame2, text="Descanso Visual", font=(font, 14))
         self.visual.place(rely=0.5, relx=0.03, anchor="w")
 
+        self.visual_load = ctk.CTkButton(self.frame2, width=10, text="Abrir", font=(font,14),
+                                         command=self.load_visual, corner_radius=10, hover=True, 
+                                         fg_color=colors["soft_green"], hover_color=colors["dark_green"])
+        self.visual_load.place(rely=0.5, relx=0.97, anchor="e")
+        
         # Stretch label.
         self.stretch = ctk.CTkLabel(self.frame3, text="Estirar", font=(font, 14))
         self.stretch.place(rely=0.5, relx=0.03, anchor="w")
@@ -1399,12 +1415,16 @@ class RelaxApp_User_Main_Menu_Load(RelaxApp_User_Settings_Structure):
         self.cancel_button.place(rely=0.5, relx=0.9, anchor="e")
 
     # Funtions to save settings in the user's main menu.
-    def save_settings(self):
+    def load_visual(self):
+        visual_load = ctk.filedialog.askopenfile()
+        self.visual_data = visual_load.read()
+        print(self.visual_data)
+
+    def save_settings(self):        
         pass
 
     def cancel_settings(self):
         self.window.destroy()
-
 
 ####################################################
 ###  Class that contains all pop-ups of the App  ###
@@ -1474,6 +1494,13 @@ class RelaxApp_MessageBox_Options(RelaxApp_MessageBox_Structure):
                                                     font=(font,14), bg_color=colors["soft_grey"])
             self.pw_ask_cancel_label.place(rely=0.3, relx=0.5, anchor="center")
             self.select_button1 = True
+
+        elif message == "Save Unsuccessfull":
+            # Label to alert that something was wrong when saving file.
+            self.save_Nok_label = ctk.CTkLabel(self.window, text="La configuración no se ha guardado correctamente. Asegúrese \nque tenga valores configurados.", 
+                                               font=(font,14), bg_color=colors["soft_grey"])
+            self.save_Nok_label.place(rely=0.35, relx=0.5, anchor="center")
+            self.select_button3 = True
 
         elif message == "Sign Out":
             # Label ask/cancel to sign out.
