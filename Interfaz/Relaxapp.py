@@ -2,6 +2,7 @@ import tkinter as tk
 import customtkinter as ctk
 import Base_Datos.base_datos as bd
 from Base_Datos.valores_presets import user, databases, tables
+import os
 from os import path
 import ctypes
 import time
@@ -1385,8 +1386,9 @@ class RelaxApp_User_Main_Menu_Load(RelaxApp_User_Settings_Structure):
         self.visual = ctk.CTkLabel(self.frame2, text="Descanso Visual", font=(font, 14))
         self.visual.place(rely=0.5, relx=0.03, anchor="w")
 
+        # Button to load visual presets.
         self.visual_load = ctk.CTkButton(self.frame2, width=10, text="Abrir", font=(font,14),
-                                         command=self.load_visual, corner_radius=10, hover=True, 
+                                         command=lambda: self.load("Visual"), corner_radius=10, hover=True, 
                                          fg_color=colors["soft_green"], hover_color=colors["dark_green"])
         self.visual_load.place(rely=0.5, relx=0.97, anchor="e")
         
@@ -1394,13 +1396,31 @@ class RelaxApp_User_Main_Menu_Load(RelaxApp_User_Settings_Structure):
         self.stretch = ctk.CTkLabel(self.frame3, text="Estirar", font=(font, 14))
         self.stretch.place(rely=0.5, relx=0.03, anchor="w")
 
+        # Button to load stretch presets.
+        self.stretch_load = ctk.CTkButton(self.frame3, width=10, text="Abrir", font=(font,14),
+                                          command=lambda: self.load("Stretch"), corner_radius=10, hover=True, 
+                                          fg_color=colors["soft_green"], hover_color=colors["dark_green"])
+        self.stretch_load.place(rely=0.5, relx=0.97, anchor="e")
+
         # Final sound label.
         self.final_sound = ctk.CTkLabel(self.frame4, text="Sonido al finalizar", font=(font, 14))
         self.final_sound.place(rely=0.5, relx=0.03, anchor="w")
 
+        # Button to load final sound.
+        self.final_sound_load = ctk.CTkButton(self.frame4, width=10, text="Abrir", font=(font,14),
+                                              command=lambda: self.load("Final Sound"), corner_radius=10, hover=True, 
+                                              fg_color=colors["soft_green"], hover_color=colors["dark_green"])
+        self.final_sound_load.place(rely=0.5, relx=0.97, anchor="e")
+
         # Sound alert label.
         self.sound_alert = ctk.CTkLabel(self.frame5, text="Sonido para alertas", font=(font, 14))
         self.sound_alert.place(rely=0.5, relx=0.03, anchor="w")
+
+        # Button to load final sound.
+        self.lapse_sound_load = ctk.CTkButton(self.frame5, width=10, text="Abrir", font=(font,14),
+                                              command=lambda: self.load("Lapse Sound"), corner_radius=10, hover=True, 
+                                              fg_color=colors["soft_green"], hover_color=colors["dark_green"])
+        self.lapse_sound_load.place(rely=0.5, relx=0.97, anchor="e")
 
         # Save button.
         self.save_button = ctk.CTkButton(self.frame6, width=10, height=10, text="Guardar", font=(font,14), 
@@ -1415,13 +1435,28 @@ class RelaxApp_User_Main_Menu_Load(RelaxApp_User_Settings_Structure):
         self.cancel_button.place(rely=0.5, relx=0.9, anchor="e")
 
     # Funtions to save settings in the user's main menu.
-    def load_visual(self):
-        visual_load = ctk.filedialog.askopenfile()
-        self.visual_data = visual_load.read()
-        print(self.visual_data)
-
-    def save_settings(self):        
-        pass
+    def load(self, value):
+        if value == "Visual":
+            visual_load = ctk.filedialog.askopenfile()
+            self.visual_data = visual_load.read()
+            # print("visual: ", self.visual_data)
+        elif value == "Stretch":
+            stretch_load = ctk.filedialog.askopenfile()
+            self.stretch_data = stretch_load.read()
+            # print("stretch: ", self.stretch_data)
+        elif value == "Final Sound":
+            self.final_sound = ctk.filedialog.askopenfilename()
+            # print(self.final_sound)
+            
+        elif value == "Lapse Sound":
+            self.lapse_sound = ctk.filedialog.askopenfilename()
+            # print(self.lapse_sound)
+            
+    def save_settings(self):
+        print("visual: ", self.visual_data)
+        print("stretch: ", self.stretch_data)
+        print("sonido final: ",self.final_sound)
+        print("sonido lapse: ",self.lapse_sound)
 
     def cancel_settings(self):
         self.window.destroy()
