@@ -1255,7 +1255,6 @@ class RelaxApp_User_Main_Menu_Settings(RelaxApp_User_Settings_Structure):
         self.sound_alert_CB = ctk.CTkCheckBox(self.frame5, text=None, variable=self.sound_alert_choice, width=20, height=20, hover=True, 
                                               fg_color=colors["soft_green"], hover_color=colors["dark_green"])
         self.sound_alert_CB.place(rely=0.5, relx=1, anchor="e")
-        self.sound_alert_activated = False
 
         # Save button.
         self.save_button = ctk.CTkButton(self.frame6, width=10, height=10, text="Guardar", font=(font,14), 
@@ -1360,7 +1359,8 @@ class RelaxApp_User_Main_Menu_Sounds(RelaxApp_User_Settings_Structure):
         self.root = root
 
         # An empty string which is going to save all values when user save a configuration.
-        self.values = ""
+        self.final_sound = ""
+        self.lapse_sound = ""
 
         # Frame at the back.
         self.frame.configure(fg_color=colors["black"])
@@ -1406,80 +1406,110 @@ class RelaxApp_User_Main_Menu_Sounds(RelaxApp_User_Settings_Structure):
         self.sound_alert_D1.place(rely=0.5, relx=0.03, anchor="w")
 
         # Button to play sound example.
-        self.play_button_D1_label = ctk.CTkButton(self.frame2, text=None, image=self.play_button, width=0, command=lambda: self.sound_default1("Play"),
+        self.play_button_D1_label = ctk.CTkButton(self.frame2, text=None, image=self.play_button, width=0, command=lambda: self.sound_default("Play", "Final"),
                                                   hover=True, fg_color=colors["soft_grey"], hover_color=colors["dark_green"])
         self.play_button_D1_label.place(rely=0.5, relx=0.35, anchor="w")
 
         # Button to pause sound example.
-        self.pause_button_D1_label = ctk.CTkButton(self.frame2, text=None, image=self.pause_button, width=0, command=lambda: self.sound_default1("Pause"),
+        self.pause_button_D1_label = ctk.CTkButton(self.frame2, text=None, image=self.pause_button, width=0, command=lambda: self.sound_default("Pause", "Final"),
                                                    hover=True, fg_color=colors["soft_grey"], hover_color=colors["dark_green"])
         self.pause_button_D1_label.place(rely=0.5, relx=0.5, anchor="w")
 
-        self.pause_button_D1_choice1 = ctk.IntVar()
+        self.sound_alert_choice1 = ctk.IntVar()
+        self.sound_alert_choice2 = ctk.IntVar()
         # Checkbox to activate or deactivate sound by default 1 and set it as "final".
-        self.pause_button_D1_CB1 = ctk.CTkCheckBox(self.frame2, text=None, variable=self.pause_button_D1_choice1, width=20, height=20, hover=True, 
-                                                   fg_color=colors["soft_green"], hover_color=colors["dark_green"])
-        self.pause_button_D1_CB1.place(rely=0.5, relx=0.72, anchor="w")
+        self.sound_alert_D1_CB1 = ctk.CTkRadioButton(self.frame2, text=None, value=0, variable=self.sound_alert_choice1, hover=True, 
+                                                     border_width_unchecked=2, border_width_checked=5, fg_color=colors["soft_green"], 
+                                                     hover_color=colors["dark_green"])
+        self.sound_alert_D1_CB1.place(rely=0.5, relx=0.72, anchor="w")
 
-        self.pause_button_D1_choice2 = ctk.IntVar()
         # Checkbox to activate or deactivate sound by default 1 and set it as "lapse".
-        self.pause_button_D1_CB2 = ctk.CTkCheckBox(self.frame2, text=None, variable=self.pause_button_D1_choice2, width=20, height=20, hover=True, 
-                                                   fg_color=colors["soft_green"], hover_color=colors["dark_green"])
-        self.pause_button_D1_CB2.place(rely=0.5, relx=0.87, anchor="w")
+        self.sound_alert_D1_CB2 = ctk.CTkRadioButton(self.frame2, text=None, value=0, variable=self.sound_alert_choice2, hover=True, 
+                                                     border_width_unchecked=2, border_width_checked=5, fg_color=colors["soft_green"], 
+                                                     hover_color=colors["dark_green"])
+        self.sound_alert_D1_CB2.place(rely=0.5, relx=0.87, anchor="w")
 
         # Sound by default 2 label.
         self.sound_alert_D2 = ctk.CTkLabel(self.frame3, text="Default 2", font=(font, 14))
         self.sound_alert_D2.place(rely=0.5, relx=0.03, anchor="w")
 
         # Button to play sound example.
-        self.play_button_D2_label = ctk.CTkButton(self.frame3, text=None, image=self.play_button, width=0, command=lambda: self.sound_default2("Play"),
+        self.play_button_D2_label = ctk.CTkButton(self.frame3, text=None, image=self.play_button, width=0, command=lambda: self.sound_default("Play", "Lapse"),
                                                   hover=True, fg_color=colors["soft_grey"], hover_color=colors["dark_green"])
         self.play_button_D2_label.place(rely=0.5, relx=0.35, anchor="w")
 
         # Button to pause sound example.
-        self.pause_button_D2_label = ctk.CTkButton(self.frame3, text=None, image=self.pause_button, width=0, command=lambda: self.sound_default2("Pause"),
+        self.pause_button_D2_label = ctk.CTkButton(self.frame3, text=None, image=self.pause_button, width=0, command=lambda: self.sound_default("Pause", "Lapse"),
                                                    hover=True, fg_color=colors["soft_grey"], hover_color=colors["dark_green"])
         self.pause_button_D2_label.place(rely=0.5, relx=0.5, anchor="w")
 
-        self.pause_button_D2_choice1 = ctk.IntVar()
         # Checkbox to activate or deactivate sound by default 2 and set it as "final".
-        self.pause_button_D2_CB1 = ctk.CTkCheckBox(self.frame3, text=None, variable=self.pause_button_D2_choice1, width=20, height=20, hover=True, 
-                                                   fg_color=colors["soft_green"], hover_color=colors["dark_green"])
-        self.pause_button_D2_CB1.place(rely=0.5, relx=0.72, anchor="w")
+        self.sound_alert_D2_CB1 = ctk.CTkRadioButton(self.frame3, text=None, value=1, variable=self.sound_alert_choice1, hover=True, 
+                                                     border_width_unchecked=2, border_width_checked=5, fg_color=colors["soft_green"], 
+                                                     hover_color=colors["dark_green"])
+        self.sound_alert_D2_CB1.place(rely=0.5, relx=0.72, anchor="w")
 
-        self.pause_button_D2_choice2 = ctk.IntVar()
         # Checkbox to activate or deactivate sound by default 2 and set it as "lapse".
-        self.pause_button_D2_CB2 = ctk.CTkCheckBox(self.frame3, text=None, variable=self.pause_button_D2_choice2, width=20, height=20, hover=True, 
-                                                   fg_color=colors["soft_green"], hover_color=colors["dark_green"])
-        self.pause_button_D2_CB2.place(rely=0.5, relx=0.87, anchor="w")
-##############
-        # Sound load label.
-        self.sound_alert_load = ctk.CTkButton(self.frame5, width=10, height=10, text="Cargar", font=(font, 14), command=self.sound_load,
-                                              corner_radius=10, hover=True, fg_color=colors["soft_grey"], hover_color=colors["dark_green"])
-        self.sound_alert_load.place(rely=0.5, relx=0.03, anchor="w")
+        self.sound_alert_D2_CB2 = ctk.CTkRadioButton(self.frame3, text=None, value=1, variable=self.sound_alert_choice2, hover=True, 
+                                                     border_width_unchecked=2, border_width_checked=5, fg_color=colors["soft_green"], 
+                                                     hover_color=colors["dark_green"])
+        self.sound_alert_D2_CB2.place(rely=0.5, relx=0.87, anchor="w")
+###############
+        # Sound load 1 label.
+        self.sound_alert_load1 = ctk.CTkButton(self.frame4, width=10, height=10, text="Cargar 1", font=(font, 14), command=lambda: self.sound_load("1"),
+                                               corner_radius=10, hover=True, fg_color=colors["soft_grey"], hover_color=colors["dark_green"])
+        self.sound_alert_load1.place(rely=0.5, anchor="w")
 
         # Button to play sound example.
-        self.play_button_load_label = ctk.CTkButton(self.frame5, text=None, image=self.play_button, width=0, command=lambda: self.sound_loaded("Play"),
-                                                    hover=True, fg_color=colors["soft_grey"], hover_color=colors["dark_green"])
-        self.play_button_load_label.place(rely=0.5, relx=0.35, anchor="w")
+        self.play_button_load1_label = ctk.CTkButton(self.frame4, text=None, image=self.play_button, width=0, command=lambda: self.sound_loaded("Play", "1"),
+                                                     hover=True, fg_color=colors["soft_grey"], hover_color=colors["dark_green"])
+        self.play_button_load1_label.place(rely=0.5, relx=0.35, anchor="w")
 
         # Button to pause sound example.
-        self.pause_button_load_label = ctk.CTkButton(self.frame5, text=None, image=self.pause_button, width=0, command=lambda: self.sound_loaded("Pause"),
+        self.pause_button_load1_label = ctk.CTkButton(self.frame4, text=None, image=self.pause_button, width=0, command=lambda: self.sound_loaded("Pause", "1"),
+                                                      hover=True, fg_color=colors["soft_grey"], hover_color=colors["dark_green"])
+        self.pause_button_load1_label.place(rely=0.5, relx=0.5, anchor="w")
+
+        # Checkbox to activate or deactivate sound loaded 2 and set it as "final".
+        self.sound_alert_load1_CB1 = ctk.CTkRadioButton(self.frame4, text=None, value=2, variable=self.sound_alert_choice1, hover=True, 
+                                                        border_width_unchecked=2, border_width_checked=5, fg_color=colors["soft_green"], 
+                                                        hover_color=colors["dark_green"])
+        self.sound_alert_load1_CB1.place(rely=0.5, relx=0.72, anchor="w")
+
+        # Checkbox to activate or deactivate sound loaded 2 and set it as "lapse".
+        self.sound_alert_load1_CB2 = ctk.CTkRadioButton(self.frame4, text=None, value=2, variable=self.sound_alert_choice2, hover=True, 
+                                                        border_width_unchecked=2, border_width_checked=5, fg_color=colors["soft_green"], 
+                                                        hover_color=colors["dark_green"])
+        self.sound_alert_load1_CB2.place(rely=0.5, relx=0.87, anchor="w")
+
+##############
+        # Sound load 2 label.
+        self.sound_alert_load2 = ctk.CTkButton(self.frame5, width=10, height=10, text="Cargar 2", font=(font, 14), command=lambda: self.sound_load("2"),
+                                               corner_radius=10, hover=True, fg_color=colors["soft_grey"], hover_color=colors["dark_green"])
+        self.sound_alert_load2.place(rely=0.5, anchor="w")
+
+        # Button to play sound example.
+        self.play_button_load2_label = ctk.CTkButton(self.frame5, text=None, image=self.play_button, width=0, command=lambda: self.sound_loaded("Play", "2"),
                                                      hover=True, fg_color=colors["soft_grey"], hover_color=colors["dark_green"])
-        self.pause_button_load_label.place(rely=0.5, relx=0.5, anchor="w")
+        self.play_button_load2_label.place(rely=0.5, relx=0.35, anchor="w")
 
-        self.pause_button_load_choice1 = ctk.IntVar()
-        # Checkbox to activate or deactivate sound loaded and set it as "final".
-        self.pause_button_load_CB1 = ctk.CTkCheckBox(self.frame5, text=None, variable=self.pause_button_load_choice1, width=20, height=20, hover=True, 
-                                                     fg_color=colors["soft_green"], hover_color=colors["dark_green"])
-        self.pause_button_load_CB1.place(rely=0.5, relx=0.72, anchor="w")
+        # Button to pause sound example.
+        self.pause_button_load2_label = ctk.CTkButton(self.frame5, text=None, image=self.pause_button, width=0, command=lambda: self.sound_loaded("Pause", "2"),
+                                                     hover=True, fg_color=colors["soft_grey"], hover_color=colors["dark_green"])
+        self.pause_button_load2_label.place(rely=0.5, relx=0.5, anchor="w")
 
-        self.pause_button_load_choice2 = ctk.IntVar()
-        # Checkbox to activate or deactivate sound loaded and set it as "lapse".
-        self.pause_button_load_CB2 = ctk.CTkCheckBox(self.frame5, text=None, variable=self.pause_button_load_choice2, width=20, height=20, hover=True, 
-                                                     fg_color=colors["soft_green"], hover_color=colors["dark_green"])
-        self.pause_button_load_CB2.place(rely=0.5, relx=0.87, anchor="w")
+        # Checkbox to activate or deactivate sound loaded 2 and set it as "final".
+        self.sound_alert_load2_CB1 = ctk.CTkRadioButton(self.frame5, text=None, value=3, variable=self.sound_alert_choice1, hover=True, 
+                                                        border_width_unchecked=2, border_width_checked=5, fg_color=colors["soft_green"], 
+                                                        hover_color=colors["dark_green"])
+        self.sound_alert_load2_CB1.place(rely=0.5, relx=0.72, anchor="w")
 
+        # Checkbox to activate or deactivate sound loaded 2 and set it as "lapse".
+        self.sound_alert_load2_CB2 = ctk.CTkRadioButton(self.frame5, text=None, value=3, variable=self.sound_alert_choice2, hover=True, 
+                                                        border_width_unchecked=2, border_width_checked=5, fg_color=colors["soft_green"], 
+                                                        hover_color=colors["dark_green"])
+        self.sound_alert_load2_CB2.place(rely=0.5, relx=0.87, anchor="w")
+###########################
         # Save button.
         self.save_button = ctk.CTkButton(self.frame6, width=10, height=10, text="Guardar", font=(font,14), 
                                          command=self.save_settings, corner_radius=10, hover=True, 
@@ -1492,48 +1522,83 @@ class RelaxApp_User_Main_Menu_Sounds(RelaxApp_User_Settings_Structure):
                                            fg_color=colors["soft_grey"], hover_color=colors["dark_green"])
         self.cancel_button.place(rely=0.5, relx=0.9, anchor="e")
 
-
         ToolTip(self.setting_title, msg="Debes elegir un sonido de alarma que sonará al finalizar el\ncontador y otro para que se ejecute \
 entre cada alerta.", parent_kwargs = { "bg": colors["black"]}, delay=0.5, font=(font,11), fg=colors["white"], bg=colors["soft_grey"], padx=10, pady=10)
 
-    
 
-        
-
-    def sound_default1(self, action):
+    # Funtion to run and stop defaults sounds.
+    def sound_default(self, action, sound):
         pygame.mixer.init()
         if action == "Play":
-            pygame.mixer.music.load(sounds_path + "Final.mp3")  
+            if sound == "Final":
+                pygame.mixer.music.load(sounds_path + "Final.mp3")
+            elif sound == "Lapse":
+                pygame.mixer.music.load(sounds_path + "Lapse.mp3")
             pygame.mixer.music.play(loops=0)
         elif action == "Pause":
             pygame.mixer.quit()
 
-    def sound_default2(self, action):
-        pygame.mixer.init()
-        if action == "Play":
-            pygame.mixer.music.load(sounds_path + "Lapse.mp3")  
-            pygame.mixer.music.play(loops=0)
-        elif action == "Pause":
-            pygame.mixer.quit()
+    # Funtion to load sounds.
+    def sound_load(self, value):
+        if value == "1":
+            self.sound_loaded1_path = ctk.filedialog.askopenfilename()
+        elif value == "2":
+            self.sound_loaded2_path = ctk.filedialog.askopenfilename()
 
-    #Funtions to save settings in the user's main menu.
-    def sound_load(self):
-        self.final_sound_path = ctk.filedialog.askopenfilename()
-
-    def sound_loaded(self, action):
+    # Funtion to run and stop loaded sounds.
+    def sound_loaded(self, action, value):
         try:
             pygame.mixer.init()
-            if action == "Play":
-                pygame.mixer.music.load(self.final_sound_path)  
+            if action == "Play" and value == "1":
+                pygame.mixer.music.load(self.sound_loaded1_path)  
+                pygame.mixer.music.play(loops=0)
+            elif action == "Play" and value == "2":
+                pygame.mixer.music.load(self.sound_loaded2_path)  
                 pygame.mixer.music.play(loops=0)
             elif action == "Pause":
                 pygame.mixer.quit()
         except:
-            print("Error no hay cancion")
+            pass
 
     def save_settings(self):
-        pass
-        self.window.destroy()
+        try:
+            # Final sound is choosen.
+            if self.sound_alert_choice1.get() == 0:
+                self.final_sound = sounds_path + "Final.mp3"
+            elif self.sound_alert_choice1.get() == 1:
+                self.final_sound = sounds_path + "Lapse.mp3"
+            elif self.sound_alert_choice1.get() == 2:
+                self.final_sound = self.sound_loaded1_path
+            elif self.sound_alert_choice1.get() == 3:
+                self.final_sound = self.sound_loaded2_path
+        except:
+            self.final_sound = ""
+
+        try:
+            # Lapse sound is choosen.
+            if self.sound_alert_choice2.get() == 0:
+                self.lapse_sound = sounds_path + "Final.mp3"
+            elif self.sound_alert_choice2.get() == 1:
+                self.lapse_sound = sounds_path + "Lapse.mp3"
+            elif self.sound_alert_choice2.get() == 2:
+                self.lapse_sound = self.sound_loaded1_path
+            elif self.sound_alert_choice2.get() == 3:
+                self.lapse_sound = self.sound_loaded2_path
+        except:
+            self.lapse_sound = ""
+
+        if self.final_sound == "" or self.lapse_sound == "":
+            RelaxApp_MessageBox_Options(self.root, "No Sound")
+        else:
+            # Varible "self.final_sound" is saved in the database inside the "Configuracion_Sonidos_Final" column.
+            base_datos.configuraciones_usuario(databases["database1"], tables["settings_table"], 
+                                            user["login"], "Configuracion_Sonidos_Final", self.final_sound)
+            
+            # Varible "self.lapse_sound" is saved in the database inside the "Configuracion_Sonidos_Lapse" column.
+            base_datos.configuraciones_usuario(databases["database1"], tables["settings_table"], 
+                                            user["login"], "Configuracion_Sonidos_Lapse", self.lapse_sound)
+            
+            self.window.destroy()
 
     def cancel_settings(self):
         self.window.destroy()
@@ -1817,6 +1882,14 @@ class RelaxApp_MessageBox_Options(RelaxApp_MessageBox_Structure):
                                                   font=(font,14), bg_color=colors["soft_grey"])
             self.no_settings_label.place(rely=0.3, relx=0.5, anchor="center")
             self.select_button3 = True
+
+        elif message == "No Sound":
+            # Label to alert that a load sounds is trying to save but no file is loaded.
+            self.no_sound_label = ctk.CTkLabel(self.window, text="No puedes guardar una configuración con un sonido propio \nsin cargarlo previamente.", 
+                                               font=(font,14), bg_color=colors["soft_grey"])
+            self.no_sound_label.place(rely=0.35, relx=0.5, anchor="center")
+            self.select_button3 = True
+            
 
         if self.select_button1 == True:
             # Button to accept user registration.

@@ -10,7 +10,7 @@ root.mainloop()
 
 # import Base_Datos.base_datos as bd
 
-# from Base_Datos.valores_presets import columnas_usuario_default, columnas_configuraciones_default1
+# from Base_Datos.valores_presets import columnas_usuario_default, columnas_configuraciones_default
 
 # conectar = bd.BaseDatos(**bd.acceso_root)
 

@@ -95,6 +95,22 @@ columnas_configuraciones_default = [
         "not_null" : False,
     },
     {
+        "nombre" : "Configuracion_Sonidos_Final",
+        "tipo" : "VARCHAR",
+        "largo" : 300,
+        "unico" : False,
+        "auto_increment" : False,
+        "not_null" : False,
+    },
+    {
+        "nombre" : "Configuracion_Sonidos_Lapse",
+        "tipo" : "VARCHAR",
+        "largo" : 300,
+        "unico" : False,
+        "auto_increment" : False,
+        "not_null" : False,
+    },
+    {
         "primary_key" : "id"
     }]
 
