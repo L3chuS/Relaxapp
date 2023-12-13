@@ -36,8 +36,6 @@ root.mainloop()
 
 # conectar.consulta("SHOW TABLES FROM lechus")
 
-# conectar.consulta("INSERT INTO usuarios_configuraciones (login) VALUES ('lechu');")
-
 # conectar.consulta("SELECT * FROM lechus.usuarios")
 
 # conectar.consulta("SELECT * FROM world.city LIMIT 7")
