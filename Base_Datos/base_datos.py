@@ -416,6 +416,7 @@ Elija otro nombre.'
                 
         # Excepción lanzada si el diccionario contiene errores en sus values.
         except:
+            self.validacion_editar = False
             self.mensaje = "Los campos indicados para este usuario no son válidos."
             print(self.mensaje)
             return self.validacion_editar, self.mensaje

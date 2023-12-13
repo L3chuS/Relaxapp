@@ -9,6 +9,7 @@ import threading
 import pygame
 from PIL import Image
 from tktooltip import ToolTip
+import hashlib
 
 # Connect to the database.
 base_datos = bd.BaseDatos(**bd.acceso_root)
@@ -19,8 +20,17 @@ user32.SetProcessDPIAware()
 
 # Get the parent folder path and the image folder path.
 main_path = path.dirname(__file__)
-image_path = main_path + "/Imagenes/"
-sounds_path = main_path + "/Sonidos/"
+main_path_edited = ""
+
+# Bucle that changes "\" for "/" because mysql don't accept first value
+for letra in main_path:
+    if letra != "\\":
+        main_path_edited += letra
+    else:
+        main_path_edited += "/"
+
+image_path = main_path_edited + "/Imagenes/"
+sounds_path = main_path_edited + "/Sonidos/"
 
 # Set appearance.
 appearance = ctk.set_appearance_mode("dark")
@@ -511,10 +521,10 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
         self.help_button.config(menu=self.menu_help)
 
         # Labels of archieve menu cascade.
-        self.menu_archieve.add_command(label=" Cargar Configuración  ", font=(font,9), command=self.load_configuration, 
+        self.menu_archieve.add_command(label=" Crear Perfil  ", font=(font,9), command=self.create_profile, 
                                        background=colors["soft_grey"], foreground=colors["white"], activebackground=colors["dark_green"], 
                                        hidemargin=True)
-        self.menu_archieve.add_command(label=" Guardar Configuración  ", font=(font,9), command=self.save_configuration, 
+        self.menu_archieve.add_command(label=" Exportar Perfil  ", font=(font,9), command=self.export_profile, 
                                        background=colors["soft_grey"], foreground=colors["white"], activebackground=colors["dark_green"], 
                                        hidemargin=True)
         
@@ -565,26 +575,64 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
 
     ###################################################################
     ###### TO SET ######
-    def load_configuration(self):
+    def create_profile(self):
         pass
-    ###### TO SET ######
-
+        # RelaxApp_User_Main_Menu_Profiles(self.root)
+  
     # Function to save both visual and stretch setting of the user.
-    def save_configuration(self):
+    def export_profile(self):
         try:
             save_file = ctk.filedialog.asksaveasfile()
+
+            # Query method is called to get the time when profile was saved.
+            base_datos.consulta(f"SELECT Nombre_Perfil FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}'")
+            
+            if base_datos.valor[0][0] != None:
+                file_profile_name_get = base_datos.valor[0][0]
+            else:
+                file_profile_name_get = ""
+
+            # Query method is called to get the time when profile was saved.
+            base_datos.consulta(f"SELECT Fecha_Hora FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}'")
+            if base_datos.valor[0][0] != None:
+                file_datetime_get = base_datos.valor[0][0]
+            else:
+                file_datetime_get = ""
+
             # Query method is called to get user's visual options settings.
             base_datos.consulta(f"SELECT Configuracion_Visual FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}'")
-            file_data_get_VO = base_datos.valor[0][0]
+            if base_datos.valor[0][0] != None:
+                file_data_get_VO = base_datos.valor[0][0]
+            else:
+                file_data_get_VO = ""
+
             # Query method is called to get user's stretch options settings.
             base_datos.consulta(f"SELECT Configuracion_Estirar FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}'")
-            file_data_get_SO = base_datos.valor[0][0]
+            if base_datos.valor[0][0] != None:
+                file_data_get_SO = base_datos.valor[0][0]
+            else:
+                file_data_get_SO = ""
+
+            # Query method is called to get user's final sound settings.
+            base_datos.consulta(f"SELECT Configuracion_Sonidos_Final FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}'")
+            if base_datos.valor[0][0] != None:
+                file_data_get_FS = base_datos.valor[0][0]
+            else:
+                file_data_get_FS = ""
+
+            # Query method is called to get user's final sound settings.
+            base_datos.consulta(f"SELECT Configuracion_Sonidos_Lapse FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}'")
+            if base_datos.valor[0][0] != None:
+                file_data_get_LS = base_datos.valor[0][0]
+            else:
+                file_data_get_LS = ""
+
             # Both settings are concatenated in one line.
-            file_to_save = file_data_get_VO + file_data_get_SO
+            file_to_save = file_profile_name_get + "\n" + file_datetime_get + "\n" + file_data_get_VO + "\n" + file_data_get_SO + "\n" + file_data_get_FS + "\n" + file_data_get_LS
             # File is saved.
             save_file.write(file_to_save)
         except:
-            RelaxApp_MessageBox_Options(self.root, "Save Unsuccessfull")
+            pass
 
     ###### TO SET ######
     def about_us(self):
@@ -1136,6 +1184,100 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
 ###  Class that contains the user's personal settings  ###
 ##########################################################
 
+# class RelaxApp_User_Main_Menu_Profiles(RelaxApp_User_Settings_Structure):
+#     """This class opens a new window to set the user's personal profiles 
+#        of the App. Inherit all structure from parent."""
+    
+#     def __init__(self, root):
+#         super().__init__(root)
+#         self.root = root
+
+
+#         # An empty string which is going to save all values when user save a configuration.
+#         # self.final_sound = ""
+#         # self.lapse_sound = ""
+
+#         # Frame at the back.
+#         self.frame.configure(fg_color=colors["black"])
+#         self.frame.pack(pady=0, padx=0, fill="both")  
+
+#         # Frame that contains the alert configuration label.
+#         self.frame1 = ctk.CTkFrame(self.frame, height=50, width=250, fg_color=colors["soft_grey"], corner_radius=3)
+#         self.frame1.pack(pady=10, padx=10)
+
+#         # Frame that contains the lenght configuration label.
+#         self.frame2 = ctk.CTkFrame(self.frame, height=40, width=250, fg_color=colors["soft_grey"], corner_radius=3)
+#         self.frame2.pack(pady=1, padx=10)
+
+#         # Frame that contains the lapse configuration label.
+#         self.frame3 = ctk.CTkFrame(self.frame, height=40, width=250, fg_color=colors["soft_grey"], corner_radius=3)
+#         self.frame3.pack(pady=1, padx=10)
+
+#         # Frame that contains the break time configuration label.
+#         self.frame4 = ctk.CTkFrame(self.frame, height=40, width=250, fg_color=colors["soft_grey"], corner_radius=3)
+#         self.frame4.pack(pady=1, padx=10)
+
+#         # Frame that contains the sound configuration checkbox.
+#         self.frame5 = ctk.CTkFrame(self.frame, height=40, width=250, fg_color=colors["soft_grey"], corner_radius=3)
+#         self.frame5.pack(pady=1, padx=10)
+
+#         # Frame that contains the save and cancel buttons.
+#         self.frame6 = ctk.CTkFrame(self.frame, height=40, width=250, fg_color=colors["soft_grey"], corner_radius=3)
+#         self.frame6.pack(pady=10, padx=10)
+
+#         # Alert configuration label.
+#         self.setting_title = ctk.CTkLabel(self.frame1, text="Perfiles Configurados", font=(font, 15), 
+#                                           corner_radius=5, fg_color=colors["soft_green"])
+#         self.setting_title.place(rely=0.5, relx=0.5, anchor="center")
+
+#         # Image of a open simbol.
+#         self.open_button = ctk.CTkImage(Image.open(image_path + "Abrir.png").resize((40,40)))
+
+#         # Image of a remove simbol.
+#         self.remove_button = ctk.CTkImage(Image.open(image_path + "Borrar.png").resize((40,40)))
+
+#         # base_datos.consulta(f"SELECT Nombre_Perfil FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}'")
+#         # self.profile_name1 = base_datos.valor[0][0]
+
+#         # Sound by default label.
+#         self.sound_alert_D1 = ctk.CTkLabel(self.frame2, text="Default 1", font=(font, 14))
+#         self.sound_alert_D1.place(rely=0.5, relx=0.03, anchor="w")
+
+#         # # Button to play sound example.
+#         # self.play_button_D1_label = ctk.CTkButton(self.frame2, text="Perfil1", width=0, command=self.load_prifile,
+#         #                                           hover=True, fg_color=colors["soft_grey"], hover_color=colors["dark_green"])
+#         # self.play_button_D1_label.place(rely=0.5, relx=0.35, anchor="w")
+
+#         # Save button.
+#         self.save_button = ctk.CTkButton(self.frame6, width=10, height=10, text="Guardar", font=(font,14), 
+#                                          command=self.save_settings, corner_radius=10, hover=True, 
+#                                          fg_color=colors["soft_grey"], hover_color=colors["dark_green"])
+#         self.save_button.place(rely=0.5, relx=0.1, anchor="w")
+
+#         # Cancel button.
+#         self.cancel_button = ctk.CTkButton(self.frame6, width=10, height=10, text="Cancelar", font=(font,14),
+#                                            command=self.cancel_settings, corner_radius=10, hover=True, 
+#                                            fg_color=colors["soft_grey"], hover_color=colors["dark_green"])
+#         self.cancel_button.place(rely=0.5, relx=0.9, anchor="e")
+
+    
+#     def load_prifile(self):
+#         pass
+
+#     def remove_prifile(self):
+#         pass
+
+#     def save_settings(self):
+#         self.window.destroy()
+
+#     def cancel_settings(self):
+#         self.window.destroy()
+
+
+##########################################################
+###  Class that contains the user's personal settings  ###
+##########################################################
+
 class RelaxApp_User_Main_Menu_Settings(RelaxApp_User_Settings_Structure):
     """This class opens a new window to set the user's personal settings 
        of the App. Inherit all structure from parent."""
@@ -1415,8 +1557,10 @@ class RelaxApp_User_Main_Menu_Sounds(RelaxApp_User_Settings_Structure):
                                                    hover=True, fg_color=colors["soft_grey"], hover_color=colors["dark_green"])
         self.pause_button_D1_label.place(rely=0.5, relx=0.5, anchor="w")
 
+        # Both variables get the selected choice by the user.
         self.sound_alert_choice1 = ctk.IntVar()
         self.sound_alert_choice2 = ctk.IntVar()
+
         # Checkbox to activate or deactivate sound by default 1 and set it as "final".
         self.sound_alert_D1_CB1 = ctk.CTkRadioButton(self.frame2, text=None, value=0, variable=self.sound_alert_choice1, hover=True, 
                                                      border_width_unchecked=2, border_width_checked=5, fg_color=colors["soft_green"], 
@@ -1454,7 +1598,7 @@ class RelaxApp_User_Main_Menu_Sounds(RelaxApp_User_Settings_Structure):
                                                      border_width_unchecked=2, border_width_checked=5, fg_color=colors["soft_green"], 
                                                      hover_color=colors["dark_green"])
         self.sound_alert_D2_CB2.place(rely=0.5, relx=0.87, anchor="w")
-###############
+
         # Sound load 1 label.
         self.sound_alert_load1 = ctk.CTkButton(self.frame4, width=10, height=10, text="Cargar 1", font=(font, 14), command=lambda: self.sound_load("1"),
                                                corner_radius=10, hover=True, fg_color=colors["soft_grey"], hover_color=colors["dark_green"])
@@ -1482,7 +1626,6 @@ class RelaxApp_User_Main_Menu_Sounds(RelaxApp_User_Settings_Structure):
                                                         hover_color=colors["dark_green"])
         self.sound_alert_load1_CB2.place(rely=0.5, relx=0.87, anchor="w")
 
-##############
         # Sound load 2 label.
         self.sound_alert_load2 = ctk.CTkButton(self.frame5, width=10, height=10, text="Cargar 2", font=(font, 14), command=lambda: self.sound_load("2"),
                                                corner_radius=10, hover=True, fg_color=colors["soft_grey"], hover_color=colors["dark_green"])
@@ -1495,7 +1638,7 @@ class RelaxApp_User_Main_Menu_Sounds(RelaxApp_User_Settings_Structure):
 
         # Button to pause sound example.
         self.pause_button_load2_label = ctk.CTkButton(self.frame5, text=None, image=self.pause_button, width=0, command=lambda: self.sound_loaded("Pause", "2"),
-                                                     hover=True, fg_color=colors["soft_grey"], hover_color=colors["dark_green"])
+                                                      hover=True, fg_color=colors["soft_grey"], hover_color=colors["dark_green"])
         self.pause_button_load2_label.place(rely=0.5, relx=0.5, anchor="w")
 
         # Checkbox to activate or deactivate sound loaded 2 and set it as "final".
@@ -1509,7 +1652,7 @@ class RelaxApp_User_Main_Menu_Sounds(RelaxApp_User_Settings_Structure):
                                                         border_width_unchecked=2, border_width_checked=5, fg_color=colors["soft_green"], 
                                                         hover_color=colors["dark_green"])
         self.sound_alert_load2_CB2.place(rely=0.5, relx=0.87, anchor="w")
-###########################
+
         # Save button.
         self.save_button = ctk.CTkButton(self.frame6, width=10, height=10, text="Guardar", font=(font,14), 
                                          command=self.save_settings, corner_radius=10, hover=True, 
@@ -1522,9 +1665,9 @@ class RelaxApp_User_Main_Menu_Sounds(RelaxApp_User_Settings_Structure):
                                            fg_color=colors["soft_grey"], hover_color=colors["dark_green"])
         self.cancel_button.place(rely=0.5, relx=0.9, anchor="e")
 
-        ToolTip(self.setting_title, msg="Debes elegir un sonido de alarma que sonará al finalizar el\ncontador y otro para que se ejecute \
+        # An information is showed when mouse is over "Configurar Sonidos".
+        ToolTip(self.setting_title, msg="Debes elegir un sonido de alarma en la columna 1 que \nsonará al finalizar el contador y otro en la columna 2 \npara que se ejecute \
 entre cada alerta.", parent_kwargs = { "bg": colors["black"]}, delay=0.5, font=(font,11), fg=colors["white"], bg=colors["soft_grey"], padx=10, pady=10)
-
 
     # Funtion to run and stop defaults sounds.
     def sound_default(self, action, sound):
@@ -1587,6 +1730,7 @@ entre cada alerta.", parent_kwargs = { "bg": colors["black"]}, delay=0.5, font=(
         except:
             self.lapse_sound = ""
 
+        # MessageBox is called when user try to save a configuration with a loaded sound before loading.
         if self.final_sound == "" or self.lapse_sound == "":
             RelaxApp_MessageBox_Options(self.root, "No Sound")
         else:
@@ -1603,146 +1747,12 @@ entre cada alerta.", parent_kwargs = { "bg": colors["black"]}, delay=0.5, font=(
     def cancel_settings(self):
         self.window.destroy()
 
+    # Function that show information about how to use the sound settings.
     def show_info(self ,text):
         self.text = text
         ctk.CTkLabel(self.root, text=f' "{self.text}" ', font=("Segoe Print", 22),
         fg_color=colors["soft_grey"]).pack()
 
-
-##########################################################################
-###  Class that contains the options to load user's personal settings  ###
-##########################################################################
-
-# class RelaxApp_User_Main_Menu_Load(RelaxApp_User_Settings_Structure):
-#     """This class opens a new window to load the user's personal settings
-#        of the App. Inherit all structure from parent."""
-
-#     def __init__(self, root):
-#         super().__init__(root)
-#         self.root = root
-
-#         # Frame at the back.
-#         self.frame.configure(fg_color=colors["black"])
-#         self.frame.pack(pady=0, padx=0, fill="both")
-
-#         # Frame that contains the load configuration label.
-#         self.frame1 = ctk.CTkFrame(self.frame, height=50, width=250, fg_color=colors["soft_grey"], corner_radius=3)
-#         self.frame1.pack(pady=10, padx=10)
-
-#         # Frame that contains the visual configuration label.
-#         self.frame2 = ctk.CTkFrame(self.frame, height=40, width=250, fg_color=colors["soft_grey"], corner_radius=3)
-#         self.frame2.pack(pady=1, padx=10)
-
-#         # Frame that contains the stretch configuration label.
-#         self.frame3 = ctk.CTkFrame(self.frame, height=40, width=250, fg_color=colors["soft_grey"], corner_radius=3)
-#         self.frame3.pack(pady=1, padx=10)
-
-#         # Frame that contains the final sound options.
-#         self.frame4 = ctk.CTkFrame(self.frame, height=40, width=250, fg_color=colors["soft_grey"], corner_radius=3)
-#         self.frame4.pack(pady=1, padx=10)
-
-#         # Frame that contains the sound alert options.
-#         self.frame5 = ctk.CTkFrame(self.frame, height=40, width=250, fg_color=colors["soft_grey"], corner_radius=3)
-#         self.frame5.pack(pady=1, padx=10)
-
-#         # Frame that contains the save and cancel buttons.
-#         self.frame6 = ctk.CTkFrame(self.frame, height=40, width=250, fg_color=colors["soft_grey"], corner_radius=3)
-#         self.frame6.pack(pady=10, padx=10)
-
-#         # Load configuration label.
-#         self.setting_title = ctk.CTkLabel(self.frame1, text="Cargar Configuración", font=(font, 15), 
-#                                           corner_radius=10, fg_color=colors["soft_green"])
-#         self.setting_title.place(rely=0.5, relx=0.5, anchor="center")
-
-#         # Visual rest label.
-#         self.visual = ctk.CTkLabel(self.frame2, text="Descanso Visual", font=(font, 14))
-#         self.visual.place(rely=0.5, relx=0.03, anchor="w")
-
-#         # Button to load visual presets.
-#         self.visual_load = ctk.CTkButton(self.frame2, width=10, text="Abrir", font=(font,14),
-#                                          command=lambda: self.load("Visual"), corner_radius=10, hover=True, 
-#                                          fg_color=colors["soft_green"], hover_color=colors["dark_green"])
-#         self.visual_load.place(rely=0.5, relx=0.97, anchor="e")
-        
-#         # Stretch label.
-#         self.stretch = ctk.CTkLabel(self.frame3, text="Estirar", font=(font, 14))
-#         self.stretch.place(rely=0.5, relx=0.03, anchor="w")
-
-#         # Button to load stretch presets.
-#         self.stretch_load = ctk.CTkButton(self.frame3, width=10, text="Abrir", font=(font,14),
-#                                           command=lambda: self.load("Stretch"), corner_radius=10, hover=True, 
-#                                           fg_color=colors["soft_green"], hover_color=colors["dark_green"])
-#         self.stretch_load.place(rely=0.5, relx=0.97, anchor="e")
-
-#         # Final sound label.
-#         self.final_sound = ctk.CTkLabel(self.frame4, text="Sonido al finalizar", font=(font, 14))
-#         self.final_sound.place(rely=0.5, relx=0.03, anchor="w")
-
-#         # Button to load final sound.
-#         self.final_sound_load = ctk.CTkButton(self.frame4, width=10, text="Abrir", font=(font,14),
-#                                               command=lambda: self.load("Final Sound"), corner_radius=10, hover=True, 
-#                                               fg_color=colors["soft_green"], hover_color=colors["dark_green"])
-#         self.final_sound_load.place(rely=0.5, relx=0.97, anchor="e")
-
-#         # Sound alert label.
-#         self.sound_alert = ctk.CTkLabel(self.frame5, text="Sonido para alertas", font=(font, 14))
-#         self.sound_alert.place(rely=0.5, relx=0.03, anchor="w")
-
-#         # Button to load final sound.
-#         self.lapse_sound_load = ctk.CTkButton(self.frame5, width=10, text="Abrir", font=(font,14),
-#                                               command=lambda: self.load("Lapse Sound"), corner_radius=10, hover=True, 
-#                                               fg_color=colors["soft_green"], hover_color=colors["dark_green"])
-#         self.lapse_sound_load.place(rely=0.5, relx=0.97, anchor="e")
-
-#         # Save button.
-#         self.save_button = ctk.CTkButton(self.frame6, width=10, height=10, text="Guardar", font=(font,14), 
-#                                               command=self.save_settings, corner_radius=10, hover=True, 
-#                                               fg_color=colors["soft_grey"], hover_color=colors["dark_green"])
-#         self.save_button.place(rely=0.5, relx=0.1, anchor="w")
-
-#         # Cancel button.
-#         self.cancel_button = ctk.CTkButton(self.frame6, width=10, height=10, text="Cancelar", font=(font,14),
-#                                            command=self.cancel_settings, corner_radius=10, hover=True, 
-#                                            fg_color=colors["soft_grey"], hover_color=colors["dark_green"])
-#         self.cancel_button.place(rely=0.5, relx=0.9, anchor="e")
-
-#     # Funtions to save settings in the user's main menu.
-#     def load(self, value):
-#         if value == "Visual":
-#             visual_load = ctk.filedialog.askopenfile()
-#             self.visual_data = visual_load.read()
-#         elif value == "Stretch":
-#             stretch_load = ctk.filedialog.askopenfile()
-#             self.stretch_data = stretch_load.read()
-#         elif value == "Final Sound":
-#             self.final_sound_path = ctk.filedialog.askopenfilename()
-#         elif value == "Lapse Sound":
-#             self.lapse_sound_path = ctk.filedialog.askopenfilename()
-            
-#     def save_settings(self):
-#         try:
-#             self.settings = [self.visual_data]
-#         except:
-#             self.settings = [False]
-#         try:
-#             self.settings.append(self.stretch_data)
-#         except:
-#             self.settings.append(False)
-#         try:
-#             self.settings.append(self.final_sound_path)
-#         except:
-#             self.settings.append(False)
-#         try:
-#             self.settings.append(self.lapse_sound_path)
-#         except:
-#             self.settings.append(False)
-
-#         print(self.settings)
-#         self.window.destroy()
-
-#     def cancel_settings(self):
-#         self.window.destroy()
-        
 
 ####################################################
 ###  Class that contains all pop-ups of the App  ###
@@ -1812,13 +1822,6 @@ class RelaxApp_MessageBox_Options(RelaxApp_MessageBox_Structure):
                                                     font=(font,14), bg_color=colors["soft_grey"])
             self.pw_ask_cancel_label.place(rely=0.3, relx=0.5, anchor="center")
             self.select_button1 = True
-
-        elif message == "Save Unsuccessfull":
-            # Label to alert that something was wrong when saving file.
-            self.save_Nok_label = ctk.CTkLabel(self.window, text="La configuración no se ha guardado correctamente o ha sido cancelada.", 
-                                               font=(font,14), bg_color=colors["soft_grey"])
-            self.save_Nok_label.place(rely=0.3, relx=0.5, anchor="center")
-            self.select_button3 = True
 
         elif message == "Sign Out":
             # Label ask/cancel to sign out.

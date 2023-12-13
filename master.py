@@ -14,17 +14,17 @@ root.mainloop()
 
 # conectar = bd.BaseDatos(**bd.acceso_root)
 
-# conectar.editar_tabla("lechus", "usuarios", usuario)
-
-# configuraciones_usuario(self, base_datos, tabla, usuario, configuracion_visual, configuracion_estirar)
-
 # conectar.crear_bd("lechus")
-
-# conectar.eliminar_bd("lechus")
 
 # conectar.crear_tabla("lechus", "usuarios", columnas_usuario_default)
 
 # conectar.crear_tabla("lechus", "usuarios_configuraciones", columnas_configuraciones_default)
+
+# conectar.eliminar_bd("lechus")
+
+# conectar.editar_tabla("lechus", "usuarios", usuario)
+
+# configuraciones_usuario(self, base_datos, tabla, usuario, configuracion_visual, configuracion_estirar)
 
 # conectar.eliminar_tabla("lechus", "usuario_configuraciones")
 
@@ -35,6 +35,8 @@ root.mainloop()
 # conectar.mostrar_lista_bd()
 
 # conectar.consulta("SHOW TABLES FROM lechus")
+
+# conectar.consulta("INSERT INTO usuarios_configuraciones (login) VALUES ('lechu');")
 
 # conectar.consulta("SELECT * FROM lechus.usuarios")
 
