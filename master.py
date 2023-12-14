@@ -8,7 +8,6 @@ app = app.RelaxApp_Initial_Frame(root)
 
 root.mainloop()
 
-
 # import Base_Datos.base_datos as bd
 
 # from Base_Datos.valores_presets import columnas_usuario_default, columnas_configuraciones_default
@@ -22,6 +21,8 @@ root.mainloop()
 # conectar.crear_tabla("lechus", "usuarios_configuraciones", columnas_configuraciones_default)
 
 # conectar.eliminar_bd("lechus")
+
+# conectar.consulta("SELECT Nombre_Perfil FROM lechus.usuarios_configuraciones WHERE login = 'lechu'")
 
 # conectar.editar_tabla("lechus", "usuarios", usuario)
 
@@ -42,8 +43,6 @@ root.mainloop()
 # conectar.consulta("SELECT * FROM world.city LIMIT 7")
 
 # conectar.editar_tabla("lechus", "usuarios", usuario)
-
-# conectar.consulta("SELECT Configuracion_Visual FROM lechus.usuarios_configuraciones WHERE login = 'lechu'")
 
 # conectar.editar_tabla("lechus", "usuarios", usuario)
 

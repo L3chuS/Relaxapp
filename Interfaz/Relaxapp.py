@@ -181,6 +181,37 @@ class RelaxApp_Running_Structure:
         self.root.after(200, lambda: self.root.iconbitmap(image_path + "logo.ico"))
 
 
+######################################################################
+### Class that contains general settings while RelaxApp is running ###
+######################################################################
+
+class RelaxApp_Profile_Name_Structure:
+    """This class defines the general structure while profile name is 
+       requested. Defines the appearance, dimensions and title."""
+
+    def __init__(self, root):
+        self.root = root
+
+        # New pop-ups is created.
+        self.window2 = ctk.CTkToplevel()
+        self.window2.grab_set()
+
+        # Set the width, height, configuration and location of the windows.
+        width = 310
+        height = 50
+        width_resolution = self.window2.winfo_screenwidth() // 2 - width // 2 - width // 3
+        height_resolution = self.window2.winfo_screenheight() // 2 - height
+        self.dimensions = self.window2.geometry(f"{width}x{height}+{width_resolution}+{height_resolution}")
+        self.maximize = self.window2.resizable(False,False)
+
+        # Set a frame at the background.
+        self.profile_frame = ctk.CTkFrame(self.window2, height=100, width=310, fg_color=colors["soft_grey"])
+        self.profile_frame.pack(pady=10, padx=10, fill="both")
+
+        # Set the title and the logo of the app.
+        self.title = self.window2.title("RelaxApp")
+        self.window2.after(200, lambda: self.window2.iconbitmap(image_path + "logo.ico"))
+
 ###############################################################################
 ### Class that is used to validate entries in the user's main menu settings ###
 ###############################################################################
@@ -207,6 +238,17 @@ class Validate_CMD:
         elif text == "MM" or text == "SS":
             return True
         elif len(text) < 3 and text.isdigit():
+            return True
+        else:
+            return False
+        
+    def validate_lenght_name(text):
+        """Funtions to validate lenght of the profile name not to be larger than 25 characters."""
+        if len(text) == 0:
+            return True
+        elif text == "Nombre del Perfil":
+            return True
+        elif len(text) < 26:
             return True
         else:
             return False
@@ -528,7 +570,7 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
         self.help_button.config(menu=self.menu_help)
 
         # Labels of archieve menu cascade.
-        self.menu_archieve.add_command(label=" Crear Perfil  ", font=(font,9), command=self.create_profile, 
+        self.menu_archieve.add_command(label=" Perfiles  ", font=(font,9), command=self.create_profile, 
                                        background=colors["soft_grey"], foreground=colors["white"], activebackground=colors["dark_green"], 
                                        hidemargin=True)
         self.menu_archieve.add_command(label=" Exportar Perfil  ", font=(font,9), command=self.export_profile, 
@@ -1235,25 +1277,27 @@ class RelaxApp_User_Main_Menu_Profiles(RelaxApp_User_Settings_Structure):
                                           corner_radius=5, fg_color=colors["soft_green"])
         self.setting_title.place(rely=0.5, relx=0.5, anchor="center")
 
-#         # Image of a open simbol.
-        self.open_button = ctk.CTkImage(Image.open(image_path + "Abrir.png"))
-
+        # Image of a create simbol.
+        self.create_button = ctk.CTkImage(Image.open(image_path + "Crear.png"))
+        # Image of an open simbol.
+        self.load_button = ctk.CTkImage(Image.open(image_path + "Abrir.png"))
         # Image of a remove simbol.
         self.remove_button = ctk.CTkImage(Image.open(image_path + "Borrar.png"))
 
-        # # Sound by default label.
-        # self.sound_alert_D1 = ctk.CTkLabel(self.frame2, text="Test", font=(font, 14))
-        # self.sound_alert_D1.place(rely=0.5, relx=0.03, anchor="w")
+        # Button to create new profile.
+        self.create_profile_button = ctk.CTkButton(self.frame2, text=None, image=self.create_button, width=0, command=self.create_profile,
+                                                hover=True, fg_color=colors["soft_grey"], hover_color=colors["dark_green"])
+        self.create_profile_button.place(rely=0.5, relx=0.2, anchor="center")
 
         # Button to create new profile.
-        self.create_profile_button = ctk.CTkButton(self.frame2, text=None, image=self.open_button, width=0, command=self.create_profile,
+        self.load_profile_button = ctk.CTkButton(self.frame2, text=None, image=self.load_button, width=0, command=self.load_profile,
                                                 hover=True, fg_color=colors["soft_grey"], hover_color=colors["dark_green"])
-        self.create_profile_button.place(rely=0.5, relx=0.25, anchor="w")
+        self.load_profile_button.place(rely=0.5, relx=0.5, anchor="center")
 
         # Button to remove profile selected.
         self.remove_profile_button = ctk.CTkButton(self.frame2, text=None, image=self.remove_button, width=0, command=self.remove_profile,
                                                 hover=True, fg_color=colors["soft_grey"], hover_color=colors["dark_green"])
-        self.remove_profile_button.place(rely=0.5, relx=0.75, anchor="e")
+        self.remove_profile_button.place(rely=0.5, relx=0.8, anchor="center")
 
         # Save button.
         self.save_button = ctk.CTkButton(self.frame6, width=10, height=10, text="Guardar", font=(font,14), 
@@ -1268,9 +1312,9 @@ class RelaxApp_User_Main_Menu_Profiles(RelaxApp_User_Settings_Structure):
         self.cancel_button.place(rely=0.5, relx=0.9, anchor="e")
 
     def create_profile(self):
-        pass
+        RelaxApp_Profile_Name(self.root)
 
-    def load_prifile(self):
+    def load_profile(self):
         pass
 
     def remove_profile(self):
@@ -1284,6 +1328,50 @@ class RelaxApp_User_Main_Menu_Profiles(RelaxApp_User_Settings_Structure):
 
     def cancel_settings(self):
         self.window.destroy()
+
+
+class RelaxApp_Profile_Name(RelaxApp_Profile_Name_Structure):
+    def __init__(self, root):
+        super().__init__(root)
+        self.root = root
+
+        # Image of an accept simbol.
+        self.accept_image = ctk.CTkImage(Image.open(image_path + "Aceptar.png"))
+        # Image of a remove simbol.
+        self.close_image = ctk.CTkImage(Image.open(image_path + "Borrar.png"))
+
+        # Validate character limit. 
+        self.lenght_name = self.root.register(Validate_CMD.validate_lenght_name)
+
+        # Lenght entry hours.
+        self.profile_name_entry = ctk.CTkEntry(self.profile_frame, font=(font,14), width=200, validate="key",
+                                               validatecommand=(self.lenght_name, "%P"))
+        self.profile_name_entry.place(rely=0.5, relx=0.01, anchor="w")
+        self.profile_name_entry.insert(0, "Nombre del Perfil")
+        self.profile_name_entry.bind("<Button-1>", lambda remove: self.profile_name_entry.delete(0, tk.END))
+
+        # Button to close windows without accepted.
+        self.accept_button = ctk.CTkButton(self.profile_frame, text=None, image=self.accept_image, width=0, command=self.accept,
+                                           hover=True, fg_color=colors["soft_grey"], hover_color=colors["dark_green"])
+        self.accept_button.place(rely=0.5, relx=0.85, anchor="e")
+
+        # Button to close windows without accepted.
+        self.close_button = ctk.CTkButton(self.profile_frame, text=None, image=self.close_image, width=0, command=self.close,
+                                          hover=True, fg_color=colors["soft_grey"], hover_color=colors["dark_green"])
+        self.close_button.place(rely=0.5, relx=0.99, anchor="e")
+
+    def accept(self):
+        profile_name = self.profile_name_entry.get()
+
+        base_datos.configuraciones_usuario(databases["database1"], tables["settings_table"], 
+                                           user["login"], "Nombre_Perfil", profile_name, "Agregar")
+
+        self.window2.destroy()
+
+    def close(self):
+        self.window2.destroy()
+
+       
 
 
 ##########################################################
@@ -1487,12 +1575,12 @@ class RelaxApp_User_Main_Menu_Settings(RelaxApp_User_Settings_Structure):
             # Varible "self.values" is saved in the database inside the "Configuracion_visual" column.
             if self.visual_options_values == True:
                 base_datos.configuraciones_usuario(databases["database1"], tables["settings_table"], 
-                                                   user["login"], "Configuracion_visual", self.values)
+                                                   user["login"], "Configuracion_visual", self.values, "Actualizar")
 
             # Varible "self.values" is saved in the database inside the "Configuracion_estirar" column.    
             elif self.stretch_options_values == True:
                 base_datos.configuraciones_usuario(databases["database1"], tables["settings_table"], 
-                                                   user["login"], "Configuracion_estirar", self.values)
+                                                   user["login"], "Configuracion_estirar", self.values, "Actualizar")
 
             self.window.destroy()
         
@@ -1748,11 +1836,11 @@ entre cada alerta.", parent_kwargs = { "bg": colors["black"]}, delay=0.5, font=(
         else:
             # Varible "self.final_sound" is saved in the database inside the "Configuracion_Sonidos_Final" column.
             base_datos.configuraciones_usuario(databases["database1"], tables["settings_table"], 
-                                            user["login"], "Configuracion_Sonidos_Final", self.final_sound)
+                                            user["login"], "Configuracion_Sonidos_Final", self.final_sound, "Actualizar")
             
             # Varible "self.lapse_sound" is saved in the database inside the "Configuracion_Sonidos_Lapse" column.
             base_datos.configuraciones_usuario(databases["database1"], tables["settings_table"], 
-                                            user["login"], "Configuracion_Sonidos_Lapse", self.lapse_sound)
+                                            user["login"], "Configuracion_Sonidos_Lapse", self.lapse_sound, "Actualizar")
             
             self.window.destroy()
 

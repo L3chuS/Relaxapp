@@ -424,7 +424,7 @@ Elija otro nombre.'
     @conexion
     @comprobar_bd
     @comprobar_tabla
-    def configuraciones_usuario(self, base_datos, tabla, usuario, campo, configuracion):
+    def configuraciones_usuario(self, base_datos, tabla, usuario, campo, configuracion, accion):
         """Método para añadir en la base de datos las configuraciones que el usuario realiza desde la aplicación.
         Necesita 5 argumentos: Una base de datos (tipo string), una tabla (tipo string), un usuario (tipo string),
         un campo a modificar (tipo string) y los valores de la configuración (tipo string)."""
@@ -435,11 +435,17 @@ Compruebe el nombre indicado.')
             return
             
         try:
-            # Selecciona la base de datos en donde se van a guardar los valores del usuario indicado. 
-            self.cursor.execute(f"USE {base_datos}")
-            comando_insertar = f"UPDATE {tabla} SET {campo} = '{configuracion}' WHERE login = '{usuario}'"
-            self.cursor.execute(comando_insertar)
-            self.conector.commit()
+            if accion == "Actualizar":
+                # Selecciona la base de datos en donde se van a guardar los valores del usuario indicado. 
+                self.cursor.execute(f"USE {base_datos}")
+                comando_insertar = f"UPDATE {tabla} SET {campo} = '{configuracion}' WHERE login = '{usuario}'"
+                self.cursor.execute(comando_insertar)
+                self.conector.commit()
+            elif accion == "Agregar":
+                self.cursor.execute(f"USE {base_datos}")
+                comando_insertar = f"INSERT INTO usuarios_configuraciones (login, nombre_perfil) values ('{usuario}', '{configuracion}');"
+                self.cursor.execute(comando_insertar)
+                self.conector.commit()
         
         except:
             print("Error! Revise los datos introducidos en el usuario indicado.")

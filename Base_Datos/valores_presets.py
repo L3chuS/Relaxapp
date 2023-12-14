@@ -74,7 +74,7 @@ columnas_configuraciones_default = [
         "nombre" : "Login",
         "tipo" : "VARCHAR",
         "largo" : 30,
-        "unico" : True,
+        "unico" : False,
         "auto_increment" : False,
         "not_null" : True,
     },
