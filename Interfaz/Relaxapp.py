@@ -9,7 +9,7 @@ import threading
 import pygame
 from PIL import Image
 from tktooltip import ToolTip
-import hashlib
+import datetime
 
 # Connect to the database.
 base_datos = bd.BaseDatos(**bd.acceso_root)
@@ -200,7 +200,7 @@ class RelaxApp_Profile_Name_Structure:
         width = 310
         height = 50
         width_resolution = self.window2.winfo_screenwidth() // 2 - width // 2 - width // 3
-        height_resolution = self.window2.winfo_screenheight() // 2 - height
+        height_resolution = self.window2.winfo_screenheight() // 2 - height - 45
         self.dimensions = self.window2.geometry(f"{width}x{height}+{width_resolution}+{height_resolution}")
         self.maximize = self.window2.resizable(False,False)
 
@@ -1299,6 +1299,9 @@ class RelaxApp_User_Main_Menu_Profiles(RelaxApp_User_Settings_Structure):
                                                 hover=True, fg_color=colors["soft_grey"], hover_color=colors["dark_green"])
         self.remove_profile_button.place(rely=0.5, relx=0.8, anchor="center")
 
+
+
+
         # Save button.
         self.save_button = ctk.CTkButton(self.frame6, width=10, height=10, text="Guardar", font=(font,14), 
                                          command=self.save_settings, corner_radius=10, hover=True, 
@@ -1329,6 +1332,10 @@ class RelaxApp_User_Main_Menu_Profiles(RelaxApp_User_Settings_Structure):
     def cancel_settings(self):
         self.window.destroy()
 
+
+##################################################################
+###  Class that contains the window to write the profile name  ###
+##################################################################
 
 class RelaxApp_Profile_Name(RelaxApp_Profile_Name_Structure):
     def __init__(self, root):
@@ -1363,15 +1370,22 @@ class RelaxApp_Profile_Name(RelaxApp_Profile_Name_Structure):
     def accept(self):
         profile_name = self.profile_name_entry.get()
 
-        base_datos.configuraciones_usuario(databases["database1"], tables["settings_table"], 
-                                           user["login"], "Nombre_Perfil", profile_name, "Agregar")
+        base_datos.consulta(f"SELECT Nombre_Perfil FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}'")
+        profile_list = base_datos.valor
 
-        self.window2.destroy()
+        if len(profile_name) == 0:
+            RelaxApp_MessageBox_Options(self.root, "No Name")
+        elif len(profile_list) == 4:
+            RelaxApp_MessageBox_Options(self.root, "Full Profile")
+        else:
+            date_time = datetime.datetime.now().strftime("%d-%m-%Y - %H.%M.%Shs")
+
+            base_datos.configuraciones_usuario(databases["database1"], tables["settings_table"], 
+                                           user["login"], "Login, Nombre_Perfil, Fecha_Hora", (profile_name, date_time), "Agregar")
+            self.window2.destroy()
 
     def close(self):
         self.window2.destroy()
-
-       
 
 
 ##########################################################
@@ -1992,7 +2006,20 @@ class RelaxApp_MessageBox_Options(RelaxApp_MessageBox_Structure):
                                                font=(font,14), bg_color=colors["soft_grey"])
             self.no_sound_label.place(rely=0.35, relx=0.5, anchor="center")
             self.select_button3 = True
-            
+        
+        elif message == "No Name":
+            # Label to alert that a load sounds is trying to save but no file is loaded.
+            self.no_name_label = ctk.CTkLabel(self.window, text="El nombre del perfil deber tener al menos un caracter y un \nmáximo de 25.", 
+                                              font=(font,14), bg_color=colors["soft_grey"])
+            self.no_name_label.place(rely=0.35, relx=0.5, anchor="center")
+            self.select_button3 = True
+         
+        elif message == "Full Profile":
+            # Label to alert that a load sounds is trying to save but no file is loaded.
+            self.full_profile_label = ctk.CTkLabel(self.window, text="No se pueden agregar mas de 3 perfiles. Elimine alguno de los \nque tiene configurados.", 
+                                                   font=(font,14), bg_color=colors["soft_grey"])
+            self.full_profile_label.place(rely=0.35, relx=0.5, anchor="center")
+            self.select_button3 = True  
 
         if self.select_button1 == True:
             # Button to accept user registration.
