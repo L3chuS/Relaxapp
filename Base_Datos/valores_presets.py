@@ -95,6 +95,14 @@ columnas_configuraciones_default = [
         "not_null" : False,
     },
     {
+        "nombre" : "Predeterminado",
+        "tipo" : "VARCHAR",
+        "largo" : 10,
+        "unico" : False,
+        "auto_increment" : False,
+        "not_null" : False,
+    },
+    {
         "nombre" : "Configuracion_Visual",
         "tipo" : "VARCHAR",
         "largo" : 150,

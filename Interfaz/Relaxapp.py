@@ -212,6 +212,7 @@ class RelaxApp_Profile_Name_Structure:
         self.title = self.window2.title("RelaxApp")
         self.window2.after(200, lambda: self.window2.iconbitmap(image_path + "logo.ico"))
 
+
 ###############################################################################
 ### Class that is used to validate entries in the user's main menu settings ###
 ###############################################################################
@@ -243,12 +244,12 @@ class Validate_CMD:
             return False
         
     def validate_lenght_name(text):
-        """Funtions to validate lenght of the profile name not to be larger than 25 characters."""
+        """Funtions to validate lenght of the profile name not to be larger than 20 characters."""
         if len(text) == 0:
             return True
         elif text == "Nombre del Perfil":
             return True
-        elif len(text) < 26:
+        elif len(text) < 21:
             return True
         else:
             return False
@@ -1299,7 +1300,8 @@ class RelaxApp_User_Main_Menu_Profiles(RelaxApp_User_Settings_Structure):
                                                 hover=True, fg_color=colors["soft_grey"], hover_color=colors["dark_green"])
         self.remove_profile_button.place(rely=0.5, relx=0.8, anchor="center")
 
-
+        self.run_profiles()
+        
 
 
         # Save button.
@@ -1313,18 +1315,62 @@ class RelaxApp_User_Main_Menu_Profiles(RelaxApp_User_Settings_Structure):
                                            command=self.cancel_settings, corner_radius=10, hover=True, 
                                            fg_color=colors["soft_grey"], hover_color=colors["dark_green"])
         self.cancel_button.place(rely=0.5, relx=0.9, anchor="e")
+    
+    def run_profiles(self):
+        # Search method is called to get all the profile set for current user.
+        base_datos.consulta(f"SELECT Nombre_Perfil FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}'")
+        profile_list = base_datos.valor
+
+        if len(profile_list) > 1:
+            frame_counter = 3
+            value = 0
+            profile_choice = ctk.IntVar()
+
+            for profile in range(1, len(profile_list)):
+                if frame_counter == 3:
+                    frame = self.frame3
+                elif frame_counter == 4:
+                    frame = self.frame4
+                elif frame_counter == 5:
+                    frame = self.frame5
+
+                profile_set = ctk.CTkLabel(frame, text=profile_list[profile][0], font=(font, 15))
+                profile_set.place(rely=0.5, relx=0.02, anchor="w")
+                frame_counter += 1
+
+
+            # Checkbox to activate or deactivate profile selected.
+            profile_set1 = ctk.CTkRadioButton(self.frame3, text=None, value=0, variable=profile_choice, hover=True, 
+                                                border_width_unchecked=2, border_width_checked=5, fg_color=colors["soft_green"], 
+                                                hover_color=colors["dark_green"])
+            profile_set1.place(rely=0.5, relx=0.87, anchor="w")
+
+            if len(profile_list) > 2: 
+                profile_set2 = ctk.CTkRadioButton(self.frame4, text=None, value=1, variable=profile_choice, hover=True, 
+                                                    border_width_unchecked=2, border_width_checked=5, fg_color=colors["soft_green"], 
+                                                    hover_color=colors["dark_green"])
+                profile_set2.place(rely=0.5, relx=0.87, anchor="w")
+
+            if len(profile_list) > 3:
+                profile_set3 = ctk.CTkRadioButton(self.frame5, text=None, value=2, variable=profile_choice, hover=True, 
+                                                    border_width_unchecked=2, border_width_checked=5, fg_color=colors["soft_green"], 
+                                                    hover_color=colors["dark_green"])
+                profile_set3.place(rely=0.5, relx=0.87, anchor="w")
+
 
     def create_profile(self):
-        RelaxApp_Profile_Name(self.root)
+        RelaxApp_Profile_Name(self.root, self.window)
 
     def load_profile(self):
         pass
 
     def remove_profile(self):
         pass
-    
-    def profile_name(self):
-        pass
+        # base_datos.consulta(f"SELECT Fecha_Hora FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}'")
+        # profile_list = base_datos.valor
+        # print(profile_list)
+
+        # base_datos.configuraciones_usuario(databases["database1"], tables["settings_table"], user["login"], "Borrar", "Login")
 
     def save_settings(self):
         self.window.destroy()
@@ -1338,9 +1384,10 @@ class RelaxApp_User_Main_Menu_Profiles(RelaxApp_User_Settings_Structure):
 ##################################################################
 
 class RelaxApp_Profile_Name(RelaxApp_Profile_Name_Structure):
-    def __init__(self, root):
+    def __init__(self, root, window):
         super().__init__(root)
         self.root = root
+        self.window = window
 
         # Image of an accept simbol.
         self.accept_image = ctk.CTkImage(Image.open(image_path + "Aceptar.png"))
@@ -1381,11 +1428,14 @@ class RelaxApp_Profile_Name(RelaxApp_Profile_Name_Structure):
             date_time = datetime.datetime.now().strftime("%d-%m-%Y - %H.%M.%Shs")
 
             base_datos.configuraciones_usuario(databases["database1"], tables["settings_table"], 
-                                           user["login"], "Login, Nombre_Perfil, Fecha_Hora", (profile_name, date_time), "Agregar")
+                                           user["login"], "Agregar", "Login, Nombre_Perfil, Fecha_Hora, Predeterminado", (profile_name, date_time, False))
             self.window2.destroy()
+            RelaxApp_User_Main_Menu_Profiles(self.window, user["login"])
+            self.window.destroy()
 
     def close(self):
         self.window2.destroy()
+
 
 
 ##########################################################
@@ -2009,7 +2059,7 @@ class RelaxApp_MessageBox_Options(RelaxApp_MessageBox_Structure):
         
         elif message == "No Name":
             # Label to alert that a load sounds is trying to save but no file is loaded.
-            self.no_name_label = ctk.CTkLabel(self.window, text="El nombre del perfil deber tener al menos un caracter y un \nmáximo de 25.", 
+            self.no_name_label = ctk.CTkLabel(self.window, text="El nombre del perfil deber tener al menos un caracter y un \nmáximo de 20.", 
                                               font=(font,14), bg_color=colors["soft_grey"])
             self.no_name_label.place(rely=0.35, relx=0.5, anchor="center")
             self.select_button3 = True

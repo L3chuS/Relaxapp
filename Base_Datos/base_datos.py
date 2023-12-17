@@ -424,7 +424,7 @@ Elija otro nombre.'
     @conexion
     @comprobar_bd
     @comprobar_tabla
-    def configuraciones_usuario(self, base_datos, tabla, usuario, campo, configuracion, accion):
+    def configuraciones_usuario(self, base_datos, tabla, usuario, accion, campo, configuracion=None):
         """Método para añadir en la base de datos las configuraciones que el usuario realiza desde la aplicación.
         Necesita 5 argumentos: Una base de datos (tipo string), una tabla (tipo string), un usuario (tipo string),
         un campo a modificar (tipo string) y los valores de la configuración (tipo string)."""
@@ -443,7 +443,13 @@ Compruebe el nombre indicado.')
                 self.conector.commit()
             elif accion == "Agregar":
                 self.cursor.execute(f"USE {base_datos}")
-                comando_insertar = f"INSERT INTO {tabla} ({campo}) values ('{usuario}', '{configuracion[0]}', '{configuracion[1]}');"
+                comando_insertar = f"INSERT INTO {tabla} ({campo}) values ('{usuario}', '{configuracion[0]}', '{configuracion[1]}', '{configuracion[2]}');"
+                print("comando final :", comando_insertar)
+                self.cursor.execute(comando_insertar)
+                self.conector.commit()
+            elif accion == "Borrar":
+                self.cursor.execute(f"USE {base_datos}")
+                comando_insertar = f"DELETE FROM {tabla} WHERE {campo[0]} = '{usuario}' and {campo[1]} = '{configuracion}';"
                 print("comando final :", comando_insertar)
                 self.cursor.execute(comando_insertar)
                 self.conector.commit()
