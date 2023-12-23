@@ -27,7 +27,7 @@ class BaseDatos:
             self.usuario = kwargs["user"]
             self.contrasena = kwargs["password"]
             self.estado_conexion = True
-            print("Se establece conexión con el servidor.")
+            # print("Se establece conexión con el servidor.")
 
         # Excepción lanzada en caso de que los valores de conexión sean incorrectos.    
         except:
@@ -49,7 +49,7 @@ class BaseDatos:
                         password = self.contrasena
                         )
                     self.cursor = self.conector.cursor()
-                    print("Se reabre conexión con el servidor.")
+                    # print("Se reabre conexión con el servidor.")
                     self.estado_conexion = True
                 funcion_decorada(self, *args, **kwargs)
 
@@ -62,7 +62,7 @@ class BaseDatos:
                     self.conector.close()
                     self.cursor.close()
                     self.estado_conexion = False
-                    print("Se cierra la conexión con el servidor.")
+                    # print("Se cierra la conexión con el servidor.")
         return interna
 
     # Función decoradora que muestra el listado de bases de datos.
@@ -424,7 +424,7 @@ Elija otro nombre.'
     @conexion
     @comprobar_bd
     @comprobar_tabla
-    def configuraciones_usuario(self, base_datos, tabla, usuario, accion, campo, configuracion=None):
+    def configuraciones_usuario(self, base_datos, tabla, usuario, accion, campo, configuracion):
         """Método para añadir en la base de datos las configuraciones que el usuario realiza desde la aplicación.
         Necesita 5 argumentos: Una base de datos (tipo string), una tabla (tipo string), un usuario (tipo string),
         un campo a modificar (tipo string) y los valores de la configuración (tipo string)."""
@@ -438,7 +438,7 @@ Compruebe el nombre indicado.')
             if accion == "Actualizar":
                 # Selecciona la base de datos en donde se van a guardar los valores del usuario indicado. 
                 self.cursor.execute(f"USE {base_datos}")
-                comando_insertar = f"UPDATE {tabla} SET {campo} = '{configuracion}' WHERE login = '{usuario}'"
+                comando_insertar = f"UPDATE {tabla} SET {campo[1]} = '{configuracion[1]}' WHERE login = '{usuario}' and {campo[0]} = '{configuracion[0]}';"
                 self.cursor.execute(comando_insertar)
                 self.conector.commit()
             elif accion == "Agregar":

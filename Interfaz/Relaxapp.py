@@ -1241,10 +1241,6 @@ class RelaxApp_User_Main_Menu_Profiles(RelaxApp_User_Settings_Structure):
         self.root = root
         self.user = user
 
-#         # An empty string which is going to save all values when user save a configuration.
-#         # self.final_sound = ""
-#         # self.lapse_sound = ""
-
         # Frame at the back.
         self.frame.configure(fg_color=colors["black"])
         self.frame.pack(pady=0, padx=0, fill="both")  
@@ -1300,31 +1296,18 @@ class RelaxApp_User_Main_Menu_Profiles(RelaxApp_User_Settings_Structure):
                                                 hover=True, fg_color=colors["soft_grey"], hover_color=colors["dark_green"])
         self.remove_profile_button.place(rely=0.5, relx=0.8, anchor="center")
 
-        self.run_profiles()
-        
-
-
-        # Save button.
-        self.save_button = ctk.CTkButton(self.frame6, width=10, height=10, text="Guardar", font=(font,14), 
-                                         command=self.save_settings, corner_radius=10, hover=True, 
-                                         fg_color=colors["soft_grey"], hover_color=colors["dark_green"])
-        self.save_button.place(rely=0.5, relx=0.1, anchor="w")
-
-        # Cancel button.
-        self.cancel_button = ctk.CTkButton(self.frame6, width=10, height=10, text="Cancelar", font=(font,14),
-                                           command=self.cancel_settings, corner_radius=10, hover=True, 
-                                           fg_color=colors["soft_grey"], hover_color=colors["dark_green"])
-        self.cancel_button.place(rely=0.5, relx=0.9, anchor="e")
-    
-    def run_profiles(self):
         # Search method is called to get all the profile set for current user.
-        base_datos.consulta(f"SELECT Nombre_Perfil FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}'")
+        base_datos.consulta(f"SELECT Nombre_Perfil FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user}'")
         profile_list = base_datos.valor
-
+        
         if len(profile_list) > 1:
+            base_datos.consulta(f"SELECT Predeterminado FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user}'")
+            default_profile = base_datos.valor
             frame_counter = 3
-            value = 0
-            profile_choice = ctk.IntVar()
+        
+            for default in range(1, len(default_profile)):
+                if default_profile[default][0] == "True":
+                    self.profile_choice = ctk.IntVar(value=default-1)
 
             for profile in range(1, len(profile_list)):
                 if frame_counter == 3:
@@ -1338,24 +1321,35 @@ class RelaxApp_User_Main_Menu_Profiles(RelaxApp_User_Settings_Structure):
                 profile_set.place(rely=0.5, relx=0.02, anchor="w")
                 frame_counter += 1
 
-
-            # Checkbox to activate or deactivate profile selected.
-            profile_set1 = ctk.CTkRadioButton(self.frame3, text=None, value=0, variable=profile_choice, hover=True, 
-                                                border_width_unchecked=2, border_width_checked=5, fg_color=colors["soft_green"], 
-                                                hover_color=colors["dark_green"])
+            # Checkbox to activate or deactivate profiles selected.
+            profile_set1 = ctk.CTkRadioButton(self.frame3, text=None, value=0, variable=self.profile_choice, hover=True, 
+                                              border_width_unchecked=2, border_width_checked=5, fg_color=colors["soft_green"], 
+                                              hover_color=colors["dark_green"])
             profile_set1.place(rely=0.5, relx=0.87, anchor="w")
 
-            if len(profile_list) > 2: 
-                profile_set2 = ctk.CTkRadioButton(self.frame4, text=None, value=1, variable=profile_choice, hover=True, 
-                                                    border_width_unchecked=2, border_width_checked=5, fg_color=colors["soft_green"], 
-                                                    hover_color=colors["dark_green"])
+            if len(profile_list) > 2:
+                profile_set2 = ctk.CTkRadioButton(self.frame4, text=None, value=1, variable=self.profile_choice, hover=True, 
+                                                  border_width_unchecked=2, border_width_checked=5, fg_color=colors["soft_green"], 
+                                                  hover_color=colors["dark_green"])
                 profile_set2.place(rely=0.5, relx=0.87, anchor="w")
 
             if len(profile_list) > 3:
-                profile_set3 = ctk.CTkRadioButton(self.frame5, text=None, value=2, variable=profile_choice, hover=True, 
-                                                    border_width_unchecked=2, border_width_checked=5, fg_color=colors["soft_green"], 
-                                                    hover_color=colors["dark_green"])
+                profile_set3 = ctk.CTkRadioButton(self.frame5, text=None, value=2, variable=self.profile_choice, hover=True, 
+                                                  border_width_unchecked=2, border_width_checked=5, fg_color=colors["soft_green"], 
+                                                  hover_color=colors["dark_green"])
                 profile_set3.place(rely=0.5, relx=0.87, anchor="w")
+
+        # Save button.
+        self.save_button = ctk.CTkButton(self.frame6, width=10, height=10, text="Guardar", font=(font,14), 
+                                         command=self.save_settings, corner_radius=10, hover=True, 
+                                         fg_color=colors["soft_grey"], hover_color=colors["dark_green"])
+        self.save_button.place(rely=0.5, relx=0.1, anchor="w")
+
+        # Cancel button.
+        self.cancel_button = ctk.CTkButton(self.frame6, width=10, height=10, text="Cancelar", font=(font,14),
+                                           command=self.cancel_settings, corner_radius=10, hover=True, 
+                                           fg_color=colors["soft_grey"], hover_color=colors["dark_green"])
+        self.cancel_button.place(rely=0.5, relx=0.9, anchor="e")
 
 
     def create_profile(self):
@@ -1365,14 +1359,41 @@ class RelaxApp_User_Main_Menu_Profiles(RelaxApp_User_Settings_Structure):
         pass
 
     def remove_profile(self):
-        pass
-        # base_datos.consulta(f"SELECT Fecha_Hora FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}'")
-        # profile_list = base_datos.valor
-        # print(profile_list)
+        base_datos.consulta(f"SELECT Nombre_Perfil FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}'")
+        profile_list = base_datos.valor
 
-        # base_datos.configuraciones_usuario(databases["database1"], tables["settings_table"], user["login"], "Borrar", "Login")
+        if len(profile_list) > 1:
+            
+            default_profile = self.profile_choice.get()
+            profile_choosen = profile_list[default_profile+1][0]
+            base_datos.configuraciones_usuario(databases["database1"], tables["settings_table"], user["login"], "Borrar", ("Login", "Nombre_Perfil"), profile_choosen)
+            if len(profile_list) == 4:
+                self.frame5 = ctk.CTkFrame(self.frame5, height=40, width=250, fg_color=colors["soft_grey"], corner_radius=3)
+                self.frame5.pack(pady=0, padx=0)
+            elif len(profile_list) == 3:
+                self.frame4 = ctk.CTkFrame(self.frame4, height=40, width=250, fg_color=colors["soft_grey"], corner_radius=3)
+                self.frame4.pack(pady=0, padx=0)
+            elif len(profile_list) == 2:
+                self.frame3 = ctk.CTkFrame(self.frame3, height=40, width=250, fg_color=colors["soft_grey"], corner_radius=3)
+                self.frame3.pack(pady=0, padx=0)
+            # self.run_profiles()
 
     def save_settings(self):
+        
+        base_datos.consulta(f"SELECT Nombre_Perfil FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}'")
+        profile_list = base_datos.valor
+
+        profile_selected = self.profile_choice.get()
+
+        if len(profile_list) > 1:
+            
+            for profile in range(1, len(profile_list)):
+                if profile == profile_selected + 1:
+                    base_datos.configuraciones_usuario(databases["database1"], tables["settings_table"], user["login"], 
+                                                       "Actualizar", ("Nombre_Perfil", "Predeterminado"), (profile_list[profile][0], "True"))
+                else:
+                    base_datos.configuraciones_usuario(databases["database1"], tables["settings_table"], user["login"], 
+                                                       "Actualizar", ("Nombre_Perfil", "Predeterminado"), (profile_list[profile][0], "False"))
         self.window.destroy()
 
     def cancel_settings(self):
