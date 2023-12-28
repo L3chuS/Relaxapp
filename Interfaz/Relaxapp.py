@@ -1304,10 +1304,19 @@ class RelaxApp_User_Main_Menu_Profiles(RelaxApp_User_Settings_Structure):
             base_datos.consulta(f"SELECT Predeterminado FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user}'")
             default_profile = base_datos.valor
             frame_counter = 3
-        
+            counter = 1
+
             for default in range(1, len(default_profile)):
                 if default_profile[default][0] == "True":
                     self.profile_choice = ctk.IntVar(value=default-1)
+                else:
+                    counter += 1
+                    if counter == len(profile_list):
+                        print("perfil a poner true: ", profile_list[default][0])
+                        self.profile_choice = ctk.IntVar(value=0)
+                        base_datos.configuraciones_usuario(databases["database1"], tables["settings_table"], user, 
+                                                       "Actualizar", ("Nombre_Perfil", "Predeterminado"), (profile_list[default][0], "True"))
+
 
             for profile in range(1, len(profile_list)):
                 if frame_counter == 3:
