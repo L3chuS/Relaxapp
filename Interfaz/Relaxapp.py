@@ -1314,9 +1314,8 @@ class RelaxApp_User_Main_Menu_Profiles(RelaxApp_User_Settings_Structure):
                     if counter == len(profile_list):
                         print("perfil a poner true: ", profile_list[default][0])
                         self.profile_choice = ctk.IntVar(value=0)
-                        base_datos.configuraciones_usuario(databases["database1"], tables["settings_table"], user, 
-                                                       "Actualizar", ("Nombre_Perfil", "Predeterminado"), (profile_list[default][0], "True"))
-
+                        base_datos.configuraciones_usuario(databases["database1"], tables["settings_table"], user, "Actualizar",
+                                                          ("Nombre_Perfil", "Predeterminado"), (profile_list[default][0], "True"))
 
             for profile in range(1, len(profile_list)):
                 if frame_counter == 3:
@@ -1376,16 +1375,15 @@ class RelaxApp_User_Main_Menu_Profiles(RelaxApp_User_Settings_Structure):
             default_profile = self.profile_choice.get()
             profile_choosen = profile_list[default_profile+1][0]
             base_datos.configuraciones_usuario(databases["database1"], tables["settings_table"], user["login"], "Borrar", ("Login", "Nombre_Perfil"), profile_choosen)
-            if len(profile_list) == 4:
-                self.frame5 = ctk.CTkFrame(self.frame5, height=40, width=250, fg_color=colors["soft_grey"], corner_radius=3)
-                self.frame5.pack(pady=0, padx=0)
-            elif len(profile_list) == 3:
-                self.frame4 = ctk.CTkFrame(self.frame4, height=40, width=250, fg_color=colors["soft_grey"], corner_radius=3)
-                self.frame4.pack(pady=0, padx=0)
-            elif len(profile_list) == 2:
-                self.frame3 = ctk.CTkFrame(self.frame3, height=40, width=250, fg_color=colors["soft_grey"], corner_radius=3)
-                self.frame3.pack(pady=0, padx=0)
-            # self.run_profiles()
+            # if len(profile_list) == 4:
+            #     self.frame5 = ctk.CTkFrame(self.frame5, height=40, width=250, fg_color=colors["soft_grey"], corner_radius=3)
+            #     self.frame5.pack(pady=0, padx=0)
+            # elif len(profile_list) == 3:
+            #     self.frame4 = ctk.CTkFrame(self.frame4, height=40, width=250, fg_color=colors["soft_grey"], corner_radius=3)
+            #     self.frame4.pack(pady=0, padx=0)
+            # elif len(profile_list) == 2:
+            #     self.frame3 = ctk.CTkFrame(self.frame3, height=40, width=250, fg_color=colors["soft_grey"], corner_radius=3)
+            #     self.frame3.pack(pady=0, padx=0)
 
     def save_settings(self):
         
