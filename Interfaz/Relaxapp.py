@@ -1270,7 +1270,7 @@ class RelaxApp_User_Main_Menu_Profiles(RelaxApp_User_Settings_Structure):
         self.frame6.pack(pady=10, padx=10)
 
         # Alert configuration label.
-        self.setting_title = ctk.CTkLabel(self.frame1, text="Perfiles Configurados", font=(font, 15), 
+        self.setting_title = ctk.CTkLabel(self.frame1, text="Perfil Predeterminado", font=(font, 15), 
                                           corner_radius=5, fg_color=colors["soft_green"])
         self.setting_title.place(rely=0.5, relx=0.5, anchor="center")
 
