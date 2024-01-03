@@ -1961,12 +1961,12 @@ entre cada alerta.", parent_kwargs = { "bg": colors["black"]}, delay=0.5, font=(
             RelaxApp_MessageBox_Options(self.root, "No Sound")
         else:
             # Varible "self.final_sound" is saved in the database inside the "Configuracion_Sonidos_Final" column.
-            base_datos.configuraciones_usuario(databases["database1"], tables["settings_table"], 
-                                            user["login"], "Configuracion_Sonidos_Final", self.final_sound, "Actualizar")
+            base_datos.configuraciones_usuario(databases["database1"], tables["settings_table"], user["login"], 
+                                               "ActualizarNULL", ("Nombre_Perfil", "Configuracion_Sonidos_Final"), self.final_sound)
             
             # Varible "self.lapse_sound" is saved in the database inside the "Configuracion_Sonidos_Lapse" column.
-            base_datos.configuraciones_usuario(databases["database1"], tables["settings_table"], 
-                                            user["login"], "Configuracion_Sonidos_Lapse", self.lapse_sound, "Actualizar")
+            base_datos.configuraciones_usuario(databases["database1"], tables["settings_table"], user["login"], 
+                                               "ActualizarNULL", ("Nombre_Perfil", "Configuracion_Sonidos_Lapse"), self.lapse_sound)
             
             self.window.destroy()
 
