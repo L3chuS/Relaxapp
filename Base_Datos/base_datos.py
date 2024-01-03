@@ -277,6 +277,7 @@ la información introducida.")
                 print("No hay resultados para mostrar")
                 return
             # Se itera y formatea sobre cada valor de la consulta realizada.
+            
             for consulta in self.valor:
                 for elemento in consulta:
                     print(str(elemento), end=" - ")
@@ -439,6 +440,14 @@ Compruebe el nombre indicado.')
                 # Selecciona la base de datos en donde se van a guardar los valores del usuario indicado. 
                 self.cursor.execute(f"USE {base_datos}")
                 comando_insertar = f"UPDATE {tabla} SET {campo[1]} = '{configuracion[1]}' WHERE login = '{usuario}' and {campo[0]} = '{configuracion[0]}';"
+                print("el comando insertado es: ", comando_insertar)
+                self.cursor.execute(comando_insertar)
+                self.conector.commit()
+            elif accion == "ActualizarNULL":
+                # Selecciona la base de datos en donde se van a guardar los valores del usuario indicado. 
+                self.cursor.execute(f"USE {base_datos}")
+                comando_insertar = f"UPDATE {tabla} SET {campo[1]} = '{configuracion}' WHERE login = '{usuario}' and {campo[0]} IS NULL;"
+                print("el comando insertado es: ", comando_insertar)
                 self.cursor.execute(comando_insertar)
                 self.conector.commit()
             elif accion == "Agregar":

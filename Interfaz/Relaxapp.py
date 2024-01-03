@@ -571,7 +571,7 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
         self.help_button.config(menu=self.menu_help)
 
         # Labels of archieve menu cascade.
-        self.menu_archieve.add_command(label=" Perfiles  ", font=(font,9), command=self.create_profile, 
+        self.menu_archieve.add_command(label=" Importar Perfil  ", font=(font,9), command=self.import_profile, 
                                        background=colors["soft_grey"], foreground=colors["white"], activebackground=colors["dark_green"], 
                                        hidemargin=True)
         self.menu_archieve.add_command(label=" Exportar Perfil  ", font=(font,9), command=self.export_profile, 
@@ -584,7 +584,22 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
 
         # Options label.
         self.options = ctk.CTkLabel(self.frame_main, text="Configurar", font=(font, 16), corner_radius=10, height=35)
-        self.options.place(rely=0.3, relx=0.5, anchor="center")
+        self.options.place(rely=0.2, relx=0.5, anchor="center")
+
+
+
+        if user["login"] == "lechu":
+            profile_state = ctk.DISABLED
+        else:
+            profile_state = "normal"
+            
+        # Button to create profiles.
+        self.profile_options = ctk.CTkButton(self.frame_main, text="Perfiles", font=(font, 14), 
+                                             command=self.create_profile, corner_radius=10, height=35, 
+                                             hover=True, fg_color=colors["soft_green"], hover_color=colors["dark_green"],
+                                             state="normal")
+        
+        self.profile_options.place(rely=0.3, relx=0.25, anchor="w")
 
         # Button to set visual options.
         self.visual_options = ctk.CTkButton(self.frame_main, text="Descanso Visual", font=(font, 14), 
@@ -623,11 +638,12 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
         self.start_relaxapp_button.place(rely=0.8, relx=0.5, anchor="center")
 
 
-    ###################################################################
-    ###### TO SET ######
     def create_profile(self):
         RelaxApp_User_Main_Menu_Profiles(self.root, user["login"])
-  
+    
+    def import_profile(self):
+        pass
+
     # Function to save both visual and stretch setting of the user.
     def export_profile(self):
         try:
@@ -1286,7 +1302,7 @@ class RelaxApp_User_Main_Menu_Profiles(RelaxApp_User_Settings_Structure):
                                                 hover=True, fg_color=colors["soft_grey"], hover_color=colors["dark_green"])
         self.create_profile_button.place(rely=0.5, relx=0.2, anchor="center")
 
-        # Button to create new profile.
+        # Button to load new profile.
         self.load_profile_button = ctk.CTkButton(self.frame2, text=None, image=self.load_button, width=0, command=self.load_profile,
                                                 hover=True, fg_color=colors["soft_grey"], hover_color=colors["dark_green"])
         self.load_profile_button.place(rely=0.5, relx=0.5, anchor="center")
@@ -1312,26 +1328,35 @@ class RelaxApp_User_Main_Menu_Profiles(RelaxApp_User_Settings_Structure):
 
 
     def run_profiles(self):
+        """This function writes all profiles set if there's any."""
+
         # Search method is called to get all the profile set for current user.
         base_datos.consulta(f"SELECT Nombre_Perfil FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}'")
         profile_list = base_datos.valor
         
+
         if len(profile_list) > 1:
+            # Search method is called to get if there's a profile set as default.
             base_datos.consulta(f"SELECT Predeterminado FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}'")
             default_profile = base_datos.valor
+            # Variable to be used to write the profile selected in the frame 3, 4 or 5.
             frame_counter = 3
             counter = 1
 
+            # Bucle to check if there's a profile set as "True" in the database to set it as default profile.
             for default in range(1, len(default_profile)):
                 if default_profile[default][0] == "True":
                     self.profile_choice = ctk.IntVar(value=default-1)
+                # This else condition is run when there's no profiles set as "True".
                 else:
                     counter += 1
                     if counter == len(profile_list):
                         self.profile_choice = ctk.IntVar(value=0)
+                        # When there's no profile set as "True" database is modified to set the first one as default. 
                         base_datos.configuraciones_usuario(databases["database1"], tables["settings_table"], user["login"], "Actualizar",
                                                           ("Nombre_Perfil", "Predeterminado"), (profile_list[default][0], "True"))
 
+            # Bucle to write each profile on each frame.
             for profile in range(1, len(profile_list)):
                 if frame_counter == 3:
                     frame = self.frame3
@@ -1350,6 +1375,7 @@ class RelaxApp_User_Main_Menu_Profiles(RelaxApp_User_Settings_Structure):
                                               hover_color=colors["dark_green"])
             profile_set1.place(rely=0.5, relx=0.87, anchor="w")
 
+            # Checkboxs are being created every time a profile is created. 
             if len(profile_list) > 2:
                 profile_set2 = ctk.CTkRadioButton(self.frame4, text=None, value=1, variable=self.profile_choice, hover=True, 
                                                   border_width_unchecked=2, border_width_checked=5, fg_color=colors["soft_green"], 
@@ -1369,15 +1395,17 @@ class RelaxApp_User_Main_Menu_Profiles(RelaxApp_User_Settings_Structure):
         pass
 
     def remove_profile(self):
-        self.clear_frame(self.frame3)
+        # Search method is called to get all the profile set for current user.
         base_datos.consulta(f"SELECT Nombre_Perfil FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}'")
         profile_list = base_datos.valor
 
         if len(profile_list) > 1:
-        
+            # Profile to remove is selected.
             default_profile = self.profile_choice.get()
             profile_choosen = profile_list[default_profile+1][0]
+            # Profile is removed from database.
             base_datos.configuraciones_usuario(databases["database1"], tables["settings_table"], user["login"], "Borrar", ("Login", "Nombre_Perfil"), profile_choosen)
+            # Profile is removed from the app.
             if len(profile_list) == 4:
                 self.clear_frame(self.frame5)
             elif len(profile_list) == 3:
@@ -1391,7 +1419,7 @@ class RelaxApp_User_Main_Menu_Profiles(RelaxApp_User_Settings_Structure):
             child.destroy()
 
     def save_settings(self):
-        
+        # Search method is called to get all the profile set for current user.
         base_datos.consulta(f"SELECT Nombre_Perfil FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}'")
         profile_list = base_datos.valor
 
@@ -1399,6 +1427,7 @@ class RelaxApp_User_Main_Menu_Profiles(RelaxApp_User_Settings_Structure):
 
         if len(profile_list) > 1:
             
+            # This bucle set the profile select as "True" and the rest (if there's any) as "False".
             for profile in range(1, len(profile_list)):
                 if profile == profile_selected + 1:
                     base_datos.configuraciones_usuario(databases["database1"], tables["settings_table"], user["login"], 
@@ -1671,13 +1700,13 @@ class RelaxApp_User_Main_Menu_Settings(RelaxApp_User_Settings_Structure):
 
             # Varible "self.values" is saved in the database inside the "Configuracion_visual" column.
             if self.visual_options_values == True:
-                base_datos.configuraciones_usuario(databases["database1"], tables["settings_table"], 
-                                                   user["login"], "Configuracion_visual", self.values, "Actualizar")
+                base_datos.configuraciones_usuario(databases["database1"], tables["settings_table"], user["login"], 
+                                                   "ActualizarNULL", ("Nombre_Perfil", "Configuracion_Visual"), self.values)
 
             # Varible "self.values" is saved in the database inside the "Configuracion_estirar" column.    
             elif self.stretch_options_values == True:
-                base_datos.configuraciones_usuario(databases["database1"], tables["settings_table"], 
-                                                   user["login"], "Configuracion_estirar", self.values, "Actualizar")
+                base_datos.configuraciones_usuario(databases["database1"], tables["settings_table"], user["login"], 
+                                                   "ActualizarNULL", ("Nombre_Perfil", "Configuracion_Estirar"), self.values)
 
             self.window.destroy()
         
