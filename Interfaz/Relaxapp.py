@@ -524,12 +524,13 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
     """This class contains the user's main menu. It allows to start
        the app, set, save and load settings and knows about RelaxApp."""
 
-    def __init__(self, root, visual_set=False, stretch_set=False):
+    def __init__(self, root, visual_set=False, stretch_set=False, value=False):
         super().__init__(root)
         self.root = root
 
         self.visual_set = visual_set
         self.stretch_set = stretch_set
+        self.value_test = value
 
         # Frame at the back.
         self.frame.configure(fg_color=colors["black"])
@@ -586,18 +587,19 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
         self.options = ctk.CTkLabel(self.frame_main, text="Configurar", font=(font, 16), corner_radius=10, height=35)
         self.options.place(rely=0.2, relx=0.5, anchor="center")
 
+        base_datos.consulta(f"SELECT Nombre_Perfil FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}'")
+        len_profiles = base_datos.valor
 
-
-        if user["login"] == "lechu":
-            profile_state = ctk.DISABLED
+        if len(len_profiles) > 1 or self.value_test == True:
+            self.profile_state = "normal"
         else:
-            profile_state = "normal"
+            self.profile_state = ctk.DISABLED      
             
         # Button to create profiles.
         self.profile_options = ctk.CTkButton(self.frame_main, text="Perfiles", font=(font, 14), 
                                              command=self.create_profile, corner_radius=10, height=35, 
                                              hover=True, fg_color=colors["soft_green"], hover_color=colors["dark_green"],
-                                             state="normal")
+                                             state=self.profile_state)
         
         self.profile_options.place(rely=0.3, relx=0.25, anchor="w")
 
@@ -1499,7 +1501,6 @@ class RelaxApp_Profile_Name(RelaxApp_Profile_Name_Structure):
         self.window2.destroy()
 
 
-
 ##########################################################
 ###  Class that contains the user's personal settings  ###
 ##########################################################
@@ -1707,8 +1708,10 @@ class RelaxApp_User_Main_Menu_Settings(RelaxApp_User_Settings_Structure):
             elif self.stretch_options_values == True:
                 base_datos.configuraciones_usuario(databases["database1"], tables["settings_table"], user["login"], 
                                                    "ActualizarNULL", ("Nombre_Perfil", "Configuracion_Estirar"), self.values)
-
+            
             self.window.destroy()
+            RelaxApp_Structure.close_create(self, RelaxApp_User_Main_Menu, None, None, True)
+            
         
     def cancel_settings(self):
         self.window.destroy()
