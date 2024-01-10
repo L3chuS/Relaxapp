@@ -600,45 +600,66 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
                                              command=self.create_profile, corner_radius=10, height=35, 
                                              hover=True, fg_color=colors["soft_green"], hover_color=colors["dark_green"],
                                              state=self.profile_state)
-        
         self.profile_options.place(rely=0.3, relx=0.25, anchor="w")
+        self.profile_options_choice = ctk.IntVar()
+                # Checkbox to activate or deactivate "profile_options".
+        self.profile_options_CB = ctk.CTkCheckBox(self.frame_main, text=None, variable=self.profile_options_choice , width=20, height=20, hover=True, 
+                                                  command=self.checkbox_option1,
+                                                  fg_color=colors["soft_green"], hover_color=colors["dark_green"])
+        self.profile_options_CB.place(rely=0.3, relx=0.8, anchor="e")
 
         # Button to set visual options.
         self.visual_options = ctk.CTkButton(self.frame_main, text="Descanso Visual", font=(font, 14), 
-                                                command=self.set_visual_options, corner_radius=10, height=35, 
-                                                hover=True, fg_color=colors["soft_green"], hover_color=colors["dark_green"])
+                                            command=self.set_visual_options, corner_radius=10, height=35, 
+                                            hover=True, fg_color=colors["soft_green"], hover_color=colors["dark_green"])
         self.visual_options.place(rely=0.4, relx=0.25, anchor="w")
         # Variable to save the information of "visual_options_CB" when is marked or unmarked.
         self.visual_options_choice = ctk.IntVar()
         # Checkbox to activate or deactivate "visual_options".
         self.visual_options_CB = ctk.CTkCheckBox(self.frame_main, text=None, variable=self.visual_options_choice , width=20, height=20, hover=True, 
-                                                fg_color=colors["soft_green"], hover_color=colors["dark_green"])
+                                                 command=self.checkbox_option2,
+                                                 fg_color=colors["soft_green"], hover_color=colors["dark_green"])
         self.visual_options_CB.place(rely=0.4, relx=0.8, anchor="e")
 
         # Button to set stretch options.
         self.stretch_options = ctk.CTkButton(self.frame_main, text="Estirar", font=(font, 14), 
-                                                command=self.set_stretch_options, corner_radius=10, height=35, 
-                                                hover=True, fg_color=colors["soft_green"], hover_color=colors["dark_green"])
+                                             command=self.set_stretch_options, corner_radius=10, height=35, 
+                                             hover=True, fg_color=colors["soft_green"], hover_color=colors["dark_green"])
         self.stretch_options.place(rely=0.5, relx=0.25, anchor="w")
         # Variable to save the information of "stretch_options_CB" when is marked or unmarked.
         self.stretch_options_choice = ctk.IntVar()
         # Checkbox to activate or deactivate "stretch_options".
         self.stretch_options_CB = ctk.CTkCheckBox(self.frame_main, text=None, variable=self.stretch_options_choice, width=20, height=20, hover=True, 
-                                                fg_color=colors["soft_green"], hover_color=colors["dark_green"])
+                                                  command=self.checkbox_option3,
+                                                  fg_color=colors["soft_green"], hover_color=colors["dark_green"])
         self.stretch_options_CB.place(rely=0.5, relx=0.8, anchor="e")
 
         # Button to set sounds options.
         self.sounds_options = ctk.CTkButton(self.frame_main, text="Sonidos", font=(font, 14), 
-                                                command=self.set_sounds_options, corner_radius=10, height=35, 
-                                                hover=True, fg_color=colors["soft_green"], hover_color=colors["dark_green"])
+                                            command=self.set_sounds_options, corner_radius=10, height=35, 
+                                            hover=True, fg_color=colors["soft_green"], hover_color=colors["dark_green"])
         self.sounds_options.place(rely=0.6, relx=0.25, anchor="w")
 
         # Button to set start RelaxApp.
         self.start_relaxapp_button = ctk.CTkButton(self.frame_main, text="Iniciar", font=(font, 20), 
-                                                command=self.start_relaxapp, height=70, corner_radius=50, 
-                                                hover=True, fg_color=colors["soft_green"], hover_color=colors["dark_green"])
+                                                   command=self.start_relaxapp, height=70, corner_radius=50, 
+                                                   hover=True, fg_color=colors["soft_green"], hover_color=colors["dark_green"])
         self.start_relaxapp_button.place(rely=0.8, relx=0.5, anchor="center")
 
+    def checkbox_option1(self):
+        if self.profile_options_choice.get() == 1:
+            self.visual_options_choice.set(0)
+            self.stretch_options_choice.set(0)
+        
+    def checkbox_option2(self):
+        if self.visual_options_choice.get() == 1:
+            self.profile_options_choice.set(0)
+            self.visual_options_choice.set(1)
+    
+    def checkbox_option3(self):
+        if self.stretch_options_choice.get() == 1:
+            self.profile_options_choice.set(0)
+            self.stretch_options_choice.set(1)
 
     def create_profile(self):
         RelaxApp_User_Main_Menu_Profiles(self.root, user["login"])
@@ -1490,9 +1511,21 @@ class RelaxApp_Profile_Name(RelaxApp_Profile_Name_Structure):
             RelaxApp_MessageBox_Options(self.root, "Full Profile")
         else:
             date_time = datetime.datetime.now().strftime("%d-%m-%Y - %H.%M.%Shs")
+            # Search method is called to get all the profile set for current user.
+            base_datos.consulta(f"SELECT Configuracion_Visual, Configuracion_Estirar, Configuracion_Sonidos_Final, Configuracion_Sonidos_Lapse FROM \
+                               {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}' and Nombre_Perfil is NULL")
+            profile_values = base_datos.valor
+            visual_config = profile_values[0][0]
+            stretch_config = profile_values[0][1]
+            final_sound_config = profile_values[0][2]
+            lapse_sound_config = profile_values[0][3]
 
-            base_datos.configuraciones_usuario(databases["database1"], tables["settings_table"], 
-                                           user["login"], "Agregar", "Login, Nombre_Perfil, Fecha_Hora, Predeterminado", (profile_name, date_time, False))
+            base_datos.configuraciones_usuario(databases["database1"], tables["settings_table"], user["login"], 
+                                               "Agregar", "Login, Nombre_Perfil, Fecha_Hora, Predeterminado, Configuracion_Visual, \
+                                               Configuracion_Estirar, Configuracion_Sonidos_Final, Configuracion_Sonidos_Lapse", 
+                                               (profile_name, date_time, False, visual_config, stretch_config, final_sound_config, lapse_sound_config))
+            
+            
             self.window2.destroy()
             RelaxApp_User_Main_Menu_Profiles(self.window, user["login"])
             self.window.destroy()

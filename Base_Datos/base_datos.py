@@ -452,7 +452,8 @@ Compruebe el nombre indicado.')
                 self.conector.commit()
             elif accion == "Agregar":
                 self.cursor.execute(f"USE {base_datos}")
-                comando_insertar = f"INSERT INTO {tabla} ({campo}) values ('{usuario}', '{configuracion[0]}', '{configuracion[1]}', '{configuracion[2]}');"
+                comando_insertar = f"INSERT INTO {tabla} ({campo}) values ('{usuario}', '{configuracion[0]}', '{configuracion[1]}', \
+                '{configuracion[2]}', '{configuracion[3]}', '{configuracion[4]}', '{configuracion[5]}', '{configuracion[6]}');"
                 print("comando final :", comando_insertar)
                 self.cursor.execute(comando_insertar)
                 self.conector.commit()
