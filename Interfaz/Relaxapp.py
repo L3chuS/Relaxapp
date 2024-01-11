@@ -604,7 +604,7 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
         self.profile_options_choice = ctk.IntVar()
                 # Checkbox to activate or deactivate "profile_options".
         self.profile_options_CB = ctk.CTkCheckBox(self.frame_main, text=None, variable=self.profile_options_choice , width=20, height=20, hover=True, 
-                                                  command=self.checkbox_option1,
+                                                  command=self.checkbox_option1, state=self.profile_state,
                                                   fg_color=colors["soft_green"], hover_color=colors["dark_green"])
         self.profile_options_CB.place(rely=0.3, relx=0.8, anchor="e")
 
@@ -646,20 +646,16 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
                                                    hover=True, fg_color=colors["soft_green"], hover_color=colors["dark_green"])
         self.start_relaxapp_button.place(rely=0.8, relx=0.5, anchor="center")
 
+    # Next 3 functions unmark values when user choose between use a profile or not. 
     def checkbox_option1(self):
-        if self.profile_options_choice.get() == 1:
-            self.visual_options_choice.set(0)
-            self.stretch_options_choice.set(0)
+        self.visual_options_choice.set(0)
+        self.stretch_options_choice.set(0)
         
     def checkbox_option2(self):
-        if self.visual_options_choice.get() == 1:
-            self.profile_options_choice.set(0)
-            self.visual_options_choice.set(1)
-    
+        self.profile_options_choice.set(0)
+        
     def checkbox_option3(self):
-        if self.stretch_options_choice.get() == 1:
-            self.profile_options_choice.set(0)
-            self.stretch_options_choice.set(1)
+        self.profile_options_choice.set(0)
 
     def create_profile(self):
         RelaxApp_User_Main_Menu_Profiles(self.root, user["login"])
@@ -667,60 +663,81 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
     def import_profile(self):
         pass
 
-    # Function to save both visual and stretch setting of the user.
+    # Function to save profiles set.
     def export_profile(self):
-        try:
-            save_file = ctk.filedialog.asksaveasfile(title="Exportar Perfil")
 
-            # Query method is called to get the time when profile was saved.
-            base_datos.consulta(f"SELECT Nombre_Perfil FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}'")
+        # Query method is called to check or get profiles information.
+        base_datos.consulta(f"SELECT Nombre_Perfil, Fecha_Hora, Predeterminado, Configuracion_Visual, \
+                            Configuracion_Estirar, Configuracion_Sonidos_Final, Configuracion_Sonidos_Lapse \
+                            FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}' and Predeterminado = 'True'")
+        
+        # Message box is called if there no profile to export.
+        if base_datos.valor == []:
+            RelaxApp_MessageBox_Options(self.root, "No Profile")
+        else:
+            try:
+                save_file = ctk.filedialog.asksaveasfile(title="Exportar Perfil")
+                file_to_save = ""
+
+                # Bucle to go through each value saved in the profile.
+                for line in base_datos.valor[0]:
+                    if line == "True" or line == "False":
+                        pass
+                    elif line == None:
+                        file_to_save += "None"
+                    else:
+                        file_to_save += line + "\n"
+
+                # File is saved.
+                save_file.write(file_to_save)
+
             
-            if base_datos.valor[0][0] != None:
-                file_profile_name_get = base_datos.valor[0][0]
-            else:
-                file_profile_name_get = ""
+            except:
+                print("error")
+                pass
+            
 
-            # Query method is called to get the time when profile was saved.
-            base_datos.consulta(f"SELECT Fecha_Hora FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}'")
-            if base_datos.valor[0][0] != None:
-                file_datetime_get = base_datos.valor[0][0]
-            else:
-                file_datetime_get = ""
+            # if base_datos.valor[0][0] != None:
+            #     file_profile_name_get = base_datos.valor[0][0]
+            # else:
+            #     file_profile_name_get = ""
 
-            # Query method is called to get user's visual options settings.
-            base_datos.consulta(f"SELECT Configuracion_Visual FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}'")
-            if base_datos.valor[0][0] != None:
-                file_data_get_VO = base_datos.valor[0][0]
-            else:
-                file_data_get_VO = ""
+            # # Query method is called to get the time when profile was saved.
+            # base_datos.consulta(f"SELECT Fecha_Hora FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}'")
+            # if base_datos.valor[0][0] != None:
+            #     file_datetime_get = base_datos.valor[0][0]
+            # else:
+            #     file_datetime_get = ""
 
-            # Query method is called to get user's stretch options settings.
-            base_datos.consulta(f"SELECT Configuracion_Estirar FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}'")
-            if base_datos.valor[0][0] != None:
-                file_data_get_SO = base_datos.valor[0][0]
-            else:
-                file_data_get_SO = ""
+            # # Query method is called to get user's visual options settings.
+            # base_datos.consulta(f"SELECT Configuracion_Visual FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}'")
+            # if base_datos.valor[0][0] != None:
+            #     file_data_get_VO = base_datos.valor[0][0]
+            # else:
+            #     file_data_get_VO = ""
 
-            # Query method is called to get user's final sound settings.
-            base_datos.consulta(f"SELECT Configuracion_Sonidos_Final FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}'")
-            if base_datos.valor[0][0] != None:
-                file_data_get_FS = base_datos.valor[0][0]
-            else:
-                file_data_get_FS = ""
+            # # Query method is called to get user's stretch options settings.
+            # base_datos.consulta(f"SELECT Configuracion_Estirar FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}'")
+            # if base_datos.valor[0][0] != None:
+            #     file_data_get_SO = base_datos.valor[0][0]
+            # else:
+            #     file_data_get_SO = ""
 
-            # Query method is called to get user's final sound settings.
-            base_datos.consulta(f"SELECT Configuracion_Sonidos_Lapse FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}'")
-            if base_datos.valor[0][0] != None:
-                file_data_get_LS = base_datos.valor[0][0]
-            else:
-                file_data_get_LS = ""
+            # # Query method is called to get user's final sound settings.
+            # base_datos.consulta(f"SELECT Configuracion_Sonidos_Final FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}'")
+            # if base_datos.valor[0][0] != None:
+            #     file_data_get_FS = base_datos.valor[0][0]
+            # else:
+            #     file_data_get_FS = ""
 
-            # Both settings are concatenated in one line.
-            file_to_save = file_profile_name_get + "\n" + file_datetime_get + "\n" + file_data_get_VO + "\n" + file_data_get_SO + "\n" + file_data_get_FS + "\n" + file_data_get_LS
-            # File is saved.
-            save_file.write(file_to_save)
-        except:
-            pass
+            # # Query method is called to get user's final sound settings.
+            # base_datos.consulta(f"SELECT Configuracion_Sonidos_Lapse FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}'")
+            # if base_datos.valor[0][0] != None:
+            #     file_data_get_LS = base_datos.valor[0][0]
+            # else:
+            #     file_data_get_LS = ""
+
+            
 
     ###### TO SET ######
     def about_us(self):
@@ -2084,6 +2101,13 @@ class RelaxApp_MessageBox_Options(RelaxApp_MessageBox_Structure):
                                                     font=(font,14), bg_color=colors["soft_grey"])
             self.pw_ask_cancel_label.place(rely=0.3, relx=0.5, anchor="center")
             self.select_button1 = True
+        
+        elif message == "No Profile":
+            # Label to alert there's no profile set.
+            self.no_profile_label = ctk.CTkLabel(self.window, text="No tienes ningún perfil creado actualmente. Configura al menos un \nvalor para poder habilitar la opción de perfiles.", 
+                                                 font=(font,14), bg_color=colors["soft_grey"])
+            self.no_profile_label.place(rely=0.35, relx=0.5, anchor="center")
+            self.select_button3 = True
 
         elif message == "Sign Out":
             # Label ask/cancel to sign out.
