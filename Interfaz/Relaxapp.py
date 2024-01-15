@@ -51,7 +51,8 @@ colors = {"black":"#242424",
 font = "Segoe Print"
 
 # Set all valid audio extension.
-audio_accepted_files = (("Audio Files", "*.mp3"),("Audio Files", "*.ogg"), ("Audio Files", "*.WAV"))
+audio_accepted_files = (("Audio Files", "*.mp3"),("Audio Files", "*.ogg"), ("Audio Files", "*.WAV"),
+                        ("Audio Files", "*.m4a"))
 
 #######################################################
 ### Class that contains general settings of the App ###
@@ -661,13 +662,108 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
         RelaxApp_User_Main_Menu_Profiles(self.root, user["login"])
     
     def import_profile(self):
-        pass
+        # try:
+        import_file = ctk.filedialog.askopenfile(title="Importar Perfil")
+    
+        read_file = import_file.readlines()
+        self.corrupt_file = False
+        file_values = []
+
+        # Bucle that add values in a list to check them easily.
+        for value in read_file:
+            file_values.append(value[:-1])
+        
+        while self.corrupt_file == False:
+            # Lenght of the profile name is checked.
+            if len(file_values[0]) > 20 or len(file_values[0]) == 0:
+                self.corrupt_file = True
+                print("Archivo corrupto len prof")
+                
+            self.check_values(file_values[1])
+            self.check_values(file_values[2])
+
+            if file_values[1] == "None" and file_values[2] == "None":
+                self.corrupt_file = True
+                print("Archivo corrupto 2 none")
+
+            sound_path1 = path.isfile(file_values[3])
+            sound_path2 = path.isfile(file_values[4])
+            extension_sound_path1 = path.splitext(file_values[3])
+            extension_sound_path2 = path.splitext(file_values[4])
+            print(extension_sound_path1)
+            print(extension_sound_path2)
+
+            if file_values[3] != "None" and file_values[4] != "None":
+                 if sound_path1 == False or sound_path2 == False:
+                    self.corrupt_file = True
+                    print(f"comprobar ruta: {sound_path1} y {sound_path2}")
+
+            else:
+                break
+        
+        
+
+
+
+        # audio_accepted_files = (("Audio Files", "*.mp3"),("Audio Files", "*.ogg"), ("Audio Files", "*.WAV"),
+        #                 ("Audio Files", "*.m4a"))
+
+        if self.corrupt_file == True:
+            print("Archivo corrupto general")
+            return RelaxApp_MessageBox_Options(self.root, "File_Corrupt")
+        # except:
+        #     pass
+
+    def check_values(self, value):
+        
+        if value != "None":
+            try:
+                lenght_hh = int(value[:2])
+                lenght_mm = int(value[2:4])
+                lapse = int(value[4:6])
+                break_mm = int(value[6:8])
+                break_ss = int(value[8:10])
+                sound = value[10:]
+            except:
+                self.corrupt_file = True
+                print("Archivo corrupto texto")
+                return
+
+            if 16 < lenght_hh or 0 > lenght_hh or 60 < lenght_mm \
+            or 0 > lenght_mm or lenght_mm + lenght_hh * 60 > 960:
+                self.corrupt_file = True
+                print("Archivo corrupto len time lenght")
+                return
+            
+            elif 60 < lapse or 1 > lapse:
+                self.corrupt_file = True
+                print("Archivo corrupto invalid value lapse")
+                return
+            
+            elif 60 < break_mm or 0 > break_mm or 60 < break_ss \
+            or 30 > break_ss or 3600 < break_mm * 60 + break_ss:
+                print("Archivo corrupto break")
+                self.corrupt_file = True
+                return
+            
+            elif break_mm * 60 + break_ss > lapse * 60:
+                self.corrupt_file = True
+                print("Archivo corrupto len time break vs lapse")
+                return
+
+            elif sound != "True":
+                if sound != "False":
+                    self.corrupt_file = True
+                    print("Archivo corrupto sound")
+                    return
+            else:
+                self.corrupt_file = False
 
     # Function to save profiles set.
     def export_profile(self):
 
         # Query method is called to check or get profiles information.
-        base_datos.consulta(f"SELECT Nombre_Perfil, Fecha_Hora, Predeterminado, Configuracion_Visual, \
+        base_datos.consulta(f"SELECT Nombre_Perfil, Predeterminado, Configuracion_Visual, \
                             Configuracion_Estirar, Configuracion_Sonidos_Final, Configuracion_Sonidos_Lapse \
                             FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}' and Predeterminado = 'True'")
         
@@ -690,54 +786,8 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
 
                 # File is saved.
                 save_file.write(file_to_save)
-
-            
             except:
-                print("error")
-                pass
-            
-
-            # if base_datos.valor[0][0] != None:
-            #     file_profile_name_get = base_datos.valor[0][0]
-            # else:
-            #     file_profile_name_get = ""
-
-            # # Query method is called to get the time when profile was saved.
-            # base_datos.consulta(f"SELECT Fecha_Hora FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}'")
-            # if base_datos.valor[0][0] != None:
-            #     file_datetime_get = base_datos.valor[0][0]
-            # else:
-            #     file_datetime_get = ""
-
-            # # Query method is called to get user's visual options settings.
-            # base_datos.consulta(f"SELECT Configuracion_Visual FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}'")
-            # if base_datos.valor[0][0] != None:
-            #     file_data_get_VO = base_datos.valor[0][0]
-            # else:
-            #     file_data_get_VO = ""
-
-            # # Query method is called to get user's stretch options settings.
-            # base_datos.consulta(f"SELECT Configuracion_Estirar FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}'")
-            # if base_datos.valor[0][0] != None:
-            #     file_data_get_SO = base_datos.valor[0][0]
-            # else:
-            #     file_data_get_SO = ""
-
-            # # Query method is called to get user's final sound settings.
-            # base_datos.consulta(f"SELECT Configuracion_Sonidos_Final FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}'")
-            # if base_datos.valor[0][0] != None:
-            #     file_data_get_FS = base_datos.valor[0][0]
-            # else:
-            #     file_data_get_FS = ""
-
-            # # Query method is called to get user's final sound settings.
-            # base_datos.consulta(f"SELECT Configuracion_Sonidos_Lapse FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}'")
-            # if base_datos.valor[0][0] != None:
-            #     file_data_get_LS = base_datos.valor[0][0]
-            # else:
-            #     file_data_get_LS = ""
-
-            
+                pass            
 
     ###### TO SET ######
     def about_us(self):
@@ -2107,6 +2157,13 @@ class RelaxApp_MessageBox_Options(RelaxApp_MessageBox_Structure):
             self.no_profile_label = ctk.CTkLabel(self.window, text="No tienes ningún perfil creado actualmente. Configura al menos un \nvalor para poder habilitar la opción de perfiles.", 
                                                  font=(font,14), bg_color=colors["soft_grey"])
             self.no_profile_label.place(rely=0.35, relx=0.5, anchor="center")
+            self.select_button3 = True
+        
+        elif message == "File_Corrupt":
+            # Label to alert that the file was modified or is broken.
+            self.file_corrupt_label = ctk.CTkLabel(self.window, text="El archivo que intenta abrir está dañado o ha sido modificado y \nno puede abrirse. Compruebe con otro archivo.", 
+                                                   font=(font,14), bg_color=colors["soft_grey"])
+            self.file_corrupt_label.place(rely=0.35, relx=0.5, anchor="center")
             self.select_button3 = True
 
         elif message == "Sign Out":
