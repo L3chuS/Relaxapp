@@ -52,7 +52,7 @@ font = "Segoe Print"
 
 # Set all valid audio extension.
 audio_accepted_files = (("Audio Files", "*.mp3"),("Audio Files", "*.ogg"), ("Audio Files", "*.WAV"),
-                        ("Audio Files", "*.m4a"))
+                        ("Audio Files", "*.m4a"), ("Audio Files", "*.wma"))
 
 #######################################################
 ### Class that contains general settings of the App ###
@@ -663,54 +663,67 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
     
     def import_profile(self):
         # try:
-        import_file = ctk.filedialog.askopenfile(title="Importar Perfil")
-    
-        read_file = import_file.readlines()
-        self.corrupt_file = False
-        file_values = []
+        import_file = ctk.filedialog.askopenfilename(title="Importar Perfil")
 
-        # Bucle that add values in a list to check them easily.
-        for value in read_file:
-            file_values.append(value[:-1])
-        
-        while self.corrupt_file == False:
-            # Lenght of the profile name is checked.
-            if len(file_values[0]) > 20 or len(file_values[0]) == 0:
-                self.corrupt_file = True
-                print("Archivo corrupto len prof")
-                
-            self.check_values(file_values[1])
-            self.check_values(file_values[2])
+        print("texto importado", import_file)
+        with open(import_file, mode="r", encoding="utf-8") as file:
+            print("File equivale a:", file)
+            read_file = file.readlines()
+            print("read_file equivale a:", read_file)
+            self.corrupt_file = False
+            file_values = []
 
-            if file_values[1] == "None" and file_values[2] == "None":
-                self.corrupt_file = True
-                print("Archivo corrupto 2 none")
-
-            sound_path1 = path.isfile(file_values[3])
-            sound_path2 = path.isfile(file_values[4])
-            extension_sound_path1 = path.splitext(file_values[3])
-            extension_sound_path2 = path.splitext(file_values[4])
-            print(extension_sound_path1)
-            print(extension_sound_path2)
-
-            if file_values[3] != "None" and file_values[4] != "None":
-                 if sound_path1 == False or sound_path2 == False:
+            # Bucle that add values in a list to check them easily.
+            for value in read_file:
+                print("Lineas archivo importado: ", value)
+                file_values.append(value[:-1])
+            
+            while self.corrupt_file == False:
+                # Lenght of the profile name is checked.
+                if len(file_values[0]) > 20 or len(file_values[0]) == 0:
                     self.corrupt_file = True
-                    print(f"comprobar ruta: {sound_path1} y {sound_path2}")
+                    print("Archivo corrupto len prof")
+                    
+                self.check_values(file_values[1])
+                self.check_values(file_values[2])
 
-            else:
-                break
-        
-        
+                if file_values[1] == "None" and file_values[2] == "None":
+                    self.corrupt_file = True
+                    print("Archivo corrupto 2 none")
 
 
+                if file_values[3] != "None" and file_values[4] != "None":
+                    sound_path1 = path.isfile(file_values[3])
+                    sound_path2 = path.isfile(file_values[4])
+                    extension_sound_path1 = path.splitext(file_values[3])
+                    extension_sound_path2 = path.splitext(file_values[4])
+                    print("ext 1:", extension_sound_path1[1])
+                    print("ext 2:", extension_sound_path2[1])
 
-        # audio_accepted_files = (("Audio Files", "*.mp3"),("Audio Files", "*.ogg"), ("Audio Files", "*.WAV"),
-        #                 ("Audio Files", "*.m4a"))
+                    if sound_path1 == False or sound_path2 == False:
+                        self.corrupt_file = True
+                        print(f"comprobar ruta: {sound_path1} y {sound_path2}")
+                        print("ruta1: ", file_values[3])
+                        print("ruta1: ", file_values[4])
+                    
+                    else:
+                        extension1 = False
+                        extension2 = False
+                        for value in audio_accepted_files:
+                            print(value[1])
+                            if extension_sound_path1[1] in value[1]:
+                                extension1 = True
+                            if extension_sound_path2[1] in value[1]:
+                                extension2 = True
+                        if extension1 == True and extension2 == True:
+                            break
+                        else:
+                            print("Ruta correcta. Error extension: ", extension1, "y" ,extension2)
+                            self.corrupt_file = True
 
-        if self.corrupt_file == True:
-            print("Archivo corrupto general")
-            return RelaxApp_MessageBox_Options(self.root, "File_Corrupt")
+            if self.corrupt_file == True:
+                print("Archivo corrupto general")
+                return RelaxApp_MessageBox_Options(self.root, "File_Corrupt")
         # except:
         #     pass
 
@@ -741,7 +754,7 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
                 return
             
             elif 60 < break_mm or 0 > break_mm or 60 < break_ss \
-            or 30 > break_ss or 3600 < break_mm * 60 + break_ss:
+            or 30 > break_mm * 60 + break_ss or 3600 < break_mm * 60 + break_ss:
                 print("Archivo corrupto break")
                 self.corrupt_file = True
                 return
@@ -772,20 +785,21 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
             RelaxApp_MessageBox_Options(self.root, "No Profile")
         else:
             try:
-                save_file = ctk.filedialog.asksaveasfile(title="Exportar Perfil")
-                file_to_save = ""
+                save_file = ctk.filedialog.asksaveasfilename(title="Exportar Perfil")
+                print(save_file)
 
                 # Bucle to go through each value saved in the profile.
-                for line in base_datos.valor[0]:
-                    if line == "True" or line == "False":
-                        pass
-                    elif line == None:
-                        file_to_save += "None"
-                    else:
-                        file_to_save += line + "\n"
+                with open(save_file, mode="w", encoding="utf-8") as file:
+                    for line in base_datos.valor[0]:
+                        print(line)
+                        if line == "True" or line == "False":
+                            pass
+                        elif line == None:
+                            file.write("None")
+                        else:
+                            file.write(line + "\n")
+                    print("Archivo exportado: ", file)
 
-                # File is saved.
-                save_file.write(file_to_save)
             except:
                 pass            
 
