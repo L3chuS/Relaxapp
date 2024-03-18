@@ -28,7 +28,7 @@ class BaseDatos:
             self.contrasena = kwargs["password"]
             self.estado_conexion = True
             # print("Se establece conexión con el servidor.")
-
+            
         # Excepción lanzada en caso de que los valores de conexión sean incorrectos.    
         except:
             print("Revise los datos de la conexión")
