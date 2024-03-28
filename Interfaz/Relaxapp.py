@@ -1764,30 +1764,32 @@ class RelaxApp_User_Main_Menu_Settings(RelaxApp_User_Settings_Structure):
         lapse = self.lapse_entry.get()
         break_time_MM = self.break_time_entryMM.get()
         break_time_SS = self.break_time_entrySS.get()
-        
-        # Verify if all entries are filled.
-        if lenght_HH == "HH" or lenght_MM == "MM" or \
-        lapse == "MM" or break_time_MM == "MM" or \
-        break_time_SS == "SS":
-            # Pop-ups a message box if any entry is unfilled.
-            RelaxApp_MessageBox_Options(self.root, "Empty")
 
+        valid_numbers = [str(x).zfill(2) for x in range(61)]
+
+        # Verify if all entries are filled.
+        if lenght_HH not in valid_numbers or lenght_MM not in valid_numbers or \
+        lapse not in valid_numbers or break_time_MM not in valid_numbers or \
+        break_time_SS not in valid_numbers:        
+            # Pop-ups a message box if any entry is unfilled.
+            RelaxApp_MessageBox_Options(self.root, "Invalid Time")
         # Verify if lenght entry is not higher than 16hs.
         elif int(lenght_HH) * 60 + int(lenght_MM) > 960:
             RelaxApp_MessageBox_Options(self.root, "Extra Hours")
-        # Verify if the rest of the entries are not higher than 60.
-        elif int(lenght_MM) > 60 or int(lapse) > 60 or  \
-        int(break_time_SS) > 60:
-            RelaxApp_MessageBox_Options(self.root, "Invalid Time")
-        elif len(lenght_HH) == 1 or len(lenght_MM) == 1 or \
-        len(lapse) == 1 or len(break_time_MM) == 1 or \
-        len(break_time_SS) == 1:
-            RelaxApp_MessageBox_Options(self.root, "One Value")
+        # Verify if lenght entry is not lower than 1 minute.
+        elif int(lenght_HH) * 60 + int(lenght_MM) < 1:
+            RelaxApp_MessageBox_Options(self.root, "Minimum Time")
+        # Verify if lapse is not higher than lenght.
+        elif int(lapse) > int(lenght_HH) * 60 + int(lenght_MM):
+            RelaxApp_MessageBox_Options(self.root, "Over Duration")
+        # Verify if break is not higher than lapse.
         elif int(break_time_MM) * 60 + int(break_time_SS) > \
         int(lapse) * 60:
             RelaxApp_MessageBox_Options(self.root, "Over Lapse")
+        # Verify if lapse is at least 1 minute.    
         elif int(lapse) == 0:
             RelaxApp_MessageBox_Options(self.root, "No Lapse")
+        # Verify if break is at least 30 seconds.
         elif int(break_time_MM) == 0 and int(break_time_SS) < 30:
             RelaxApp_MessageBox_Options(self.root, "No Break")
         
@@ -2187,34 +2189,34 @@ class RelaxApp_MessageBox_Options(RelaxApp_MessageBox_Structure):
             self.pw_ask_cancel_label.place(rely=0.3, relx=0.5, anchor="center")
             self.select_button1 = True
 
-        elif message == "Empty":
+        elif message == "Invalid Time":
             # Label to alert not to leave entries unfilled.
-            self.empty_entry_label = ctk.CTkLabel(self.window, text="Debes configurar todos los campos antes de guardalos.", 
+            self.empty_entry_label = ctk.CTkLabel(self.window, text="Los campos tienen que tener 2 números entre el 0 y el 60 \npara guardalos.", 
                                                   font=(font,14), bg_color=colors["soft_grey"])
-            self.empty_entry_label.place(rely=0.3, relx=0.5, anchor="center")
+            self.empty_entry_label.place(rely=0.35, relx=0.5, anchor="center")
             self.select_button3 = True
 
         elif message == "Extra Hours":
             # Label to alert not to work extra hours.
-            self.extra_hours_label = ctk.CTkLabel(self.window, text="No puedes configurar mas de 16hs. Recuerda que mínimo \ndebes dormir 8hs.", 
+            self.extra_hours_label = ctk.CTkLabel(self.window, text="No puedes configurar mas de 16hs de duración. Recuerda que \nmínimo debes dormir 8hs.", 
                                                   font=(font,14), bg_color=colors["soft_grey"])
             self.extra_hours_label.place(rely=0.35, relx=0.5, anchor="center")
             self.select_button3 = True
+
+        elif message == "Minimum Time":
+            # Label to alert not to work extra hours.
+            self.minimum_time_label = ctk.CTkLabel(self.window, text="Debes configurar al menos 1 minuto de duración.", 
+                                                  font=(font,14), bg_color=colors["soft_grey"])
+            self.minimum_time_label.place(rely=0.3, relx=0.5, anchor="center")
+            self.select_button3 = True
         
-        elif message == "Invalid Time":
-            # Label to alert not to set over 60 minutes or seconds.
-            self.invalid_time_label = ctk.CTkLabel(self.window, text="Los minutos o los segundos no deben ser mayores a 60.", 
-                                                   font=(font,14), bg_color=colors["soft_grey"])
-            self.invalid_time_label.place(rely=0.3, relx=0.5, anchor="center")
+        elif message == "Over Duration":
+            # Label to alert not to set breaktime over lapse time.
+            self.over_lapse_label = ctk.CTkLabel(self.window, text="El tiempo de intervalo no puede ser superior a la duración configurada.", 
+                                                 font=(font,14), bg_color=colors["soft_grey"])
+            self.over_lapse_label.place(rely=0.3, relx=0.5, anchor="center")
             self.select_button3 = True
-
-        elif message == "One Value":
-            # Label to alert not to set one value.
-            self.one_value_label = ctk.CTkLabel(self.window, text="Cada campo a configurar debe tener 2 valores.", 
-                                                font=(font,14), bg_color=colors["soft_grey"])
-            self.one_value_label.place(rely=0.3, relx=0.5, anchor="center")
-            self.select_button3 = True
-
+        
         elif message == "Over Lapse":
             # Label to alert not to set breaktime over lapse time.
             self.over_lapse_label = ctk.CTkLabel(self.window, text="El tiempo de descanso no puede ser superior al intervalo \nde alertas configurado.", 
