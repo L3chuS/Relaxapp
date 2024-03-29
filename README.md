@@ -3,7 +3,6 @@
 ##### Aplicación de escritorio creada para gestionar descansos musculares y visuales. Permite personalizar temporizadores y establecer alertas mientras estés realizando alguna actividad en particular. 
 
 ![Imágen ilustrativa de la aplicación.](./Imagenes/3.png)
-![Imágen ilustrativa de la aplicación.](./Imagenes/ej.png)
 
 ##### >> Inicialmente el menú principal te permite iniciar sesión, registrarte o cambiar tu contraseña:
 
