@@ -1,8 +1,8 @@
 # RelaxApp
 
-#### Aplicación de escritorio creada para gestionar descansos musculares y visuales. Permite personalizar temporizadores y establecer alertas mientras estés realizando alguna actividad en particular.. 
+#### Aplicación de escritorio creada para gestionar descansos musculares y visuales. Permite personalizar temporizadores y establecer alertas mientras estés realizando alguna actividad en particular.
 
-![Imágen ilustrativa de la aplicación.](./Imagenes/3.PNG=250x250)
+![Imágen ilustrativa de la aplicación.](./Imagenes/3.PNG =250x250)
 
 #### >> Inicialmente el menú principal te permite iniciar sesión, registrarte o cambiar tu contraseña:
 
