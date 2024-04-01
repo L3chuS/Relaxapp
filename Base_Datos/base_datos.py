@@ -27,8 +27,8 @@ class BaseDatos:
             self.usuario = kwargs["user"]
             self.contrasena = kwargs["password"]
             self.estado_conexion = True
-            print("Se establece conexión con el servidor.")
-
+            # print("Se establece conexión con el servidor.")
+            
         # Excepción lanzada en caso de que los valores de conexión sean incorrectos.    
         except:
             print("Revise los datos de la conexión")
@@ -49,7 +49,7 @@ class BaseDatos:
                         password = self.contrasena
                         )
                     self.cursor = self.conector.cursor()
-                    print("Se reabre conexión con el servidor.")
+                    # print("Se reabre conexión con el servidor.")
                     self.estado_conexion = True
                 funcion_decorada(self, *args, **kwargs)
 
@@ -62,7 +62,7 @@ class BaseDatos:
                     self.conector.close()
                     self.cursor.close()
                     self.estado_conexion = False
-                    print("Se cierra la conexión con el servidor.")
+                    # print("Se cierra la conexión con el servidor.")
         return interna
 
     # Función decoradora que muestra el listado de bases de datos.
@@ -270,19 +270,20 @@ la información introducida.")
             # Comando que ejecuta la consulta indicada.
             self.cursor.execute(consulta)
             # Recupera todos los valores de la consulta realizada.
-            valor = self.cursor.fetchall()
+            self.valor = self.cursor.fetchall()
             print(f'El resultado de la consulta "{consulta}" es: \n')
             # Devuelve un mensaje en caso de que no existan resultados para mostrar.
-            if not valor:
+            if not self.valor:
                 print("No hay resultados para mostrar")
                 return
             # Se itera y formatea sobre cada valor de la consulta realizada.
-            for consulta in valor:
+            
+            for consulta in self.valor:
                 for elemento in consulta:
                     print(str(elemento), end=" - ")
                 print("")
             print("")
-
+            return self.valor
         # Excepción lanzada en caso de que la consulta tenga errores de sintaxis.
         except:
             print(f"Imposible realizar la consulta '{consulta}'. Revise \
@@ -401,6 +402,11 @@ Elija otro nombre.'
             if usuario['accion'] == "registrar":
                 self.validacion_editar = True
                 self.mensaje = f'El usuario "{usuario["login"]}" ha sido registrado correctamente.'
+                # Se añade el mismo usuario en la tabla "usuarios_configuraciones" con campos vacíos.
+                insertar_usuarios_configuraciones = f"INSERT INTO usuarios_configuraciones (login) values ('{usuario['login']}');"
+                self.cursor.execute(insertar_usuarios_configuraciones)
+                self.conector.commit()
+
                 print(self.mensaje)
                 return self.validacion_editar, self.mensaje
             elif usuario['accion'] == "modificar":
@@ -411,10 +417,56 @@ Elija otro nombre.'
                 
         # Excepción lanzada si el diccionario contiene errores en sus values.
         except:
+            self.validacion_editar = False
             self.mensaje = "Los campos indicados para este usuario no son válidos."
             print(self.mensaje)
             return self.validacion_editar, self.mensaje
-
+        
+    @conexion
+    @comprobar_bd
+    @comprobar_tabla
+    def configuraciones_usuario(self, base_datos, tabla, usuario, accion, campo, configuracion):
+        """Método para añadir en la base de datos las configuraciones que el usuario realiza desde la aplicación.
+        Necesita 5 argumentos: Una base de datos (tipo string), una tabla (tipo string), un usuario (tipo string),
+        un campo a modificar (tipo string) y los valores de la configuración (tipo string)."""
+        # Se comprueba si la table existe. Finaliza la llamada en caso de ser False.
+        if self.tabla_existe == False:
+            print(f'La tabla "{tabla}" no existe en la base de datos "{base_datos}". \
+Compruebe el nombre indicado.')
+            return
+            
+        try:
+            if accion == "Actualizar":
+                # Selecciona la base de datos en donde se van a guardar los valores del usuario indicado. 
+                self.cursor.execute(f"USE {base_datos}")
+                comando_insertar = f"UPDATE {tabla} SET {campo[1]} = '{configuracion[1]}' WHERE login = '{usuario}' and {campo[0]} = '{configuracion[0]}';"
+                print("el comando insertado es: ", comando_insertar)
+                self.cursor.execute(comando_insertar)
+                self.conector.commit()
+            elif accion == "ActualizarNULL":
+                # Selecciona la base de datos en donde se van a guardar los valores del usuario indicado. 
+                self.cursor.execute(f"USE {base_datos}")
+                comando_insertar = f"UPDATE {tabla} SET {campo[1]} = '{configuracion}' WHERE login = '{usuario}' and {campo[0]} IS NULL;"
+                print("el comando insertado es: ", comando_insertar)
+                self.cursor.execute(comando_insertar)
+                self.conector.commit()
+            elif accion == "Agregar":
+                self.cursor.execute(f"USE {base_datos}")
+                comando_insertar = f"INSERT INTO {tabla} ({campo}) values ('{usuario}', '{configuracion[0]}', '{configuracion[1]}', \
+                '{configuracion[2]}', '{configuracion[3]}', '{configuracion[4]}', '{configuracion[5]}', '{configuracion[6]}');"
+                print("comando final :", comando_insertar)
+                self.cursor.execute(comando_insertar)
+                self.conector.commit()
+            elif accion == "Borrar":
+                self.cursor.execute(f"USE {base_datos}")
+                comando_insertar = f"DELETE FROM {tabla} WHERE {campo[0]} = '{usuario}' and {campo[1]} = '{configuracion}';"
+                print("comando final :", comando_insertar)
+                self.cursor.execute(comando_insertar)
+                self.conector.commit()
+        
+        except:
+            print("Error! Revise los datos introducidos en el usuario indicado.")
+            return
     
     @conexion
     @comprobar_bd
@@ -506,6 +558,7 @@ Compruebe el nombre indicado.')
         # Excepción lanzada si los argumentos del diccionario "usuario" son incorrectos.
         except:
             print("Error! Revise los argumentos indicados.")
+
 
     @conexion
     @comprobar_bd
