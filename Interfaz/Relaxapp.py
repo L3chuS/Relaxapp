@@ -1,7 +1,7 @@
 import tkinter as tk
 import customtkinter as ctk
-import Base_Datos.base_datos as bd
-from Base_Datos.valores_presets import user, databases, tables
+import Database.database as bd
+from Database.presets_values import user, databases, tables
 from os import path
 import ctypes
 import time
@@ -12,7 +12,7 @@ from tktooltip import ToolTip
 import datetime
 
 # Connect to the database.
-base_datos = bd.BaseDatos(**bd.acceso_root)
+base_datos = bd.Database(**bd.acceso_root)
 
 # Get the windows resolution regardless of rescaling
 user32 = ctypes.windll.user32
