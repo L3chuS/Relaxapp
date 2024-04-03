@@ -3,7 +3,7 @@ import os
 import subprocess
 import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
-from Database.presets_values import acceso_root
+from Database.presets_values import root_access
 
 # Variable to get the location of the project.
 main_path = os.path.dirname(__file__)
@@ -33,7 +33,7 @@ class Database:
         except:
             print("Check connection details")
 
-    # Decorator function that checks the status of the connection with the server before each method called.
+    # Decorator function that checks the status of the connection to the server before each method called.
     # It connects if it's offline and always disconnects it at the end.
     def connection(decorated_function):
         def intern(self, *args, **kwargs):
@@ -62,7 +62,7 @@ class Database:
                     self.connector.close()
                     self.cursor.close()
                     self_connection_state = False
-                    # print("Connection with the server is closed.")
+                    # print("Connection to the server is closed.")
 
         return intern
 
@@ -81,22 +81,22 @@ class Database:
             self.cursor.execute("SHOW DATABASES")
             # Values are got.
             get_db = self.cursor.fetchall()
-            self_db_exist = False
+            self_db_exists = False
 
             # Iteration over each got value to check if the one passed as an argument exists or not.
             for element in get_db:
                 if database in element:
-                    self_db_exist = True
+                    self_db_exists = True
                     break
             # End the process if the database does not exist.
-            if not self_db_exist:
+            if not self_db_exists:
                 print(f"Database '{database}' does not exist. Check the information given.")
                 
                 return
             decorated_function(self, database, *args)
         return intern
 
-    # Decorator function that checks if the table exist. It returns True of False if it does or not.
+    # Decorator function that checks if the table exists. It returns True of False if it does or not.
     def check_table(decorated_function):
         def intern(self, database, table, *args):
 
@@ -104,11 +104,11 @@ class Database:
             self.cursor.execute(f"SHOW TABLES FROM {database}")
             # Values are got.
             get_table = self.cursor.fetchall()
-            self.table_exist = False
+            self.table_exists = False
             # Iteration over each got value to check if the table passed as an argument exists or not.
             for element in get_table:
                 if table in element:
-                    self.table_exist = True
+                    self.table_exists = True
             decorated_function(self, database, table, *args)
         return intern
 
@@ -160,13 +160,13 @@ class Database:
             user["name"] = user["name"].upper()
             user["lastname"] = user["lastname"].upper()
 
-            if user['action'] == "sign_in":
+            if user['action'] == "sign_up":
                 for key in keys1:
                     # Check if name or last name are not higher than 60 characters.
                     if len(user[key]) > 60 or len(user[key]) < 2:
                         self.validate_editing = False
                         # Variable to create a label to be used in the App.
-                        self.message = f"The lenght of the {key} must have at least 2 characters and can't be \nhigher than 60."
+                        self.message = f"La logitud del {key} debe tener al menos 2 caracteres y no debe \nsuperar los 60."
                         break
 
                     elif user[key].isalpha():
@@ -179,7 +179,7 @@ class Database:
                                 if letter not in valid_values:
                                     self.validate_editing = False
                                     # Variable to create a label to be used in the App.
-                                    self.message = f"The {key} contains invalid characters. Check it again."
+                                    self.message = f"El {key} contiene caracteres inválidos. Compruebe nuevamente."
                                     break
 
                     if self.validate_editing:
@@ -199,7 +199,7 @@ class Database:
                         if letter.isspace():
                             self.validate_editing = False
                             # Variable to create a label to be used in the App.
-                            self.message = "The user or password contains white spaces.\nCheck it again."
+                            self.message = "El usuario o contraseña contienen espacios en blanco.\nCompruebe nuevamente."
                             break
 
             # The lenght of the user or password is checked. It must have at least 5 characters and can't be higher than 20.
@@ -207,229 +207,225 @@ class Database:
                 if len(user["login"]) < 5 or len(user["password"]) < 5 or len(user["login"]) > 20 or len(user["password"]) > 20:
                     self.validate_editing = False
                     # Variable to create a label to be used in the App.
-                    self.message = f"The user or password must have at least 5 characters \nand can't be higher than 20."
+                    self.message = f"El usuario o contraseña deben tener al menos 5 caracteres \ny menos de 20."
 
-            decorated_function(self, database, table, user) 
+            decorated_function(self, database, table, user)
         return intern
 
     @connection
     @list_db
-    def crear_bd(self, database):
-        """Método para crear bases de datos. Necesita un argumento: name de la base de datos (type string)."""
+    def create_db(self, database):
+        """Method to create databases. It needs one argument: database name (string type)."""
         try:
-            # Intenta ejecutar una consulta para ver si la base de datos indicada ya existe.
+            # It tries to execute a query to check if the indicated database exists.
             self.cursor.execute(f"SHOW DATABASES like '{database}'")
-            # Recupera el value de la consulta realizada. Si el value no es "None" entonces existe.
+            # It gets the value of the query executed. If this value is "None" then it exists.
             bd = self.cursor.fetchone()
             if bd:
-                print(f"La base de datos '{database}' ya existe.")
+                print(f"Database '{database}' already exists.")
                 return
-            # Comando que crea la base de datos indicada. 
+            # This command create the indicated database.
             self.cursor.execute(f"CREATE DATABASE {database}")
-            print(f'Se ha creado la base de datos "{database}".')
+            print(f'Database "{database}" has been created.')
 
-        # Excepción lanzada en caso de que la base de datos a crear contenga valuees incorrectos.
+        # Exception executed if the indicated database contains invalid values.
         except:
-            print(f"La base de datos '{database}' no se ha creado correctamente. Revise \
-la información introducida.")
+            print(f"Database '{database}' couldn't be created. Check the information given.")
 
-    @connection        
+    @connection
     @list_db
     @check_db
-    def eliminar_bd(self, database):
-        """Método para eliminar bases de datos. Necesita un argumento: name de la base de datos (type string)."""
-        # Comando que elimina la base de datos.
+    def remove_db(self, database):
+        """Method to remove databases. It needs one argument: database name (string type)."""
+        # Command to remove databases.
         self.cursor.execute(f"DROP DATABASE {database}")
-        print(f'Se ha eliminado la base de datos "{database}".')
-      
+        print(f'Database "{database}" has been removed.')
+
     @connection
     @check_db
     def get_db(self, database):
-        """Método para seleccionar una bases de datos. Necesita un argumento: name de la base de datos (type string)."""
-        # Se modifica el diccionario principal de conexión para conectarse con la base de datos indicada. 
-        acceso_root["database"] = database
+        """Method to select a database. It needs one argument: database name (string type)."""
+        # The main dictionary to set the connection is modified to set a new connection to the indicated database. 
+        root_access["database"] = database
         self.cursor = self.connector.cursor()
-        print(f'Se ha establecido conexión con la base de datos "{database}".')
-    
+        print(f'Connection to the database "{database}" has been established.')
+
     @connection
     def show_list_db(self):
-        """Método para mostrar la lista de bases de datos."""
-        # Comando que ejecuta el listado de bases de datos.
+        """Method to show the list of databases."""
+        # Command that execute the list of databases.
         self.cursor.execute("SHOW DATABASES")
-        print(f'Estas son las bases de datos disponibles:')
-        # Se itera y formatea sobre cada value obtenido.
+        print(f'These are the available databases:')
+        # Iteration and format over each value got.
         for bd in self.cursor:
             print(f"- {bd[0]}")
 
     @connection
-    def consulta(self, consulta):
-        """Método para realizar consultas. Necesita un argumento: Consulta a realizar (type string)."""
+    def query(self, query):
+        """Method to run queries. It needs one argument: query to run (string type)."""
         try:
-            # Comando que ejecuta la consulta indicada.
-            self.cursor.execute(consulta)
-            # Recupera todos los valuees de la consulta realizada.
+            # Command that execute the indicated query.
+            self.cursor.execute(query)
+            # Variable that contains all the values of the query run.
             self.value = self.cursor.fetchall()
-            print(f'El resultado de la consulta "{consulta}" es: \n')
-            # Devuelve un message en caso de que no existan resultados para mostrar.
+            print(f'The result of the query "{query}" is: \n')
+            # It returns a message in the case there's no result to show.
             if not self.value:
-                print("No hay resultados para mostrar")
+                print("There's no result to show.")
                 return
-            # Se itera y formatea sobre cada value de la consulta realizada.
-            
-            for consulta in self.value:
-                for element in consulta:
+
+            # Iteration and format over each value got.
+            for query in self.value:
+                for element in query:
                     print(str(element), end=" - ")
                 print("")
             print("")
             return self.value
-        # Excepción lanzada en caso de que la consulta tenga errores de sintaxis.
-        except:
-            print(f"Imposible realizar la consulta '{consulta}'. Revise \
-la información introducida.")
 
-    
+        # Exepction executed if the query given contains sintax errors.
+        except:
+            print(f"Impossible to run the query '{query}'. Check the information given.")
+
     @connection
     @check_db
     @check_table
     @check_columns
-    def crear_table(self, database, table, columns):
-        """Método para crear tables. Necesita 3 argumentos: Una base de datos (type string), una table (type string) y unas
-        columns (type diccionario) que contiene sus names y características."""
-        # Se comprueba si la table existe. Finaliza la llamada en caso de ser True.
-        if self.table_exist == True:
-                print(f'La table "{table}" ya existe en la base de datos "{database}" \
-y no puede ser duplicada. Eliga otro name.')
+    def create_table(self, database, table, columns):
+        """Method to create tables. It needs 3 arguments: A database (string type), a table (string type) and a columns (dictionary type)
+           that contains their names and characteristics."""
+        # It checks if the indicated table exists. It finish the call if it's "True".
+        if self.table_exists == True:
+                print(f'The table "{table}" already exists in the database "{database}" \
+and can\'t be duplicated. Choose another name.')
                 return
         try:
-            # Selecciona la base de datos en donde se va a crear la table.   
+            # Database is selected where table will be created.
             self.cursor.execute(f"USE {database}")
-            # Comando que crea la table indicada.
+            # Command that creates indicated table.
             self.cursor.execute(f"CREATE TABLE {table}({self.command_columns}")
             self.connector.commit()
-            print(f'Se ha creado la table "{table}" en la base de datos "{database}".')
-        
-        # Excepción lanzada si los valuees de las columns con incorrectos.
+            print(f'Table "{table}" has been created in the database "{database}".')
+
+        # Exception executed if values of the columns are invalid.
         except:
-            print(f"Imposible crear la table '{table}'. Revise \
-los datos introducidos.")
+            print(f"Impossible to create the table '{table}'. Check the information given.")
 
     @connection
     @check_db
     @check_table
-    def eliminar_table(self, database, table):
-        """Método para eliminar tables. Necesita 2 argumentos: Una base de datos (type string) y una table (type string)."""
-        # Se comprueba si la table existe. Finaliza la llamada en caso de ser False.
-        if self.table_exist == False:
-            print(f'La table "{table}" no existe en la base de datos "{database}" \
-y no puede ser eliminada.')
+    def remove_table(self, database, table):
+        """Method to remove tables. It needs 2 arguments: A database (string type) and a table (string type)."""
+        # It checks if the indicated table exists. It finish the call if it's "False".
+        if self.table_exists == False:
+            print(f'The table "{table}" does not exist in the database "{database}" \
+and can\'t be removed.')
             return
-        # Selecciona la base de datos en donde se va a crear la table. 
+        # Database is selected where the table will be created.
         self.cursor.execute(f"USE {database}")
-        # Comando que elimina la table indicada.
+        # Command that remove the indicated table.
         self.cursor.execute(f"DROP TABLE {table}")
-        print(f'Se ha eliminado la table "{table}" de la base de datos "{database}".')
+        print(f'The table "{table}" has been removed from the database "{database}".')
 
     @connection
     @check_db
     @check_table
-    @check_user  
-    def editar_table(self, database, table, user):
-        """Método para editar tables. Necesita 3 argumentos: Una base de datos (type string) y una table (type string)
-        y un user (type diccionario) que contiene los datos para sign_in o modificarlo."""
-        # Se comprueba si la table existe. Finaliza la llamada en caso de ser False.
-        if self.table_exist == False:
-            print(f'La table "{table}" no existe en la base de datos "{database}". \
-Compruebe el name indicado.')
-            return
-        
-        # Se comprueba si los datos introducidos por el user cumplen con los requisitos o no y se retorna a la App.
-        if self.validate_editing == False:
-            # message de error interno de la terminal.
-            print("Error al procesar su solicitud!", self.message)
-            return self.validate_editing, self.message
-        
-        try:
-            
-            # Se recupera la contraseña indicada por el user para luego encriptarla.
-            contrasena = user['password']
-            contrasena_encriptada = generate_password_hash(contrasena)
+    @check_user
+    def edit_table(self, database, table, user):
+        """Method to edit tables. It needs 3 arguments: A database (string type), a table (string type)
+           and a user (dictionary type) that contains the data to sign up or modify it."""
 
-            # Selecciona la base de datos en donde se va a sign_in o modificar el user indicado. 
+        # It checks if the indicated table exists. It finish the call if it's "False".
+        if self.table_exists == False:
+            print(f'The table "{table}" does not exist in the database "{database}". Checks the name given.')
+            return
+
+        # It checks if the values given by the user are correct or not and it returns to the App.
+        if self.validate_editing == False:
+            print("An error occurred while processing your request!", self.message)
+            return self.validate_editing, self.message
+
+        try:
+
+            # The password given by the user is recovered to be encrypted.
+            password = user['password']
+            password_encrypted = generate_password_hash(password)
+
+            # Database is selected where user is or will be located.
             self.cursor.execute(f"USE {database}")
 
-            # Comprueba si el login existe en la base de datos.
+            # It checks if user exists in the database.
             self.cursor.execute(f"SELECT login FROM {database}.{table} WHERE login = '{user['login']}'")
-            
-            # Se recupera el value recién buscado y devuelve una tupla o None. 
-            user_existe = self.cursor.fetchone()
-                
-            # Acción para dar de alta un user.
-            if user['action'] == "sign_in":
-                # Se comprueba si el login indicado existe. Finaliza la llamada si es True.
-                if user_existe:
-                    self.validate_editing = False
-                    self.message = f'El login que intenta sign_in "{user["login"]}" ya existe y no \npuede ser duplicado. \
-Elija otro name.'
-                    # Se retornan los valuees hacia la App para determinar si la alta es exitosa o no.
-                    return self.validate_editing, self.message
-                # user no existe. Se formatea el comando para sign_in el user.
-                else:
-                    comando_insertar = f"INSERT INTO {table} (name, lastname, login, password) \
-            values ('{user['name']}', '{user['lastname']}', '{user['login']}', '{contrasena_encriptada}');"
 
-            # Acción de modificar datos del user    
-            elif user['action'] == "modificar":
-                if not user_existe:
+            # Variable that contains the query with "None" or a tuple.
+            user_exists = self.cursor.fetchone()
+
+            # Step to sign up the user.
+            if user['action'] == "sign_up":
+                # It checks if the indicated user exists. It finish the call if it's "True".
+                if user_exists:
                     self.validate_editing = False
-                    self.message = f'El login que intenta modificar "{user["login"]}" no existe. \nCompruebe los valuees indicados.'
-                    # Se retornan los valuees hacia la App para determinar si la modificación es exitosa o no.
+                    self.message = f'El login que intenta registrar "{user["login"]}" ya existe y no \npuede ser duplicado. \
+Elija otro nombre.'
+                    # Values are returned to the App to indicate if the sign up was successful or not.
+                    return self.validate_editing, self.message
+                # If user does not exist the command to sign up user is formatted.
+                else:
+                    execute_command = f"INSERT INTO {table} (name, lastname, login, password) \
+            values ('{user['name']}', '{user['lastname']}', '{user['login']}', '{password_encrypted}');"
+
+            # Step to modify the user.
+            elif user['action'] == "modify":
+                if not user_exists:
+                    self.validate_editing = False
+                    self.message = f'El login que intenta modificar "{user["login"]}" no existe. \nCompruebe los valores indicados.'
+                    # Values are returned to the App to indicate if the modification was successful or not.
                     return self.validate_editing, self.message
                 else:
-                    # Se formatea el comando para modificar el user.
-                    comando_insertar = f"UPDATE {table} SET password = '{contrasena_encriptada}' WHERE login = '{user['login']}'"          
+                    # Command to modify user is formatted.
+                    execute_command = f"UPDATE {table} SET password = '{password_encrypted}' WHERE login = '{user['login']}'"        
 
-        # Excepción lanzada si el diccionario contiene errores en sus keys.     
+        # Exception executed if the dictionary contains incorrect values in the keys.
         except:
-            print("Error! Revise los datos introducidos en el user indicado.")
+            print("Error! Check the information given of the indicated user.")
             return
 
         try:
-            # Comando que ejecuta la acción de sign_in o modificar el user.
-            self.cursor.execute(comando_insertar)
+            # Command that executes the query to sign up or modify the user.
+            self.cursor.execute(execute_command)
             self.connector.commit()
-            if user['action'] == "sign_in":
+            if user['action'] == "sign_up":
                 self.validate_editing = True
-                self.message = f'El user "{user["login"]}" ha sido registrado correctamente.'
-                # Se añade el mismo user en la table "users_configuraciones" con campos vacíos.
-                insertar_users_configuraciones = f"INSERT INTO users_configuraciones (login) values ('{user['login']}');"
-                self.cursor.execute(insertar_users_configuraciones)
+                self.message = f'El usuario "{user["login"]}" ha sido registrado correctamente.'
+                # User is added to the table "users_configurations" with empty fields.
+                add_users_configurations = f"INSERT INTO users_configurations (login) values ('{user['login']}');"
+                self.cursor.execute(add_users_configurations)
                 self.connector.commit()
 
                 print(self.message)
                 return self.validate_editing, self.message
-            elif user['action'] == "modificar":
+            elif user['action'] == "modify":
                 self.validate_editing = True
                 self.message = 'El user ha sido actualizado correctamente.'
                 print(self.message)
-                return self.validate_editing, self.message       
-                
-        # Excepción lanzada si el diccionario contiene errores en sus values.
+                return self.validate_editing, self.message 
+
+        # Exception executed if the dictionary contains invalid values.
         except:
             self.validate_editing = False
-            self.message = "Los campos indicados para este user no son válidos."
+            self.message = "Los campos indicados para este usuario no son válidos."
             print(self.message)
             return self.validate_editing, self.message
-        
+
     @connection
     @check_db
     @check_table
     def configuraciones_user(self, database, table, user, action, campo, configuracion):
         """Método para añadir en la base de datos las configuraciones que el user realiza desde la aplicación.
         Necesita 5 argumentos: Una base de datos (type string), una table (type string), un user (type string),
-        un campo a modificar (type string) y los valuees de la configuración (type string)."""
-        # Se comprueba si la table existe. Finaliza la llamada en caso de ser False.
-        if self.table_exist == False:
-            print(f'La table "{table}" no existe en la base de datos "{database}". \
+        un campo a modify (type string) y los valuees de la configuración (type string)."""
+        # Se comprueba si la table exists. Finaliza la llamada en caso de ser False.
+        if self.table_exists == False:
+            print(f'La table "{table}" no exists en la base de datos "{database}". \
 Compruebe el name indicado.')
             return
             
@@ -437,29 +433,29 @@ Compruebe el name indicado.')
             if action == "Actualizar":
                 # Selecciona la base de datos en donde se van a guardar los valuees del user indicado. 
                 self.cursor.execute(f"USE {database}")
-                comando_insertar = f"UPDATE {table} SET {campo[1]} = '{configuracion[1]}' WHERE login = '{user}' and {campo[0]} = '{configuracion[0]}';"
-                print("el comando insertado es: ", comando_insertar)
-                self.cursor.execute(comando_insertar)
+                execute_command = f"UPDATE {table} SET {campo[1]} = '{configuracion[1]}' WHERE login = '{user}' and {campo[0]} = '{configuracion[0]}';"
+                print("el comando insertado es: ", execute_command)
+                self.cursor.execute(execute_command)
                 self.connector.commit()
             elif action == "ActualizarNULL":
                 # Selecciona la base de datos en donde se van a guardar los valuees del user indicado. 
                 self.cursor.execute(f"USE {database}")
-                comando_insertar = f"UPDATE {table} SET {campo[1]} = '{configuracion}' WHERE login = '{user}' and {campo[0]} IS NULL;"
-                print("el comando insertado es: ", comando_insertar)
-                self.cursor.execute(comando_insertar)
+                execute_command = f"UPDATE {table} SET {campo[1]} = '{configuracion}' WHERE login = '{user}' and {campo[0]} IS NULL;"
+                print("el comando insertado es: ", execute_command)
+                self.cursor.execute(execute_command)
                 self.connector.commit()
             elif action == "Agregar":
                 self.cursor.execute(f"USE {database}")
-                comando_insertar = f"INSERT INTO {table} ({campo}) values ('{user}', '{configuracion[0]}', '{configuracion[1]}', \
+                execute_command = f"INSERT INTO {table} ({campo}) values ('{user}', '{configuracion[0]}', '{configuracion[1]}', \
                 '{configuracion[2]}', '{configuracion[3]}', '{configuracion[4]}', '{configuracion[5]}', '{configuracion[6]}');"
-                print("comando final :", comando_insertar)
-                self.cursor.execute(comando_insertar)
+                print("comando final :", execute_command)
+                self.cursor.execute(execute_command)
                 self.connector.commit()
             elif action == "Borrar":
                 self.cursor.execute(f"USE {database}")
-                comando_insertar = f"DELETE FROM {table} WHERE {campo[0]} = '{user}' and {campo[1]} = '{configuracion}';"
-                print("comando final :", comando_insertar)
-                self.cursor.execute(comando_insertar)
+                execute_command = f"DELETE FROM {table} WHERE {campo[0]} = '{user}' and {campo[1]} = '{configuracion}';"
+                print("comando final :", execute_command)
+                self.cursor.execute(execute_command)
                 self.connector.commit()
         
         except:
@@ -474,9 +470,9 @@ Compruebe el name indicado.')
         una table (type string) y una cantidad (type string). El argumento "user" (type diccionario) es opcional en caso
         de que se desee eliminar sólo un user en particualr."""
         
-        # Se comprueba si la table existe.
-        if self.table_exist == False:
-            print(f'La table "{table}" no existe en la base de datos "{database}". \
+        # Se comprueba si la table exists.
+        if self.table_exists == False:
+            print(f'La table "{table}" no exists en la base de datos "{database}". \
 Compruebe el name indicado.')
             return
         try:
@@ -491,12 +487,12 @@ Compruebe el name indicado.')
                 else:
                     comando_eliminar = f"DELETE FROM {table} WHERE login = '{user}';"
 
-                # Comprueba si el login existe.
+                # Comprueba si el login exists.
                 self.cursor.execute(f"SELECT login FROM {database}.{table} WHERE login = '{user}'")
-                # Recupera el value de la búsqueda realizada. Si el value es "None" entonces el user no existe y finaliza la llamada.
+                # Recupera el value de la búsqueda realizada. Si el value es "None" entonces el user no exists y finaliza la llamada.
                 value = self.cursor.fetchone()
                 if not value:
-                    print(f'El login indicado "{user}" no existe y no puede ser eliminado.')
+                    print(f'El login indicado "{user}" no exists y no puede ser eliminado.')
                     return
 
             # Comando que ejecuta la eliminación del user o los users indicados.
@@ -519,9 +515,9 @@ de la base de datos "{database}".')
     def verificar_login(self, database, table, user):
         """Método para verificar el login dentro de la app. Necesita 3 argumentos: Una base de datos (type string), una table (type string)
         y un user (type diccionario) que contiene los datos a comprobar (user y contraseña)."""
-        # Se comprueba si la table existe.
-        if self.table_exist == False:
-            print(f'La table "{table}" no existe en la base de datos "{database}". \
+        # Se comprueba si la table exists.
+        if self.table_exists == False:
+            print(f'La table "{table}" no exists en la base de datos "{database}". \
 Compruebe el name indicado.')
             return
         try:
@@ -530,12 +526,12 @@ Compruebe el name indicado.')
             # Variable que determina si un user y contraseña son válidos para iniciar sesión. Necesita ser "True" para iniciar sesión.
             self.validacion_login = False
 
-            # Comprueba si el login existe.
+            # Comprueba si el login exists.
             self.cursor.execute(f"SELECT login FROM {database}.{table} WHERE login = '{user['login']}'")
-            # Recupera el value de la búsqueda realizada. Si el value es "None" entonces el user no existe y finaliza la llamada.
+            # Recupera el value de la búsqueda realizada. Si el value es "None" entonces el user no exists y finaliza la llamada.
             user_seleccionado = self.cursor.fetchone()
             if not user_seleccionado:
-                print(f'El user "{user["login"]}" no existe. Compruebe nuevamente.')
+                print(f'El user "{user["login"]}" no exists. Compruebe nuevamente.')
                 return self.validacion_login
 
             # Realiza la búsqueda de la contraseña que el user tiene almacenada en la base de datos.
