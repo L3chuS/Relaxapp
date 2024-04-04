@@ -5,7 +5,7 @@ password = os.environ.get("PasswordMySql")
 
 # Diccionario que contiene los valores por defecto para realizar la conexión a la base de datos.
 
-acceso_root = {
+root_access = {
             "host" : "localhost",
             "user" : user,
             "password" : password,
