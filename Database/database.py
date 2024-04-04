@@ -79,11 +79,11 @@ class Database:
 
             # Query is run to show the list of databases.
             self.cursor.execute("SHOW DATABASES")
-            # Values are got.
+            # Values are gotten.
             get_db = self.cursor.fetchall()
             self_db_exists = False
 
-            # Iteration over each got value to check if the one passed as an argument exists or not.
+            # Iteration over each gotten value to check if the one passed as an argument exists or not.
             for element in get_db:
                 if database in element:
                     self_db_exists = True
@@ -102,10 +102,10 @@ class Database:
 
             # Query is run to show the list of the tables in the database given.
             self.cursor.execute(f"SHOW TABLES FROM {database}")
-            # Values are got.
+            # Values are gotten.
             get_table = self.cursor.fetchall()
             self.table_exists = False
-            # Iteration over each got value to check if the table passed as an argument exists or not.
+            # Iteration over each gotten value to check if the table passed as an argument exists or not.
             for element in get_table:
                 if table in element:
                     self.table_exists = True
@@ -256,7 +256,7 @@ class Database:
         # Command that execute the list of databases.
         self.cursor.execute("SHOW DATABASES")
         print(f'These are the available databases:')
-        # Iteration and format over each value got.
+        # Iteration and format over each value gotten.
         for bd in self.cursor:
             print(f"- {bd[0]}")
 
@@ -274,7 +274,7 @@ class Database:
                 print("There's no result to show.")
                 return
 
-            # Iteration and format over each value got.
+            # Iteration and format over each value gotten.
             for query in self.value:
                 for element in query:
                     print(str(element), end=" - ")
@@ -419,185 +419,182 @@ Elija otro nombre.'
     @connection
     @check_db
     @check_table
-    def configuraciones_user(self, database, table, user, action, campo, configuracion):
-        """Método para añadir en la base de datos las configuraciones que el user realiza desde la aplicación.
-        Necesita 5 argumentos: Una base de datos (type string), una table (type string), un user (type string),
-        un campo a modify (type string) y los valuees de la configuración (type string)."""
-        # Se comprueba si la table exists. Finaliza la llamada en caso de ser False.
+    def user_configuration(self, database, table, user, action, field, configuration):
+        """Method to add in the database configurations that the user makes from the application.
+           It needs 5 arguments: A database (string type), a table (string type), a user (string type),
+           a field to modify (string type) and the configuration values (string type)."""
+        # It checks if the indicated table exists. It finish the call if it's "False".
         if self.table_exists == False:
-            print(f'La table "{table}" no exists en la base de datos "{database}". \
-Compruebe el name indicado.')
+            print(f'Table "{table}" does not exists in the database "{database}". Check the information given.')
             return
             
         try:
-            if action == "Actualizar":
-                # Selecciona la base de datos en donde se van a guardar los valuees del user indicado. 
+            if action == "Update":
+                # Database is selected where the values of the user will be saved.
                 self.cursor.execute(f"USE {database}")
-                execute_command = f"UPDATE {table} SET {campo[1]} = '{configuracion[1]}' WHERE login = '{user}' and {campo[0]} = '{configuracion[0]}';"
-                print("el comando insertado es: ", execute_command)
+                execute_command = f"UPDATE {table} SET {field[1]} = '{configuration[1]}' WHERE login = '{user}' and {field[0]} = '{configuration[0]}';"
+                print("The command executed is: ", execute_command)
                 self.cursor.execute(execute_command)
                 self.connector.commit()
-            elif action == "ActualizarNULL":
-                # Selecciona la base de datos en donde se van a guardar los valuees del user indicado. 
+            elif action == "UpdateNULL":
+                # Database is selected where the values of the user will be saved.
                 self.cursor.execute(f"USE {database}")
-                execute_command = f"UPDATE {table} SET {campo[1]} = '{configuracion}' WHERE login = '{user}' and {campo[0]} IS NULL;"
-                print("el comando insertado es: ", execute_command)
+                execute_command = f"UPDATE {table} SET {field[1]} = '{configuration}' WHERE login = '{user}' and {field[0]} IS NULL;"
+                print("The command executed is: ", execute_command)
                 self.cursor.execute(execute_command)
                 self.connector.commit()
-            elif action == "Agregar":
+            elif action == "Add":
                 self.cursor.execute(f"USE {database}")
-                execute_command = f"INSERT INTO {table} ({campo}) values ('{user}', '{configuracion[0]}', '{configuracion[1]}', \
-                '{configuracion[2]}', '{configuracion[3]}', '{configuracion[4]}', '{configuracion[5]}', '{configuracion[6]}');"
-                print("comando final :", execute_command)
+                execute_command = f"INSERT INTO {table} ({field}) values ('{user}', '{configuration[0]}', '{configuration[1]}', \
+                '{configuration[2]}', '{configuration[3]}', '{configuration[4]}', '{configuration[5]}', '{configuration[6]}');"
+                print("Final command: ", execute_command)
                 self.cursor.execute(execute_command)
                 self.connector.commit()
-            elif action == "Borrar":
+            elif action == "Remove":
                 self.cursor.execute(f"USE {database}")
-                execute_command = f"DELETE FROM {table} WHERE {campo[0]} = '{user}' and {campo[1]} = '{configuracion}';"
-                print("comando final :", execute_command)
+                execute_command = f"DELETE FROM {table} WHERE {field[0]} = '{user}' and {field[1]} = '{configuration}';"
+                print("Final command: ", execute_command)
                 self.cursor.execute(execute_command)
                 self.connector.commit()
-        
+
         except:
-            print("Error! Revise los datos introducidos en el user indicado.")
+            print("Error! Check the information given of the indicated user.")
             return
-    
+
     @connection
     @check_db
     @check_table
-    def eliminar_datos_table(self, database, table, cantidad, user=None):
-        """Método para eliminar tables. Necesita 3 argumentos obligatorios y uno opcional: Una base de datos (type string), 
-        una table (type string) y una cantidad (type string). El argumento "user" (type diccionario) es opcional en caso
-        de que se desee eliminar sólo un user en particualr."""
-        
-        # Se comprueba si la table exists.
+    def remove_table_values(self, database, table, amount, user=None):
+        """Method to remove tables. It needs 3 mandatory arguments and 1 optional: A database (string type), a table
+           (string type) and a quantity (string type). The "user" argument (dictionary type) is optional in case that
+           you only want to delete a particular user."""
+
+        # It checks if table exists.
         if self.table_exists == False:
-            print(f'La table "{table}" no exists en la base de datos "{database}". \
-Compruebe el name indicado.')
+            print(f'Table "{table}" does not exists in the database "{database}". Check the information given.')
             return
         try:
-            # Selecciona la base de datos en donde se va a eliminar el o los users indicados.
+            # Database is selected where user or users will be removed. 
             self.cursor.execute(f"USE {database}")
-            if cantidad == "ALL":
-                comando_eliminar = f"DELETE FROM {table} list;"
-            elif cantidad == "UNIQUE":
+            if amount == "ALL":
+                remove_command = f"DELETE FROM {table} list;"
+            elif amount == "UNIQUE":
                 if user == None:
-                    print("No se ha indicado ningún user. Complete todos los campos correctamente.")
+                    print("Any user was given. Fullfil all fields propertly.")
                     return
                 else:
-                    comando_eliminar = f"DELETE FROM {table} WHERE login = '{user}';"
+                    remove_command = f"DELETE FROM {table} WHERE login = '{user}';"
 
-                # Comprueba si el login exists.
+                # It checks if login exists.
                 self.cursor.execute(f"SELECT login FROM {database}.{table} WHERE login = '{user}'")
-                # Recupera el value de la búsqueda realizada. Si el value es "None" entonces el user no exists y finaliza la llamada.
+                # Value of the query executed is gotten. If this value is "None" then user does not exist and the call is ended.
                 value = self.cursor.fetchone()
                 if not value:
-                    print(f'El login indicado "{user}" no exists y no puede ser eliminado.')
+                    print(f'Login given "{user}" does not exist and can\'t be removed.')
                     return
 
-            # Comando que ejecuta la eliminación del user o los users indicados.
-            self.cursor.execute(comando_eliminar)
+            # Command that executes the elimination of the indicated user or users.
+            self.cursor.execute(remove_command)
             self.connector.commit()
-            if cantidad == "ALL":
-                print(f'Todos los users de la table "{table}" dentro de la base de datos "{database}" \
-han sido eliminados correctamente.')
-            elif cantidad == "UNIQUE":
-                print(f'El user "{user}" ha sido eliminado correctamente de la table "{table}" dentro \
-de la base de datos "{database}".')
-                
-        # Excepción lanzada si el argumento "cantidad" es inválido.
+            if amount == "ALL":
+                print(f'All users in the table "{table}" in the database "{database}" \
+has been removed successfully.')
+            elif amount == "UNIQUE":
+                print(f'User "{user}" has been removed successfully from the table "{table}" in \
+the database "{database}".')
+
+        # Exception executed if the "amount" argument is invalid.
         except:
-            print("Error! Revise los argumentos indicados.")
+            print("Error! Check the arguments given.")
 
     @connection
     @check_db
-    @check_table  
-    def verificar_login(self, database, table, user):
-        """Método para verificar el login dentro de la app. Necesita 3 argumentos: Una base de datos (type string), una table (type string)
-        y un user (type diccionario) que contiene los datos a comprobar (user y contraseña)."""
-        # Se comprueba si la table exists.
+    @check_table
+    def verify_login(self, database, table, user):
+        """Method to verify the sign in with the app. It requires 3 arguments: A database (string type), a table
+           (string type) and a user (dictionary type) that contains the data to be checked (user and password)."""
+        # It checks if table exists.
         if self.table_exists == False:
-            print(f'La table "{table}" no exists en la base de datos "{database}". \
-Compruebe el name indicado.')
+            print(f'The table "{table}" does not exist in the database "{database}". Check the information given.')
             return
         try:
-            # Selecciona la base de datos en donde se va a verificar el user indicado.
+            # Database is selected where user will be verify.
             self.cursor.execute(f"USE {database}")
-            # Variable que determina si un user y contraseña son válidos para iniciar sesión. Necesita ser "True" para iniciar sesión.
-            self.validacion_login = False
+            # Variable which defines if user and password are valid to sign in. It needs to be "True".
+            self.valid_login = False
 
-            # Comprueba si el login exists.
+            # It checks if login exists.
             self.cursor.execute(f"SELECT login FROM {database}.{table} WHERE login = '{user['login']}'")
-            # Recupera el value de la búsqueda realizada. Si el value es "None" entonces el user no exists y finaliza la llamada.
-            user_seleccionado = self.cursor.fetchone()
-            if not user_seleccionado:
-                print(f'El user "{user["login"]}" no exists. Compruebe nuevamente.')
-                return self.validacion_login
+            # Value of the query executed is gotten. If it's "None" then user does not exist and it ends the call.
+            selected_user = self.cursor.fetchone()
+            if not selected_user:
+                print(f'User "{user["login"]}" does not exists. Check it again.')
+                return self.valid_login
 
-            # Realiza la búsqueda de la contraseña que el user tiene almacenada en la base de datos.
+            # Password saved in the database is searched.
             self.cursor.execute(f"SELECT password FROM {database}.{table} WHERE login = '{user['login']}'")
-            # Recupera el value de la búsqueda realizada.
-            pw_seleccionada = self.cursor.fetchone()
-            # Desencripta la contraseña almacenada en la base de datos y la compara con el value introducido por el user. 
-            # Si es "True" la validación es correcta.
-            comparacion = check_password_hash(pw_seleccionada[0], user["password"])
+            # Variable that contains the value of the executed query.
+            selected_pw = self.cursor.fetchone()
+            # Decrypts the password stored in the database and compares it with the value entered by the user.
+            # If it's "True" the validation is correct.
+            verification = check_password_hash(selected_pw[0], user["password"])
 
-            if not comparacion:
-                print(f'La contraseña es incorrecta. Compruebe nuevamente.')
+            if not verification:
+                print(f'Password incorrect. Try it again.')
             else:
-                print("La validacion es correcta.")
-                self.validacion_login = True
-            return self.validacion_login
-        
-        # Excepción lanzada si los argumentos del diccionario "user" son incorrectos.
-        except:
-            print("Error! Revise los argumentos indicados.")
+                print("Validation successful.")
+                self.valid_login = True
+            return self.valid_login
 
+        # Exception executed if the arguments of the dictionary "user" are invalid.
+        except:
+            print("Error! Check the arguments given.")
 
     @connection
     @check_db
-    def copia_seguridad(self, database):
-        """Método para realizar copias de seguridad de una base de datos. Necesita un argumento: name de la base de datos (type string)."""
-        # Se almacena la fecha y hora en que se realiza la copia de seguridad.
-        fecha_hora = datetime.datetime.now().strftime("%d-%m-%Y - %H.%M.%Shs")
-        # Variable de control que determina si la copia se realizón con éxito o no.
-        copia = False
-        # Se crea el fichero que almacena los datos de la copia de seguridad.
-        with open(f"{backup_path}/{database} - {fecha_hora}.sql", "w") as salida:
-            # Comando para realizar la copia de seguridad.
-            comando = subprocess.Popen(f'"C:/Program Files/MySQL/MySQL Workbench 8.0/"mysqldump --user={self.user} \
+    def backup(self, database):
+        """Method to make a backup copies of a database. It needs one argument: database name (string type)."""
+        # Variable that saved the time and date when the backup is done.
+        date_time = datetime.datetime.now().strftime("%d-%m-%Y - %H.%M.%Shs")
+        # Varible to be used to confirm if backup was successful or not.
+        copy = False
+        # File that contains the information of the backup is created.
+        with open(f"{backup_path}/{database} - {date_time}.sql", "w") as exit:
+            # Variable that contains the command to be used to do the backup.
+            command = subprocess.Popen(f'"C:/Program Files/MySQL/MySQL Workbench 8.0/"mysqldump --user={self.user} \
                             --password={self.password} \
-                            --databases {database}', shell=True, stdout=salida)
-            # Se recupera el value tras la ejecución del comando
-            comando.communicate()
+                            --databases {database}', shell=True, stdout=exit)
+            # Value if executed command is gotten.
+            command.communicate()
 
-            # Se utiliza "returncode" para determinar si el comando ejecutado fue exitoso o no. 
-            # El value 0 indica que la ejecución fue exitosa y 1 que hubo un fallo.
-            if comando.returncode == 0:
-                print(f'La copia de seguridad de la base de datos "{database}" ha sido realizada correctamente. \
-name del archivo: "{database} - {fecha_hora}.sql"')
-                copia = True
+            # "returncode" is used to check if command was executed successfully or not.
+            # "0" means execution was successful and 1 it wasn't.
+            if command.returncode == 0:
+                print(f'Backup of the database "{database}" was executed successfully. \
+File name: "{database} - {date_time}.sql"')
+                copy = True
+
             else:
-                print("Error! La copia de seguridad ha fallado. Revise el comando enviado.")
-        
-        # Elimina el archivo creado automáticamente al llamar al método "with open" en caso de que la copia no sea exitosa.
-        if copia == False:
-            ruta = f"{backup_path}/{database} - {fecha_hora}.sql"
-            os.remove(ruta)
+                print("Error! Backup has failed. Check the command given.")
+
+        # It removes the file created automatically while calling the method "with open" if backup failed.
+        if copy == False:
+            path = f"{backup_path}/{database} - {date_time}.sql"
+            os.remove(path)
 
     @connection
-    def importar_database(self, ruta, archivo):
-        """Método para realizar la importación de una base de datos. Necesita 2 argumentos: La ruta (type string) donde está
-        ubicado el archivo y el name del archivo (type string) con la extensión."""
-        # Comando para realizar la importación de la base de datos.
-        comando = subprocess.Popen(f'"C:/Program Files/MySQL/MySQL Workbench 8.0/"mysql --user={self.user} \
-                            --password={self.password} < "{ruta}/{archivo}"', shell=True)
-        # Se recupera el value tras la ejecución del comando
-        comando.communicate()
+    def import_database(self, path, file):
+        """Method to import a database. It needs 2 arguments: The path (string type) where the file it's located and the name
+           of the file (string type) with the extension."""
+        # Variable that contains the command to import the database.
+        command = subprocess.Popen(f'"C:/Program Files/MySQL/MySQL Workbench 8.0/"mysql --user={self.user} \
+                            --password={self.password} < "{path}/{file}"', shell=True)
+        # Value if executed command is gotten.
+        command.communicate()
 
-        # Se utiliza "returncode" para determinar si el comando ejecutado fue exitoso o no. 
-        # El value 0 indica que la ejecución fue exitosa y 1 que hubo un fallo.
-        if comando.returncode == 0:
-            print(f'La importación del archivo "{archivo}" se ha realizado correctamente.')
+        # "returncode" is used to check if command was executed successfully or not.
+        # "0" means execution was successful and 1 it wasn't.
+        if command.returncode == 0:
+            print(f'Import of the file "{file}" was executed successfully.')
         else:
-            print("\nError! La importación de la copia de seguridad ha fallado. Revise los arugumentos intoducidos.")
+            print("\nError! Import of the backup has failed. Check the arguments given.")
