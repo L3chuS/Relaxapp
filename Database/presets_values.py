@@ -12,8 +12,8 @@ root_access = {
             "database" : ""
             }
 
-# List of dictionaries to be use as preset to create new tables.
-# Between index [0:-1] there're each column name with their specific configuration.
+# List of dictionaries to be used as presets to create new tables.
+# Between index [0:-1] there're each name of the column with their specific configuration.
 # In the index [-1] primary key is set.
 
 columns_users_default = [
@@ -87,7 +87,7 @@ columns_configuration_default = [
         "not_null" : False,
     },
     {
-        "name" : "Date_time",
+        "name" : "Date_Time",
         "type" : "VARCHAR",
         "lenght" : 30,
         "unique" : False,
@@ -138,7 +138,7 @@ columns_configuration_default = [
         "primary_key" : "ID"
     }]
 
-# Dictionary to be use to get the values given by users and sign up, update or remove them (only editables from the GUI)
+# Dictionary to be used to get values given by users and sign up, update or remove them (only editables from the GUI).
 
 user = {
         "action" : "",
