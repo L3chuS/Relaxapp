@@ -1,4 +1,4 @@
-import Interfaz.relaxapp as app
+import Interface.relaxapp as app
 
 # import test as app
 
