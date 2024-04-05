@@ -1,9 +1,9 @@
 import os
 
-user = os.environ.get("UsuarioMySql")
+user = os.environ.get("UserMySql")
 password = os.environ.get("PasswordMySql")
 
-# Diccionario que contiene los valores por defecto para realizar la conexión a la base de datos.
+# Dictionary which contains the values by default to be use to establish connection with the database.
 
 root_access = {
             "host" : "localhost",
@@ -12,48 +12,48 @@ root_access = {
             "database" : ""
             }
 
-#Lista de diccionarios que funciona como presets para cargar nuevas tablas.
-#En los índices del [0:-1] representan cada columna con los valores a modificar.
-#En el índice [-1] se establece la clave primaria. 
+# List of dictionaries to be use as preset to create new tables.
+# Between index [0:-1] there're each column name with their specific configuration.
+# In the index [-1] primary key is set.
 
-columnas_usuario_default = [
+columns_users_default = [
     {
-        "nombre" : "ID",
-        "tipo" : "INT",
-        "largo" : 10,
-        "unico" : True,
+        "name" : "ID",
+        "type" : "INT",
+        "lenght" : 10,
+        "unique" : True,
         "auto_increment" : True,
         "not_null" : True,
     },
     {
-        "nombre" : "Nombre",
-        "tipo" : "VARCHAR",
-        "largo" : 60,
-        "unico" : False,
+        "name" : "Name",
+        "type" : "VARCHAR",
+        "lenght" : 60,
+        "unique" : False,
         "auto_increment" : False,
         "not_null" : True,
     },
     {
-        "nombre" : "Apellido",
-        "tipo" : "VARCHAR",
-        "largo" : 60,
-        "unico" : False,
+        "name" : "Last_Name",
+        "type" : "VARCHAR",
+        "lenght" : 60,
+        "unique" : False,
         "auto_increment" : False,
         "not_null" : True,
     },
     {
-        "nombre" : "Login",
-        "tipo" : "VARCHAR",
-        "largo" : 20,
-        "unico" : True,
+        "name" : "Login",
+        "type" : "VARCHAR",
+        "lenght" : 20,
+        "unique" : True,
         "auto_increment" : False,
         "not_null" : True,
     },
     {
-        "nombre" : "Password",
-        "tipo" : "VARCHAR",
-        "largo" : 500,
-        "unico" : False,
+        "name" : "Password",
+        "type" : "VARCHAR",
+        "lenght" : 500,
+        "unique" : False,
         "auto_increment" : False,
         "not_null" : True,
     },
@@ -61,76 +61,76 @@ columnas_usuario_default = [
         "primary_key" : "ID"
     }]
 
-columnas_configuraciones_default = [
+columns_configuration_default = [
     {
-        "nombre" : "ID",
-        "tipo" : "INT",
-        "largo" : 10,
-        "unico" : True,
+        "name" : "ID",
+        "type" : "INT",
+        "lenght" : 10,
+        "unique" : True,
         "auto_increment" : True,
         "not_null" : True,
     },
     {
-        "nombre" : "Login",
-        "tipo" : "VARCHAR",
-        "largo" : 30,
-        "unico" : False,
+        "name" : "Login",
+        "type" : "VARCHAR",
+        "lenght" : 30,
+        "unique" : False,
         "auto_increment" : False,
         "not_null" : True,
     },
     {
-        "nombre" : "Nombre_Perfil",
-        "tipo" : "VARCHAR",
-        "largo" : 30,
-        "unico" : False,
+        "name" : "Profile_Name",
+        "type" : "VARCHAR",
+        "lenght" : 30,
+        "unique" : False,
         "auto_increment" : False,
         "not_null" : False,
     },
     {
-        "nombre" : "Fecha_Hora",
-        "tipo" : "VARCHAR",
-        "largo" : 30,
-        "unico" : False,
+        "name" : "Date_time",
+        "type" : "VARCHAR",
+        "lenght" : 30,
+        "unique" : False,
         "auto_increment" : False,
         "not_null" : False,
     },
     {
-        "nombre" : "Predeterminado",
-        "tipo" : "VARCHAR",
-        "largo" : 10,
-        "unico" : False,
+        "name" : "Default",
+        "type" : "VARCHAR",
+        "lenght" : 10,
+        "unique" : False,
         "auto_increment" : False,
         "not_null" : False,
     },
     {
-        "nombre" : "Configuracion_Visual",
-        "tipo" : "VARCHAR",
-        "largo" : 150,
-        "unico" : False,
+        "name" : "Visual_Configuration",
+        "type" : "VARCHAR",
+        "lenght" : 150,
+        "unique" : False,
         "auto_increment" : False,
         "not_null" : False,
     },
     {
-        "nombre" : "Configuracion_Estirar",
-        "tipo" : "VARCHAR",
-        "largo" : 150,
-        "unico" : False,
+        "name" : "Stretch_Configuration",
+        "type" : "VARCHAR",
+        "lenght" : 150,
+        "unique" : False,
         "auto_increment" : False,
         "not_null" : False,
     },
     {
-        "nombre" : "Configuracion_Sonidos_Final",
-        "tipo" : "VARCHAR",
-        "largo" : 300,
-        "unico" : False,
+        "name" : "Final_Sounds_Configuration",
+        "type" : "VARCHAR",
+        "lenght" : 300,
+        "unique" : False,
         "auto_increment" : False,
         "not_null" : False,
     },
     {
-        "nombre" : "Configuracion_Sonidos_Lapse",
-        "tipo" : "VARCHAR",
-        "largo" : 300,
-        "unico" : False,
+        "name" : "Lapse_Sounds_Configuration",
+        "type" : "VARCHAR",
+        "lenght" : 300,
+        "unique" : False,
         "auto_increment" : False,
         "not_null" : False,
     },
@@ -138,13 +138,12 @@ columnas_configuraciones_default = [
         "primary_key" : "ID"
     }]
 
-# Diccionario que recupera los datos introducidos por el usuario para registar, actualizar o eliminar un usuario.
-# Valores sólo editables desde la interfaz gráfica.
+# Dictionary to be use to get the values given by users and sign up, update or remove them (only editables from the GUI)
 
 user = {
-        "accion" : "",
-        "nombre" : "",
-        "apellido" : "",
+        "action" : "",
+        "name" : "",
+        "lastname" : "",
         "login" : "",
         "password" : "",
         }
@@ -153,5 +152,5 @@ user = {
 databases = {"database1": "lechus"}
 
 # Tables used.
-tables = {"users_table": "usuarios", 
-          "settings_table":"usuarios_configuraciones"}
+tables = {"users_table": "users", 
+          "settings_table":"users_configurations"}
