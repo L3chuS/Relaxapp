@@ -19,14 +19,14 @@ class Database:
         # Conection with MySql server is done. It takes a dict (by default is
         # "root_access") to get the key values.
 
-        self_connection_state = False
+        self_connection_status = False
         try:
             self.connector = mysql.connector.connect(**kwargs)
             self.cursor = self.connector.cursor()
             self.host = kwargs["host"]
             self.user = kwargs["user"]
             self.password = kwargs["password"]
-            self_connection_state = True
+            self_connection_status = True
             # print("Conection with the server successful")
 
         # Exception executed if the conection values are invalid.
@@ -39,7 +39,7 @@ class Database:
         def intern(self, *args, **kwargs):
             try:
                 # It pass if it's connected.
-                if self_connection_state:
+                if self_connection_status:
                     pass
                 # It connects if it's not.
                 else:
@@ -50,7 +50,7 @@ class Database:
                         )
                     self.cursor = self.connector.cursor()
                     # print("Conection with the server is reopen.")
-                    self_connection_state = True
+                    self_connection_status = True
                 decorated_function(self, *args, **kwargs)
 
             # Exception executed if the conection values are invalid.
@@ -58,10 +58,10 @@ class Database:
                 print("Error! Check the arguments given.")
             finally:
                 # Connection is always close after each connection.
-                if self_connection_state:
+                if self_connection_status:
                     self.connector.close()
                     self.cursor.close()
-                    self_connection_state = False
+                    self_connection_status = False
                     # print("Connection to the server is closed.")
 
         return intern

@@ -12,7 +12,7 @@ from tktooltip import ToolTip
 import datetime
 
 # Connect to the database.
-base_datos = bd.Database(**bd.acceso_root)
+database = bd.Database(**bd.root_access)
 
 # Get the windows resolution regardless of rescaling
 user32 = ctypes.windll.user32
@@ -23,9 +23,9 @@ main_path = path.dirname(__file__)
 main_path_edited = ""
 
 # Bucle that changes "\" for "/" because mysql don't accept first value.
-for letra in main_path:
-    if letra != "\\":
-        main_path_edited += letra
+for letters in main_path:
+    if letters != "\\":
+        main_path_edited += letters
     else:
         main_path_edited += "/"
 
@@ -33,8 +33,8 @@ for letra in main_path:
 main_path_edited = main_path_edited.replace(main_path_edited[0], main_path_edited[0].upper(), 1)
 
 # Main used path are linked.
-image_path = main_path_edited + "/Imagenes/"
-sounds_path = main_path_edited + "/Sonidos/"
+image_path = main_path_edited + "/Images/"
+sounds_path = main_path_edited + "/Sounds/"
 
 # Set appearance.
 appearance = ctk.set_appearance_mode("dark")
@@ -312,13 +312,13 @@ class RelaxApp_Initial_Frame(RelaxApp_Structure):
         get_password = self.entry_password.get()
         user["login"] = get_login
         user["password"] = get_password
-        base_datos.verificar_login(databases["database1"], tables["users_table"], user)
+        database.verify_login(databases["database1"], tables["users_table"], user)
         
         # ###########################################
         # #VARIABLE OCASIONAL PARA ENTRAR SIN USUARIO
         # ###########################################
-        # base_datos.validacion_login = True
-        if base_datos.validacion_login:
+        # database.valid_login = True
+        if database.valid_login:
             self.close_create(RelaxApp_User_Main_Menu)
 
         else:
@@ -416,9 +416,9 @@ class RelaxApp_User_Registration(RelaxApp_Structure):
         get_username = self.username_entry.get()
         get_password = self.password_entry.get()
 
-        user["accion"] = "registrar"
-        user["nombre"] = get_name
-        user["apellido"] = get_last_name
+        user["action"] = "sign_up"
+        user["name"] = get_name
+        user["lastname"] = get_last_name
         user["login"] = get_username
         user["password"] = get_password
 
@@ -503,7 +503,7 @@ class RelaxApp_User_Change_Password(RelaxApp_Structure):
         get_password1_pw_menu = self.pw1_entry.get()
         get_password2_pw_menu = self.pw2_entry.get()
 
-        user["accion"] = "modificar"
+        user["action"] = "modify"
         user["login"] = get_username_pw_menu
         user["password"] = get_password1_pw_menu
 
@@ -588,8 +588,8 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
         self.options = ctk.CTkLabel(self.frame_main, text="Configurar", font=(font, 16), corner_radius=10, height=35)
         self.options.place(rely=0.2, relx=0.5, anchor="center")
 
-        base_datos.consulta(f"SELECT Nombre_Perfil FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}'")
-        len_profiles = base_datos.valor
+        database.query(f"SELECT Perfile_Name FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}'")
+        len_profiles = database.value
 
         if len(len_profiles) > 1 or self.value_test == True:
             self.profile_state = "normal"
@@ -603,7 +603,7 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
                                              state=self.profile_state)
         self.profile_options.place(rely=0.3, relx=0.25, anchor="w")
         self.profile_options_choice = ctk.IntVar()
-                # Checkbox to activate or deactivate "profile_options".
+        # Checkbox to activate or deactivate "profile_options".
         self.profile_options_CB = ctk.CTkCheckBox(self.frame_main, text=None, variable=self.profile_options_choice , width=20, height=20, hover=True, 
                                                   command=self.checkbox_option1, state=self.profile_state,
                                                   fg_color=colors["soft_green"], hover_color=colors["dark_green"])
@@ -776,12 +776,12 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
     def export_profile(self):
 
         # Query method is called to check or get profiles information.
-        base_datos.consulta(f"SELECT Nombre_Perfil, Predeterminado, Configuracion_Visual, \
-                            Configuracion_Estirar, Configuracion_Sonidos_Final, Configuracion_Sonidos_Lapse \
-                            FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}' and Predeterminado = 'True'")
+        database.query(f"SELECT Profile_Name, Default, Visual_Configuration, Stretch_Configuration, Final_Sounds_Configuration, \
+                       Lapse_Sounds_Configuration FROM {databases['database1']}.{tables['settings_table']} WHERE \
+                       login = '{user['login']}' and Default = 'True'")
         
         # Message box is called if there no profile to export.
-        if base_datos.valor == []:
+        if database.value == []:
             RelaxApp_MessageBox_Options(self.root, "No Profile")
         else:
             try:
@@ -790,7 +790,7 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
 
                 # Bucle to go through each value saved in the profile.
                 with open(save_file, mode="w", encoding="utf-8") as file:
-                    for line in base_datos.valor[0]:
+                    for line in database.value[0]:
                         print(line)
                         if line == "True" or line == "False":
                             pass
@@ -872,28 +872,28 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
         self.stop_countdown_SO = False
 
         # Query method is called to get user's visual options settings.
-        self.get_values_VO = base_datos.consulta(f"SELECT Configuracion_Visual FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}'")
-        base_datos.valor = base_datos.valor[0][0]
+        self.get_values_VO = database.query(f"SELECT Visual_Configuration FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}'")
+        database.value = database.value[0][0]
 
         # Dictionary that contains each value of user's visual options settings.
-        self.values_VO = {"time_left_HH" : base_datos.valor[0:2],
-                          "time_left_MM" : base_datos.valor[2:4],
-                          "next_alert_MM" : base_datos.valor[4:6],
-                          "breaktime_MM" : base_datos.valor[6:8],
-                          "breaktime_SS" : base_datos.valor[8:10],
-                          "sound_active" : base_datos.valor[10::]}
+        self.values_VO = {"time_left_HH" : database.value[0:2],
+                          "time_left_MM" : database.value[2:4],
+                          "next_alert_MM" : database.value[4:6],
+                          "breaktime_MM" : database.value[6:8],
+                          "breaktime_SS" : database.value[8:10],
+                          "sound_active" : database.value[10::]}
         
         # Query method is called to get user's stretch options settings.
-        self.get_values_SO = base_datos.consulta(f"SELECT Configuracion_Estirar FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}'")
-        base_datos.valor = base_datos.valor[0][0]
+        self.get_values_SO = database.query(f"SELECT Stretch_Configuration FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}'")
+        database.value = database.value[0][0]
         
         # Dictionary that contains each value of user's stretch options settings.
-        self.values_SO = {"time_left_HH" : base_datos.valor[0:2],
-                          "time_left_MM" : base_datos.valor[2:4],
-                          "next_alert_MM" : base_datos.valor[4:6],
-                          "breaktime_MM" : base_datos.valor[6:8],
-                          "breaktime_SS" : base_datos.valor[8:10],
-                          "sound_active" : base_datos.valor[10::]}
+        self.values_SO = {"time_left_HH" : database.value[0:2],
+                          "time_left_MM" : database.value[2:4],
+                          "next_alert_MM" : database.value[4:6],
+                          "breaktime_MM" : database.value[6:8],
+                          "breaktime_SS" : database.value[8:10],
+                          "sound_active" : database.value[10::]}
 
         # Initial values of all visual options settings.
         self.time_left_HH_VO = ctk.StringVar(value=self.values_VO["time_left_HH"])
@@ -1070,8 +1070,8 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
         # Variable to be used to sinchronize countdowns between Time Remaining and both Next Alert and Break Time.
         contador = 0
         # Hours and minutes of time remaining are gotten.
-        TR_HH_valor = int(self.time_left_HH_VO.get())
-        TR_MM_valor = int(self.time_left_MM_VO.get())
+        TR_HH_value = int(self.time_left_HH_VO.get())
+        TR_MM_value = int(self.time_left_MM_VO.get())
 
         while True:
             # This variable change when return button is pressed to stop or not the app.
@@ -1082,24 +1082,24 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
                 # Timer are sinchronized.
                 self.root.after(30 + contador)
                 # Verify if values have one or two digits in order to add a "0" in front.
-                if TR_MM_valor > 9:
-                    self.time_left_MM_VO.set(TR_MM_valor)
+                if TR_MM_value > 9:
+                    self.time_left_MM_VO.set(TR_MM_value)
                 else:
-                    self.time_left_MM_VO.set("0" + str(TR_MM_valor))
-                if TR_HH_valor > 9:
-                    self.time_left_HH_VO.set(TR_HH_valor)
+                    self.time_left_MM_VO.set("0" + str(TR_MM_value))
+                if TR_HH_value > 9:
+                    self.time_left_HH_VO.set(TR_HH_value)
                 else:
-                    self.time_left_HH_VO.set("0" + str(TR_HH_valor))
+                    self.time_left_HH_VO.set("0" + str(TR_HH_value))
  
                 time.sleep(60)
                 contador += 2
                 # After 1 minute one is subtracted from the minutes.
-                if TR_MM_valor > 0:
-                    TR_MM_valor -=1
+                if TR_MM_value > 0:
+                    TR_MM_value -=1
                 # When minute is cero one is subtracted from the hours.
-                elif TR_HH_valor > 0:     
-                    TR_HH_valor -=1
-                    TR_MM_valor = 59
+                elif TR_HH_value > 0:     
+                    TR_HH_value -=1
+                    TR_MM_value = 59
                 else:
                     # Sound alert is called.
                     if self.sound_VO == "True":
@@ -1128,31 +1128,31 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
         initial_value_MM = self.next_alert_MM_VO.get()
         initial_value_SS = self.next_alert_SS_VO.get()
 
-        NA_MM_valor = int(initial_value_MM)
-        NA_SS_valor = int(initial_value_SS)
+        NA_MM_value = int(initial_value_MM)
+        NA_SS_value = int(initial_value_SS)
         
-        while NA_MM_valor > -1:
+        while NA_MM_value > -1:
             # Conditional that stop bucle when time remaining is finished.
             if self.stop_countdown_VO == True:
                 break
             # Verify if values have one or two digits in order to add a "0" in front.
-            elif NA_SS_valor > 9:
-                self.next_alert_SS_VO.set(NA_SS_valor)
+            elif NA_SS_value > 9:
+                self.next_alert_SS_VO.set(NA_SS_value)
             else:
-                self.next_alert_SS_VO.set("0" + str(NA_SS_valor))
-            if NA_MM_valor > 9:
-                self.next_alert_MM_VO.set(NA_MM_valor)
+                self.next_alert_SS_VO.set("0" + str(NA_SS_value))
+            if NA_MM_value > 9:
+                self.next_alert_MM_VO.set(NA_MM_value)
             else:
-                self.next_alert_MM_VO.set("0" + str(NA_MM_valor))
+                self.next_alert_MM_VO.set("0" + str(NA_MM_value))
 
             # After 1 second one is subtracted from the seconds.
-            if NA_SS_valor > 0:
-                NA_SS_valor -=1
+            if NA_SS_value > 0:
+                NA_SS_value -=1
                 time.sleep(1)
             # When second is cero one is subtracted from the minutes.
-            elif NA_MM_valor > 0:
-                NA_MM_valor -= 1
-                NA_SS_valor = 59
+            elif NA_MM_value > 0:
+                NA_MM_value -= 1
+                NA_SS_value = 59
                 time.sleep(1)
             else:
                 # Sound alert is called.
@@ -1172,31 +1172,31 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
         initial_value_MM = self.breaktime_MM_VO.get()
         initial_value_SS = self.breaktime_SS_VO.get()
 
-        BT_MM_valor = int(initial_value_MM)
-        BT_SS_valor = int(initial_value_SS)
+        BT_MM_value = int(initial_value_MM)
+        BT_SS_value = int(initial_value_SS)
 
-        while BT_MM_valor > -1:
+        while BT_MM_value > -1:
             # Conditional that stop bucle when time remaining is finished.
             if self.stop_countdown_VO == True:
                 break
             # Verify if values have one or two digits in order to add a "0" in front.
-            if BT_MM_valor > 9:
-                self.breaktime_MM_VO.set(BT_MM_valor)
+            if BT_MM_value > 9:
+                self.breaktime_MM_VO.set(BT_MM_value)
             else:
-                self.breaktime_MM_VO.set("0" + str(BT_MM_valor))
-            if BT_SS_valor > 9:
-                self.breaktime_SS_VO.set(BT_SS_valor)
+                self.breaktime_MM_VO.set("0" + str(BT_MM_value))
+            if BT_SS_value > 9:
+                self.breaktime_SS_VO.set(BT_SS_value)
             else:
-                self.breaktime_SS_VO.set("0" + str(BT_SS_valor))
+                self.breaktime_SS_VO.set("0" + str(BT_SS_value))
 
             # After 1 second one is subtracted from the seconds.
-            if BT_SS_valor > 0:
-                BT_SS_valor -=1
+            if BT_SS_value > 0:
+                BT_SS_value -=1
                 time.sleep(1)
             # When second is cero one is subtracted from the minutes.
-            elif BT_MM_valor > 0:     
-                BT_MM_valor -=1
-                BT_SS_valor = 59
+            elif BT_MM_value > 0:     
+                BT_MM_value -=1
+                BT_SS_value = 59
                 time.sleep(1)
             else:
                 # Sound alert is called.
@@ -1212,8 +1212,8 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
     # Function to start the main countdown "Time Remaining" of the stretch options.
     def TR_SO_countdown(self):
         contador = 0
-        TR_HH_valor = int(self.time_left_HH_SO.get())
-        TR_MM_valor = int(self.time_left_MM_SO.get())
+        TR_HH_value = int(self.time_left_HH_SO.get())
+        TR_MM_value = int(self.time_left_MM_SO.get())
 
         while True:
             if self.app_running == False:
@@ -1222,22 +1222,22 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
             else:
                 self.root.after(30 + contador)
 
-                if TR_MM_valor > 9:
-                    self.time_left_MM_SO.set(TR_MM_valor)
+                if TR_MM_value > 9:
+                    self.time_left_MM_SO.set(TR_MM_value)
                 else:
-                    self.time_left_MM_SO.set("0" + str(TR_MM_valor))
-                if TR_HH_valor > 9:
-                    self.time_left_HH_SO.set(TR_HH_valor)
+                    self.time_left_MM_SO.set("0" + str(TR_MM_value))
+                if TR_HH_value > 9:
+                    self.time_left_HH_SO.set(TR_HH_value)
                 else:
-                    self.time_left_HH_SO.set("0" + str(TR_HH_valor))
+                    self.time_left_HH_SO.set("0" + str(TR_HH_value))
 
                 time.sleep(60)
                 contador += 2
-                if TR_MM_valor > 0:
-                    TR_MM_valor -=1
-                elif TR_HH_valor > 0:     
-                    TR_HH_valor -=1
-                    TR_MM_valor = 59
+                if TR_MM_value > 0:
+                    TR_MM_value -=1
+                elif TR_HH_value > 0:     
+                    TR_HH_value -=1
+                    TR_MM_value = 59
                 else:
                     if self.sound_SO == "True":
                         self.play_sounds(1)
@@ -1260,28 +1260,28 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
         initial_value_MM = self.next_alert_MM_SO.get()
         initial_value_SS = self.next_alert_SS_SO.get()
         
-        NA_MM_valor = int(initial_value_MM)
-        NA_SS_valor = int(initial_value_SS)
+        NA_MM_value = int(initial_value_MM)
+        NA_SS_value = int(initial_value_SS)
 
-        while NA_MM_valor > -1:
+        while NA_MM_value > -1:
             if self.stop_countdown_SO == True:
                 break
 
-            elif NA_SS_valor > 9:
-                self.next_alert_SS_SO.set(NA_SS_valor)
+            elif NA_SS_value > 9:
+                self.next_alert_SS_SO.set(NA_SS_value)
             else:
-                self.next_alert_SS_SO.set("0" + str(NA_SS_valor))         
-            if NA_MM_valor > 9:
-                self.next_alert_MM_SO.set(NA_MM_valor)
+                self.next_alert_SS_SO.set("0" + str(NA_SS_value))         
+            if NA_MM_value > 9:
+                self.next_alert_MM_SO.set(NA_MM_value)
             else:
-                self.next_alert_MM_SO.set("0" + str(NA_MM_valor))
+                self.next_alert_MM_SO.set("0" + str(NA_MM_value))
 
-            if NA_SS_valor > 0:
-                NA_SS_valor -=1
+            if NA_SS_value > 0:
+                NA_SS_value -=1
                 time.sleep(1)
-            elif NA_MM_valor > 0:
-                NA_MM_valor -= 1
-                NA_SS_valor = 59
+            elif NA_MM_value > 0:
+                NA_MM_value -= 1
+                NA_SS_value = 59
                 time.sleep(1)
             else:
                 if self.sound_SO == "True":
@@ -1297,28 +1297,28 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
         initial_value_MM = self.breaktime_MM_SO.get()
         initial_value_SS = self.breaktime_SS_SO.get()
 
-        BT_MM_valor = int(initial_value_MM)
-        BT_SS_valor = int(initial_value_SS)
+        BT_MM_value = int(initial_value_MM)
+        BT_SS_value = int(initial_value_SS)
 
-        while BT_MM_valor > -1:
+        while BT_MM_value > -1:
             if self.stop_countdown_SO == True:
                 break
 
-            if BT_SS_valor > 9:
-                self.breaktime_SS_SO.set(BT_SS_valor)
+            if BT_SS_value > 9:
+                self.breaktime_SS_SO.set(BT_SS_value)
             else:
-                self.breaktime_SS_SO.set("0" + str(BT_SS_valor))
-            if BT_MM_valor > 9:
-                self.breaktime_MM_SO.set(BT_MM_valor)
+                self.breaktime_SS_SO.set("0" + str(BT_SS_value))
+            if BT_MM_value > 9:
+                self.breaktime_MM_SO.set(BT_MM_value)
             else:
-                self.breaktime_MM_SO.set("0" + str(BT_MM_valor))
+                self.breaktime_MM_SO.set("0" + str(BT_MM_value))
 
-            if BT_SS_valor > 0:
-                BT_SS_valor -=1
+            if BT_SS_value > 0:
+                BT_SS_value -=1
                 time.sleep(1)
-            elif BT_MM_valor > 0:
-                BT_MM_valor -=1
-                BT_SS_valor = 59
+            elif BT_MM_value > 0:
+                BT_MM_value -=1
+                BT_SS_value = 59
                 time.sleep(1)
             else:
                 if self.sound_SO == "True":
@@ -1395,11 +1395,11 @@ class RelaxApp_User_Main_Menu_Profiles(RelaxApp_User_Settings_Structure):
         self.setting_title.place(rely=0.5, relx=0.5, anchor="center")
 
         # Image of a create simbol.
-        self.create_button = ctk.CTkImage(Image.open(image_path + "Crear.png"))
+        self.create_button = ctk.CTkImage(Image.open(image_path + "Create.png"))
         # Image of an open simbol.
-        self.load_button = ctk.CTkImage(Image.open(image_path + "Abrir.png"))
+        self.load_button = ctk.CTkImage(Image.open(image_path + "Open.png"))
         # Image of a remove simbol.
-        self.remove_button = ctk.CTkImage(Image.open(image_path + "Borrar.png"))
+        self.remove_button = ctk.CTkImage(Image.open(image_path + "Remove.png"))
 
         # Button to create new profile.
         self.create_profile_button = ctk.CTkButton(self.frame2, text=None, image=self.create_button, width=0, command=self.create_profile,
@@ -1435,14 +1435,14 @@ class RelaxApp_User_Main_Menu_Profiles(RelaxApp_User_Settings_Structure):
         """This function writes all profiles set if there's any."""
 
         # Search method is called to get all the profile set for current user.
-        base_datos.consulta(f"SELECT Nombre_Perfil FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}'")
-        profile_list = base_datos.valor
+        database.query(f"SELECT Profile_Name FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}'")
+        profile_list = database.value
         
 
         if len(profile_list) > 1:
             # Search method is called to get if there's a profile set as default.
-            base_datos.consulta(f"SELECT Predeterminado FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}'")
-            default_profile = base_datos.valor
+            database.query(f"SELECT Default FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}'")
+            default_profile = database.value
             # Variable to be used to write the profile selected in the frame 3, 4 or 5.
             frame_counter = 3
             counter = 1
@@ -1457,8 +1457,8 @@ class RelaxApp_User_Main_Menu_Profiles(RelaxApp_User_Settings_Structure):
                     if counter == len(profile_list):
                         self.profile_choice = ctk.IntVar(value=0)
                         # When there's no profile set as "True" database is modified to set the first one as default. 
-                        base_datos.configuraciones_usuario(databases["database1"], tables["settings_table"], user["login"], "Actualizar",
-                                                          ("Nombre_Perfil", "Predeterminado"), (profile_list[default][0], "True"))
+                        database.user_configuration(databases["database1"], tables["settings_table"], user["login"], "Update",
+                                                          ("Profile_Name", "Default"), (profile_list[default][0], "True"))
 
             # Bucle to write each profile on each frame.
             for profile in range(1, len(profile_list)):
@@ -1500,15 +1500,15 @@ class RelaxApp_User_Main_Menu_Profiles(RelaxApp_User_Settings_Structure):
 
     def remove_profile(self):
         # Search method is called to get all the profile set for current user.
-        base_datos.consulta(f"SELECT Nombre_Perfil FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}'")
-        profile_list = base_datos.valor
+        database.query(f"SELECT Profile_Name FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}'")
+        profile_list = database.value
 
         if len(profile_list) > 1:
             # Profile to remove is selected.
             default_profile = self.profile_choice.get()
             profile_choosen = profile_list[default_profile+1][0]
             # Profile is removed from database.
-            base_datos.configuraciones_usuario(databases["database1"], tables["settings_table"], user["login"], "Borrar", ("Login", "Nombre_Perfil"), profile_choosen)
+            database.user_configuration(databases["database1"], tables["settings_table"], user["login"], "Remove", ("Login", "Profile_Name"), profile_choosen)
             # Profile is removed from the app.
             if len(profile_list) == 4:
                 self.clear_frame(self.frame5)
@@ -1524,8 +1524,8 @@ class RelaxApp_User_Main_Menu_Profiles(RelaxApp_User_Settings_Structure):
 
     def save_settings(self):
         # Search method is called to get all the profile set for current user.
-        base_datos.consulta(f"SELECT Nombre_Perfil FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}'")
-        profile_list = base_datos.valor
+        database.query(f"SELECT Profile_Name FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}'")
+        profile_list = database.value
 
         profile_selected = self.profile_choice.get()
 
@@ -1534,11 +1534,11 @@ class RelaxApp_User_Main_Menu_Profiles(RelaxApp_User_Settings_Structure):
             # This bucle set the profile select as "True" and the rest (if there's any) as "False".
             for profile in range(1, len(profile_list)):
                 if profile == profile_selected + 1:
-                    base_datos.configuraciones_usuario(databases["database1"], tables["settings_table"], user["login"], 
-                                                       "Actualizar", ("Nombre_Perfil", "Predeterminado"), (profile_list[profile][0], "True"))
+                    database.user_configuration(databases["database1"], tables["settings_table"], user["login"], 
+                                                       "Update", ("Profile_Name", "Default"), (profile_list[profile][0], "True"))
                 else:
-                    base_datos.configuraciones_usuario(databases["database1"], tables["settings_table"], user["login"], 
-                                                       "Actualizar", ("Nombre_Perfil", "Predeterminado"), (profile_list[profile][0], "False"))
+                    database.user_configuration(databases["database1"], tables["settings_table"], user["login"], 
+                                                       "Update", ("Profile_Name", "Default"), (profile_list[profile][0], "False"))
         self.window.destroy()
 
     def cancel_settings(self):
@@ -1556,9 +1556,9 @@ class RelaxApp_Profile_Name(RelaxApp_Profile_Name_Structure):
         self.window = window
 
         # Image of an accept simbol.
-        self.accept_image = ctk.CTkImage(Image.open(image_path + "Aceptar.png"))
+        self.accept_image = ctk.CTkImage(Image.open(image_path + "Accept.png"))
         # Image of a remove simbol.
-        self.close_image = ctk.CTkImage(Image.open(image_path + "Borrar.png"))
+        self.close_image = ctk.CTkImage(Image.open(image_path + "Remove.png"))
 
         # Validate character limit. 
         self.lenght_name = self.root.register(Validate_CMD.validate_lenght_name)
@@ -1583,8 +1583,8 @@ class RelaxApp_Profile_Name(RelaxApp_Profile_Name_Structure):
     def accept(self):
         profile_name = self.profile_name_entry.get()
 
-        base_datos.consulta(f"SELECT Nombre_Perfil FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}'")
-        profile_list = base_datos.valor
+        database.query(f"SELECT Profile_Name FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}'")
+        profile_list = database.value
 
         if len(profile_name) == 0:
             RelaxApp_MessageBox_Options(self.root, "No Name")
@@ -1593,18 +1593,18 @@ class RelaxApp_Profile_Name(RelaxApp_Profile_Name_Structure):
         else:
             date_time = datetime.datetime.now().strftime("%d-%m-%Y - %H.%M.%Shs")
             # Search method is called to get all the profile set for current user.
-            base_datos.consulta(f"SELECT Configuracion_Visual, Configuracion_Estirar, Configuracion_Sonidos_Final, Configuracion_Sonidos_Lapse FROM \
-                               {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}' and Nombre_Perfil is NULL")
-            profile_values = base_datos.valor
+            database.query(f"SELECT Visual_Configuration, Stretch_Configuration, Final_Sounds_Configuration, Lapse_Sounds_Configuration FROM \
+                           {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}' and Profile_Name is NULL")
+            profile_values = database.value
             visual_config = profile_values[0][0]
             stretch_config = profile_values[0][1]
             final_sound_config = profile_values[0][2]
             lapse_sound_config = profile_values[0][3]
 
-            base_datos.configuraciones_usuario(databases["database1"], tables["settings_table"], user["login"], 
-                                               "Agregar", "Login, Nombre_Perfil, Fecha_Hora, Predeterminado, Configuracion_Visual, \
-                                               Configuracion_Estirar, Configuracion_Sonidos_Final, Configuracion_Sonidos_Lapse", 
-                                               (profile_name, date_time, False, visual_config, stretch_config, final_sound_config, lapse_sound_config))
+            database.user_configuration(databases["database1"], tables["settings_table"], user["login"], 
+                                        "Add", "Login, Profile_Name, Date_Time, Default, Visual_Configuration, \
+                                        Stretch_Configuration, Final_Sounds_Configuration, Lapse_Sounds_Configuration", 
+                                        (profile_name, date_time, False, visual_config, stretch_config, final_sound_config, lapse_sound_config))
             
             
             self.window2.destroy()
@@ -1815,15 +1815,15 @@ class RelaxApp_User_Main_Menu_Settings(RelaxApp_User_Settings_Structure):
             self.values += break_time_SS
             self.values += str(self.sound)
 
-            # Varible "self.values" is saved in the database inside the "Configuracion_visual" column.
+            # Varible "self.values" is saved in the database inside the "Visual_Configuration" column.
             if self.visual_options_values == True:
-                base_datos.configuraciones_usuario(databases["database1"], tables["settings_table"], user["login"], 
-                                                   "ActualizarNULL", ("Nombre_Perfil", "Configuracion_Visual"), self.values)
+                database.user_configuration(databases["database1"], tables["settings_table"], user["login"], 
+                                            "UpdateNULL", ("Profile_Name", "Visual_Configuration"), self.values)
 
-            # Varible "self.values" is saved in the database inside the "Configuracion_estirar" column.    
+            # Varible "self.values" is saved in the database inside the "Stretch_Configuration" column.    
             elif self.stretch_options_values == True:
-                base_datos.configuraciones_usuario(databases["database1"], tables["settings_table"], user["login"], 
-                                                   "ActualizarNULL", ("Nombre_Perfil", "Configuracion_Estirar"), self.values)
+                database.user_configuration(databases["database1"], tables["settings_table"], user["login"], 
+                                            "UpdateNULL", ("Profile_Name", "Stretch_Configuration"), self.values)
             
             self.window.destroy()
             RelaxApp_Structure.close_create(self, RelaxApp_User_Main_Menu, None, None, True)
@@ -2079,13 +2079,13 @@ entre cada alerta.", parent_kwargs = { "bg": colors["black"]}, delay=0.5, font=(
         if self.final_sound == "" or self.lapse_sound == "":
             RelaxApp_MessageBox_Options(self.root, "No Sound")
         else:
-            # Varible "self.final_sound" is saved in the database inside the "Configuracion_Sonidos_Final" column.
-            base_datos.configuraciones_usuario(databases["database1"], tables["settings_table"], user["login"], 
-                                               "ActualizarNULL", ("Nombre_Perfil", "Configuracion_Sonidos_Final"), self.final_sound)
+            # Varible "self.final_sound" is saved in the database inside the "Final_Sounds_Configuration" column.
+            database.user_configuration(databases["database1"], tables["settings_table"], user["login"], 
+                                        "UpdateNULL", ("Profile_Name", "Final_Sounds_Configuration"), self.final_sound)
             
-            # Varible "self.lapse_sound" is saved in the database inside the "Configuracion_Sonidos_Lapse" column.
-            base_datos.configuraciones_usuario(databases["database1"], tables["settings_table"], user["login"], 
-                                               "ActualizarNULL", ("Nombre_Perfil", "Configuracion_Sonidos_Lapse"), self.lapse_sound)
+            # Varible "self.lapse_sound" is saved in the database inside the "Lapse_Sounds_Configuration" column.
+            database.user_configuration(databases["database1"], tables["settings_table"], user["login"], 
+                                        "UpdateNULL", ("Profile_Name", "Lapse_Sounds_Configuration"), self.lapse_sound)
             
             self.window.destroy()
 
@@ -2135,14 +2135,14 @@ class RelaxApp_MessageBox_Options(RelaxApp_MessageBox_Structure):
 
         elif message == "Continue":
             # Label confirm user registration.
-            self.continue_registration = ctk.CTkLabel(self.window, text=base_datos.mensaje, font=(font,14), 
+            self.continue_registration = ctk.CTkLabel(self.window, text=database.message, font=(font,14), 
                                                       bg_color=colors["soft_grey"])
             self.continue_registration.place(rely=0.35, relx=0.5, anchor="center")
             self.select_button2 = True
 
         elif message == "Error":
             # Label confirm user registration.
-            self.continue_registration = ctk.CTkLabel(self.window, text=base_datos.mensaje, font=(font,14), 
+            self.continue_registration = ctk.CTkLabel(self.window, text=database.message, font=(font,14), 
                                                       bg_color=colors["soft_grey"])
             self.continue_registration.place(rely=0.35, relx=0.5, anchor="center")
             self.select_button3 = True
@@ -2170,7 +2170,7 @@ class RelaxApp_MessageBox_Options(RelaxApp_MessageBox_Structure):
         
         elif message == "No Profile":
             # Label to alert there's no profile set.
-            self.no_profile_label = ctk.CTkLabel(self.window, text="No tienes ningún perfil creado actualmente. Configura al menos un \nvalor para poder habilitar la opción de perfiles.", 
+            self.no_profile_label = ctk.CTkLabel(self.window, text="No tienes ningún perfil creado actualmente. Configura al menos un \nvalue para poder habilitar la opción de perfiles.", 
                                                  font=(font,14), bg_color=colors["soft_grey"])
             self.no_profile_label.place(rely=0.35, relx=0.5, anchor="center")
             self.select_button3 = True
@@ -2206,7 +2206,7 @@ class RelaxApp_MessageBox_Options(RelaxApp_MessageBox_Structure):
         elif message == "Minimum Time":
             # Label to alert not to work extra hours.
             self.minimum_time_label = ctk.CTkLabel(self.window, text="Debes configurar al menos 1 minuto de duración.", 
-                                                  font=(font,14), bg_color=colors["soft_grey"])
+                                                   font=(font,14), bg_color=colors["soft_grey"])
             self.minimum_time_label.place(rely=0.3, relx=0.5, anchor="center")
             self.select_button3 = True
         
@@ -2301,10 +2301,10 @@ class RelaxApp_MessageBox_Options(RelaxApp_MessageBox_Structure):
     def accept_button(self, message):
         if message == "Sign up":
             # App connects with the database to check if the information is valid or not.
-            base_datos.editar_tabla(databases["database1"], tables["users_table"], self.user)
+            database.edit_table(databases["database1"], tables["users_table"], self.user)
         elif message == "Password Correct":
              # App connects with the database to check if the information is valid or not. 
-            base_datos.editar_tabla(databases["database1"], tables["users_table"], self.user)
+            database.edit_table(databases["database1"], tables["users_table"], self.user)
 
         # User registration is canceled and turn back to main menu.
         elif message == "Cancel" or message == "Cancel Change PW" or message == "Sign Out":
@@ -2312,7 +2312,7 @@ class RelaxApp_MessageBox_Options(RelaxApp_MessageBox_Structure):
             RelaxApp_Structure.close_create(self, RelaxApp_Initial_Frame)
 
         # User is registered.
-        if base_datos.validacion_editar == True:
+        if database.validate_editing == True:
             # Registration pop-up window is closed.
             self.window.destroy()
             # "Continue" label is created.
