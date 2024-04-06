@@ -95,7 +95,7 @@ columns_configuration_default = [
         "not_null" : False,
     },
     {
-        "name" : "Default",
+        "name" : "Profile_Default",
         "type" : "VARCHAR",
         "lenght" : 10,
         "unique" : False,

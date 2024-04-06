@@ -588,7 +588,7 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
         self.options = ctk.CTkLabel(self.frame_main, text="Configurar", font=(font, 16), corner_radius=10, height=35)
         self.options.place(rely=0.2, relx=0.5, anchor="center")
 
-        database.query(f"SELECT Perfile_Name FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}'")
+        database.query(f"SELECT Profile_Name FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}'")
         len_profiles = database.value
 
         if len(len_profiles) > 1 or self.value_test == True:
@@ -2191,7 +2191,7 @@ class RelaxApp_MessageBox_Options(RelaxApp_MessageBox_Structure):
 
         elif message == "Invalid Time":
             # Label to alert not to leave entries unfilled.
-            self.empty_entry_label = ctk.CTkLabel(self.window, text="Los campos tienen que tener 2 números entre el 0 y el 60 \npara guardalos.", 
+            self.empty_entry_label = ctk.CTkLabel(self.window, text="Los campos tienen que tener 2 números entre el 0 y el 60 \npara guardarlos.", 
                                                   font=(font,14), bg_color=colors["soft_grey"])
             self.empty_entry_label.place(rely=0.35, relx=0.5, anchor="center")
             self.select_button3 = True

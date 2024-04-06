@@ -1,18 +1,16 @@
-# import Interface.relaxapp as app
+import Interface.relaxapp as app
 
-# # import test as app
+root = app.ctk.CTk()
 
-# root = app.ctk.CTk()
+app = app.RelaxApp_Initial_Frame(root)
 
-# app = app.RelaxApp_Initial_Frame(root)
+root.mainloop()
 
-# root.mainloop()
+# import Database.database as bd
 
-import Database.database as bd
+# from Database.presets_values import columns_users_default, columns_configuration_default, user
 
-from Database.presets_values import columns_users_default, columns_configuration_default
-
-connect = bd.Database(**bd.root_access)
+# connect = bd.Database(**bd.root_access)
 
 # connect.create_db("lechus")
 
@@ -22,11 +20,9 @@ connect = bd.Database(**bd.root_access)
 
 # connect.remove_db("lechus")
 
-# connect.query("SELECT Perfile_Name FROM lechus.users_configurations WHERE login = 'lechu'")
+# connect.query("SELECT Profile_Name FROM lechus.users_configurations WHERE login = 'lechu'")
 
-# connect.edit_table("lechus", "users", usuario)
-
-# connect.edit_table("lechus", "users", usuario2)
+# connect.edit_table("lechus", "users", user)
 
 # connect.remove_table("lechus", "users_configurations")
 
@@ -40,13 +36,13 @@ connect = bd.Database(**bd.root_access)
 
 # connect.query("SELECT * FROM lechus.users")
 
-# connect.query("SELECT * FROM world.city LIMIT 7")
+# connect.query("SELECT * FROM sys.sys_config LIMIT 7")
 
 # connect.remove_table_values("lechus", "users", "UNIQUE", "lechu")
 
-# connect.verify_login("lechus", "users", usuario)
+# connect.verify_login("lechus", "users", user)
 
 # connect.backup("lechus")
 
-# connect.import_database("E:\Programación\Portfolio\Relaxapp\Base_Datos\Copia_Seguridad", "lechus - 01-10-2023 - 03.35.50hs.sql")
+# connect.import_database("E:\Programación\Portfolio\Relaxapp\Database\Backup", "lechus - 06-04-2024 - 03.32.57hs.sql")
 
