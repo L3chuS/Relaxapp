@@ -1,6 +1,4 @@
-import Interfaz.Relaxapp as app
-
-# import pruebas as app
+import Interface.relaxapp as app
 
 root = app.ctk.CTk()
 
@@ -8,53 +6,43 @@ app = app.RelaxApp_Initial_Frame(root)
 
 root.mainloop()
 
-# import Base_Datos.base_datos as bd
+# import Database.database as bd
 
-# from Base_Datos.valores_presets import columnas_usuario_default, columnas_configuraciones_default
+# from Database.presets_values import columns_users_default, columns_configuration_default, user
 
-# conectar = bd.BaseDatos(**bd.acceso_root)
+# connect = bd.Database(**bd.root_access)
 
-# conectar.crear_bd("lechus")
+# connect.create_db("lechus")
 
-# conectar.crear_tabla("lechus", "usuarios", columnas_usuario_default)
+# connect.create_table("lechus", "users", columns_users_default)
 
-# conectar.crear_tabla("lechus", "usuarios_configuraciones", columnas_configuraciones_default)
+# connect.create_table("lechus", "users_configurations", columns_configuration_default)
 
-# conectar.eliminar_bd("lechus")
+# connect.remove_db("lechus")
 
-# conectar.consulta("SELECT Nombre_Perfil FROM lechus.usuarios_configuraciones WHERE login = 'lechu'")
+# connect.query("SELECT Profile_Name FROM lechus.users_configurations WHERE login = 'lechu'")
 
-# conectar.editar_tabla("lechus", "usuarios", usuario)
+# connect.edit_table("lechus", "users", user)
 
-# configuraciones_usuario(self, base_datos, tabla, usuario, configuracion_visual, configuracion_estirar)
+# connect.remove_table("lechus", "users_configurations")
 
-# conectar.eliminar_tabla("lechus", "usuario_configuraciones")
+# connect.remove_table_values("lechus", "users", "UNIQUE", "lechu")
 
-# conectar.eliminar_datos_tabla("lechus", "usuarios", "UNIQUE", "lechu")
+# connect.get_db("lechus")
 
-# conectar.seleccionar_bd("lechus")
+# connect.show_list_db()
 
-# conectar.mostrar_lista_bd()
+# connect.query("SHOW TABLES FROM lechus")
 
-# conectar.consulta("SHOW TABLES FROM lechus")
+# connect.query("SELECT * FROM lechus.users")
 
-# conectar.consulta("SELECT * FROM lechus.usuarios")
+# connect.query("SELECT * FROM sys.sys_config LIMIT 7")
 
-# conectar.consulta("SELECT * FROM world.city LIMIT 7")
+# connect.remove_table_values("lechus", "users", "UNIQUE", "lechu")
 
-# conectar.editar_tabla("lechus", "usuarios", usuario)
+# connect.verify_login("lechus", "users", user)
 
-# conectar.editar_tabla("lechus", "usuarios", usuario)
+# connect.backup("lechus")
 
-# conectar.editar_tabla("lechus", "usuarios", usuario2)
-
-# conectar.eliminar_datos_tabla("lechus", "usuarios", "UNIQUE", "lechu")
-
-# conectar.verificar_login("lechus", "usuarios", usuario)
-
-# conectar.copia_seguridad("lechus")
-
-# conectar.eliminar_bd("lechus")
-
-# conectar.importar_base_datos("E:\Programación\Portfolio\Relaxapp\Base_Datos\Copia_Seguridad", "lechus - 01-10-2023 - 03.35.50hs.sql")
+# connect.import_database("E:\Programación\Portfolio\Relaxapp\Database\Backup", "lechus - 06-04-2024 - 03.32.57hs.sql")
 

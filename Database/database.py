@@ -7,7 +7,7 @@ from Database.presets_values import root_access
 
 # Variable to get the location of the project.
 main_path = os.path.dirname(__file__)
-backup_path = main_path + "\Backup"
+backup_path = main_path + "\\Backup"
 
 # Main class of the database.
 class Database:
@@ -19,14 +19,14 @@ class Database:
         # Conection with MySql server is done. It takes a dict (by default is
         # "root_access") to get the key values.
 
-        self_connection_state = False
+        self.connection_status = False
         try:
             self.connector = mysql.connector.connect(**kwargs)
             self.cursor = self.connector.cursor()
             self.host = kwargs["host"]
             self.user = kwargs["user"]
             self.password = kwargs["password"]
-            self_connection_state = True
+            self.connection_status = True
             # print("Conection with the server successful")
 
         # Exception executed if the conection values are invalid.
@@ -39,7 +39,7 @@ class Database:
         def intern(self, *args, **kwargs):
             try:
                 # It pass if it's connected.
-                if self_connection_state:
+                if self.connection_status:
                     pass
                 # It connects if it's not.
                 else:
@@ -50,7 +50,7 @@ class Database:
                         )
                     self.cursor = self.connector.cursor()
                     # print("Conection with the server is reopen.")
-                    self_connection_state = True
+                    self.connection_status = True
                 decorated_function(self, *args, **kwargs)
 
             # Exception executed if the conection values are invalid.
@@ -58,10 +58,10 @@ class Database:
                 print("Error! Check the arguments given.")
             finally:
                 # Connection is always close after each connection.
-                if self_connection_state:
+                if self.connection_status:
                     self.connector.close()
                     self.cursor.close()
-                    self_connection_state = False
+                    self.connection_status = False
                     # print("Connection to the server is closed.")
 
         return intern
@@ -166,7 +166,8 @@ class Database:
                     if len(user[key]) > 60 or len(user[key]) < 2:
                         self.validate_editing = False
                         # Variable to create a label to be used in the App.
-                        self.message = f"La logitud del {key} debe tener al menos 2 caracteres y no debe \nsuperar los 60."
+                        self.message = "La logitud del nombre o del apellido deben tener al menos 2 \ncaracteres y no deben superar los 60."
+                        self.message_terminal = f"Lenght of the {key} must have at least 2 characters and can't be higher than 60."
                         break
 
                     elif user[key].isalpha():
@@ -179,7 +180,8 @@ class Database:
                                 if letter not in valid_values:
                                     self.validate_editing = False
                                     # Variable to create a label to be used in the App.
-                                    self.message = f"El {key} contiene caracteres inválidos. Compruebe nuevamente."
+                                    self.message = f"El nombre o el apellido contienen caracteres inválidos. \nCompruebe nuevamente."
+                                    self.message_terminal = f"The {key} contains invalid characters. Check it again."
                                     break
 
                     if self.validate_editing:
@@ -200,6 +202,7 @@ class Database:
                             self.validate_editing = False
                             # Variable to create a label to be used in the App.
                             self.message = "El usuario o contraseña contienen espacios en blanco.\nCompruebe nuevamente."
+                            self.message_terminal = "User or password contains white spaces. Check it again."
                             break
 
             # The lenght of the user or password is checked. It must have at least 5 characters and can't be higher than 20.
@@ -208,6 +211,7 @@ class Database:
                     self.validate_editing = False
                     # Variable to create a label to be used in the App.
                     self.message = f"El usuario o contraseña deben tener al menos 5 caracteres \ny menos de 20."
+                    self.message_terminal = "User or password must have at least 5 characters and can't be higher than 20."
 
             decorated_function(self, database, table, user)
         return intern
@@ -341,7 +345,7 @@ and can\'t be removed.')
 
         # It checks if the values given by the user are correct or not and it returns to the App.
         if self.validate_editing == False:
-            print("An error occurred while processing your request!", self.message)
+            print("An error occurred while processing your request!", self.message_terminal)
             return self.validate_editing, self.message
 
         try:
@@ -366,18 +370,21 @@ and can\'t be removed.')
                     self.validate_editing = False
                     self.message = f'El login que intenta registrar "{user["login"]}" ya existe y no \npuede ser duplicado. \
 Elija otro nombre.'
+                    self.message_terminal = f'Login "{user["login"]}" you\'re trying to sign up already exist and can\'t be duplicated. \
+Choose another name.'
                     # Values are returned to the App to indicate if the sign up was successful or not.
                     return self.validate_editing, self.message
                 # If user does not exist the command to sign up user is formatted.
-                else:
-                    execute_command = f"INSERT INTO {table} (name, lastname, login, password) \
-            values ('{user['name']}', '{user['lastname']}', '{user['login']}', '{password_encrypted}');"
+                else:     
+                    execute_command = f"INSERT INTO {table} (name, last_name, login, password) \
+values ('{user['name']}', '{user['lastname']}', '{user['login']}', '{password_encrypted}');"
 
             # Step to modify the user.
             elif user['action'] == "modify":
                 if not user_exists:
                     self.validate_editing = False
                     self.message = f'El login que intenta modificar "{user["login"]}" no existe. \nCompruebe los valores indicados.'
+                    self.message_terminal = f'Login "{user["login"]}" you\'re trying to modify does not exist. \nCheck the information given.'
                     # Values are returned to the App to indicate if the modification was successful or not.
                     return self.validate_editing, self.message
                 else:
@@ -396,24 +403,27 @@ Elija otro nombre.'
             if user['action'] == "sign_up":
                 self.validate_editing = True
                 self.message = f'El usuario "{user["login"]}" ha sido registrado correctamente.'
+                self.message_terminal = f'User "{user["login"]}" has been created successfully.'
                 # User is added to the table "users_configurations" with empty fields.
                 add_users_configurations = f"INSERT INTO users_configurations (login) values ('{user['login']}');"
                 self.cursor.execute(add_users_configurations)
                 self.connector.commit()
 
-                print(self.message)
+                print(self.message_terminal)
                 return self.validate_editing, self.message
             elif user['action'] == "modify":
                 self.validate_editing = True
-                self.message = 'El user ha sido actualizado correctamente.'
-                print(self.message)
+                self.message = "El user ha sido actualizado correctamente."
+                self.message_terminal = "User has been updated successfully."
+                print(self.message_terminal)
                 return self.validate_editing, self.message 
 
         # Exception executed if the dictionary contains invalid values.
         except:
             self.validate_editing = False
             self.message = "Los campos indicados para este usuario no son válidos."
-            print(self.message)
+            self.message_terminal = "The fields given for this user are not valid."
+            print(self.message_terminal)
             return self.validate_editing, self.message
 
     @connection
