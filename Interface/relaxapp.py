@@ -214,6 +214,13 @@ class RelaxApp_Profile_Name_Structure:
         self.window2.after(200, lambda: self.window2.iconbitmap(image_path + "logo.ico"))
 
 
+class Check_Values_Configuration():
+    
+    def check_profile_lenght(self, value):
+        if len(value) > 20 or len(value) == 0:
+            return False
+
+
 ###############################################################################
 ### Class that is used to validate entries in the user's main menu settings ###
 ###############################################################################
@@ -680,9 +687,12 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
             
             while self.corrupt_file == False:
                 # Lenght of the profile name is checked.
-                if len(file_values[0]) > 20 or len(file_values[0]) == 0:
+                check_profile = Check_Values_Configuration.check_profile_lenght(self, file_values[0])
+                if check_profile == False:
                     self.corrupt_file = True
                     print("Archivo corrupto len prof")
+
+
                     
                 self.check_values(file_values[1])
                 self.check_values(file_values[2])
@@ -1535,10 +1545,10 @@ class RelaxApp_User_Main_Menu_Profiles(RelaxApp_User_Settings_Structure):
             for profile in range(1, len(profile_list)):
                 if profile == profile_selected + 1:
                     database.user_configuration(databases["database1"], tables["settings_table"], user["login"], 
-                                                       "Update", ("Profile_Name", "Default"), (profile_list[profile][0], "True"))
+                                                "Update", ("Profile_Name", "Default"), (profile_list[profile][0], "True"))
                 else:
                     database.user_configuration(databases["database1"], tables["settings_table"], user["login"], 
-                                                       "Update", ("Profile_Name", "Default"), (profile_list[profile][0], "False"))
+                                                "Update", ("Profile_Name", "Default"), (profile_list[profile][0], "False"))
         self.window.destroy()
 
     def cancel_settings(self):
@@ -2335,3 +2345,6 @@ class RelaxApp_MessageBox_Options(RelaxApp_MessageBox_Structure):
 
     def return_button(self):
         self.window.destroy()
+
+
+
