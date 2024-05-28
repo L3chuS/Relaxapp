@@ -51,8 +51,8 @@ colors = {"black":"#242424",
 font = "Segoe Print"
 
 # Set all valid audio extension.
-audio_accepted_files = (("Audio Files", "*.mp3"),("Audio Files", "*.ogg"), ("Audio Files", "*.WAV"),
-                        ("Audio Files", "*.m4a"), ("Audio Files", "*.wma"))
+audio_accepted_files = (("Audio Files", "*.mp3"),("Audio Files", "*.ogg"), ("Audio Files", "*.wav"),
+                        ("Audio Files", "*.m4a"), ("Audio Files", "*.wma"), ("Audio Files", "*.flac"))
 
 #######################################################
 ### Class that contains general settings of the App ###
@@ -226,48 +226,60 @@ class Check_Values_Configuration():
             return False
         
     def check_settings(self, value):
+
+        if value == "None":
+            return None, None
         
         if value != "None":
             try:
-                lenght_hh = int(value[:2])
-                lenght_mm = int(value[2:4])
-                lapse = int(value[4:6])
-                break_mm = int(value[6:8])
-                break_ss = int(value[8:10])
+                lenght_HH = value[:2]
+                lenght_MM = value[2:4]
+                lapse = value[4:6]
+                break_time_MM = value[6:8]
+                break_time_SS = value[8:10]
                 sound = value[10:]
             except:
                 print("Archivo corrupto texto")
-                return False
+                return False, False
             
-            # valid_numbers = [x.zfill(2) for x in range(61)]
+            valid_numbers = [str(x).zfill(2) for x in range(61)]
 
-            # if lenght_hh not in valid_numbers or lenght_mm not in valid_numbers or \
-            # lapse not in valid_numbers or break_mm not in valid_numbers or \
-            # break_ss not in valid_numbers: 
-
-            if 16 < lenght_hh or 0 > lenght_hh or 60 < lenght_mm \
-            or 0 > lenght_mm or lenght_mm + lenght_hh * 60 > 960 \
-            or lenght_mm + lenght_hh * 60 < 1:
-                print("Archivo corrupto len time lenght")
-                return False
+            if lenght_HH not in valid_numbers or lenght_MM not in valid_numbers or \
+            lapse not in valid_numbers or break_time_MM not in valid_numbers or \
+            break_time_SS not in valid_numbers:
+                print("Archivo corrupto invalid numbers")
+                return False, "Invalid Time"
             
-            elif 60 < lapse or 1 > lapse:
-                print("Archivo corrupto invalid value lapse")
-                return False
+            elif int(lenght_HH) * 60 + int(lenght_MM) > 960:
+                print("Archivo corrupto extra hours")
+                return False, "Extra Hours"
             
-            elif 60 < break_mm or 0 > break_mm or 60 < break_ss \
-            or 30 > break_mm * 60 + break_ss or 3600 < break_mm * 60 + break_ss:
-                print("Archivo corrupto break")
-                return False
+            elif int(lenght_HH) * 60 + int(lenght_MM) < 1:
+                print("Archivo corrupto minimum time")
+                return False, "Minimum Time"
             
-            elif break_mm * 60 + break_ss > lapse * 60:
-                print("Archivo corrupto len time break vs lapse")
-                return False
-
-            elif sound != "True":
-                if sound != "False":
-                    print("Archivo corrupto sound")
-                    return False
+            elif int(lapse) > int(lenght_HH) * 60 + int(lenght_MM):
+                print("Archivo corrupto over duration")
+                return False, "Over Duration"
+            
+            elif int(break_time_MM) * 60 + int(break_time_SS) > \
+            int(lapse) * 60:
+                print("Archivo corrupto over lapse")
+                return False, "Over Lapse"
+            
+            elif int(lapse) == 0:
+                print("Archivo corrupto no lapse")
+                return False, "No Lapse"
+            
+            elif int(break_time_MM) == 0 and int(break_time_SS) < 30:
+                print("Archivo corrupto no break")
+                return False, "No Break"
+            
+            elif sound != "True" and sound != "False":
+                print("Archivo corrupto sound")
+                return False, False
+            else:
+                return True, "Valid Profile"
 
     def check_sounds_settings(self, value):
         if value == "None":
@@ -747,17 +759,17 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
         try:
             import_file = ctk.filedialog.askopenfilename(title="Importar Perfil")
 
-            print("texto importado", import_file)
+            # print("texto importado", import_file) - TO REMOVE
             with open(import_file, mode="r", encoding="utf-8") as file:
-                print("File equivale a:", file)
+                # print("File equivale a:", file) - TO REMOVE
                 read_file = file.readlines()
-                print("read_file equivale a:", read_file)
+                # print("read_file equivale a:", read_file) - TO REMOVE
                 self.corrupt_file = False
                 file_values = []
 
                 # Bucle that add values in a list to check them easily.
                 for value in read_file:
-                    print("Lineas archivo importado: ", value)
+                    # print("Lineas archivo importado: ", value) - TO REMOVE
                     file_values.append(value[:-1])
                 
                 while self.corrupt_file == False:
@@ -765,36 +777,38 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
                     check_profile = Check_Values_Configuration.check_profile_lenght(self, file_values[0])
                     if check_profile == False:
                         self.corrupt_file = True
-                        print("Archivo corrupto len prof")
+                        # print("Archivo corrupto len prof") - TO REMOVE
 
                     # Settings of the profile values are checked.
                     check_settings_1 = Check_Values_Configuration.check_settings(self, file_values[1])
                     check_settings_2 = Check_Values_Configuration.check_settings(self, file_values[2])
                 
-                    if check_settings_1 == False or check_settings_2 == False:
+                    if check_settings_1[0] == False or check_settings_2[0] == False:
                         self.corrupt_file = True
-                        print("Archivo corrupto settings")
+                        # print("Archivo corrupto settings") - TO REMOVE
 
                     if file_values[1] == "None" and file_values[2] == "None":
                         self.corrupt_file = True
-                        print("Archivo corrupto 2 none")
+                        # print("Archivo corrupto 2 none") - TO REMOVE
 
                     check_sounds_settings_1 = Check_Values_Configuration.check_sounds_settings(self, file_values[3])
                     check_sounds_settings_2 = Check_Values_Configuration.check_sounds_settings(self, file_values[4])
 
                     if check_sounds_settings_1 == False or check_sounds_settings_2 == False:
                         self.corrupt_file = True
-                        print("Archivo corrupto sounds")
+                        # print("Archivo corrupto sounds") - TO REMOVE
 
                     if check_sounds_settings_1 != check_sounds_settings_2:
                         self.corrupt_file = True
-                        print("Archivo corrupto sounds no match")
-
+                        # print("Archivo corrupto sounds no match") - TO REMOVE
                     break
 
                 if self.corrupt_file == True:
-                    print("Archivo corrupto general")
+                    # print("Archivo corrupto general") - TO REMOVE
                     return RelaxApp_MessageBox_Options(self.root, "File_Corrupt")
+                else:
+                    RelaxApp_MessageBox_Options(self.root, "Valid Profile")
+
         except FileNotFoundError:
             pass
         except UnicodeDecodeError:
@@ -816,20 +830,19 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
         else:
             try:
                 save_file = ctk.filedialog.asksaveasfilename(title="Exportar Perfil")
-                print(save_file)
+                # print(save_file) - TO REMOVE
 
                 # Bucle to go through each value saved in the profile.
                 with open(save_file, mode="w", encoding="utf-8") as file:
                     for line in database.value[0]:
-                        print(line)
+                        # print(line) - TO REMOVE
                         if line == "True" or line == "False":
                             pass
                         elif line == None:
                             file.write("None")
                         else:
                             file.write(line + "\n")
-                    print("Archivo exportado: ", file)
-
+                    # print("Archivo exportado: ", file) - TO REMOVE
             except:
                 pass            
 
@@ -1795,39 +1808,32 @@ class RelaxApp_User_Main_Menu_Settings(RelaxApp_User_Settings_Structure):
         break_time_MM = self.break_time_entryMM.get()
         break_time_SS = self.break_time_entrySS.get()
 
-        # to_validate = lenght_HH + lenght_MM + lapse + break_time_MM + break_time_SS + self.sound
-        # print(to_validate)
-        # print(type(to_validate))
-
-        # check_values = Check_Values_Configuration.check_settings(self, to_validate)
-        
-        valid_numbers = [str(x).zfill(2) for x in range(61)] 
+        to_validate = lenght_HH + lenght_MM + lapse + break_time_MM + break_time_SS + str(self.sound)
+        check_values = Check_Values_Configuration.check_settings(self, to_validate)
 
         # Verify if all entries are filled.
-        if lenght_HH not in valid_numbers or lenght_MM not in valid_numbers or \
-        lapse not in valid_numbers or break_time_MM not in valid_numbers or \
-        break_time_SS not in valid_numbers:        
+        if check_values[0] != True:
             # Pop-ups a message box if any entry is unfilled.
-            RelaxApp_MessageBox_Options(self.root, "Invalid Time")
-        # Verify if lenght entry is not higher than 16hs.
-        elif int(lenght_HH) * 60 + int(lenght_MM) > 960:
-            RelaxApp_MessageBox_Options(self.root, "Extra Hours")
-        # Verify if lenght entry is not lower than 1 minute.
-        elif int(lenght_HH) * 60 + int(lenght_MM) < 1:
-            RelaxApp_MessageBox_Options(self.root, "Minimum Time")
-        # Verify if lapse is not higher than lenght.
-        elif int(lapse) > int(lenght_HH) * 60 + int(lenght_MM):
-            RelaxApp_MessageBox_Options(self.root, "Over Duration")
-        # Verify if break is not higher than lapse.
-        elif int(break_time_MM) * 60 + int(break_time_SS) > \
-        int(lapse) * 60:
-            RelaxApp_MessageBox_Options(self.root, "Over Lapse")
-        # Verify if lapse is at least 1 minute.    
-        elif int(lapse) == 0:
-            RelaxApp_MessageBox_Options(self.root, "No Lapse")
-        # Verify if break is at least 30 seconds.
-        elif int(break_time_MM) == 0 and int(break_time_SS) < 30:
-            RelaxApp_MessageBox_Options(self.root, "No Break")
+            if check_values[1] == "Invalid Time":
+                RelaxApp_MessageBox_Options(self.root, "Invalid Time")
+            # Verify if lenght entry is not higher than 16hs.
+            elif check_values[1] == "Extra Hours":
+                RelaxApp_MessageBox_Options(self.root, "Extra Hours")
+            # Verify if lenght entry is not lower than 1 minute.
+            elif check_values[1] == "Minimum Time":
+                RelaxApp_MessageBox_Options(self.root, "Minimum Time")
+            # Verify if lapse is not higher than lenght.
+            elif check_values[1] == "Over Duration":
+                RelaxApp_MessageBox_Options(self.root, "Over Duration")
+            # Verify if break is not higher than lapse.
+            elif check_values[1] == "Over Lapse":
+                RelaxApp_MessageBox_Options(self.root, "Over Lapse")
+            # Verify if lapse is at least 1 minute.
+            elif check_values[1] == "No Lapse":
+                RelaxApp_MessageBox_Options(self.root, "No Lapse")
+            # Verify if break is at least 30 seconds.
+            elif check_values[1] == "No Break":
+                RelaxApp_MessageBox_Options(self.root, "No Break")
         
         else:
             # Convert 60 minutes in 1 hour.
@@ -1860,11 +1866,10 @@ class RelaxApp_User_Main_Menu_Settings(RelaxApp_User_Settings_Structure):
             elif self.stretch_options_values == True:
                 database.user_configuration(databases["database1"], tables["settings_table"], user["login"], 
                                             "UpdateNULL", ("Profile_Name", "Stretch_Configuration"), self.values)
-            
+
             self.window.destroy()
             RelaxApp_Structure.close_create(self, RelaxApp_User_Main_Menu, None, None, True)
-            
-        
+
     def cancel_settings(self):
         self.window.destroy()
 
@@ -2279,6 +2284,13 @@ class RelaxApp_MessageBox_Options(RelaxApp_MessageBox_Structure):
             self.no_break_label = ctk.CTkLabel(self.window, text="El tiempo de descanso debe tener al menos 30 segundos.", 
                                                font=(font,14), bg_color=colors["soft_grey"])
             self.no_break_label.place(rely=0.3, relx=0.5, anchor="center")
+            self.select_button3 = True
+
+        elif message == "Valid Profile":
+            # Label to alert to set at least 1 minute between alerts.
+            self.valid_profile = ctk.CTkLabel(self.window, text="El perfil ha sido importado exitósamente.", 
+                                              font=(font,14), bg_color=colors["soft_grey"])
+            self.valid_profile.place(rely=0.3, relx=0.5, anchor="center")
             self.select_button3 = True
 
         elif message == "No Settings":
