@@ -408,11 +408,9 @@ class RelaxApp_Initial_Frame(RelaxApp_Structure):
         user["password"] = get_password
         database.verify_login(databases["database1"], tables["users_table"], user)
         
-        # ###########################################
-        # #VARIABLE OCASIONAL PARA ENTRAR SIN USUARIO
-        # ###########################################
-        # database.valid_login = True
         if database.valid_login:
+            database.user_configuration(databases["database1"], tables["settings_table"], user["login"], 
+                                        "Restore")
             self.close_create(RelaxApp_User_Main_Menu)
 
         else:
@@ -807,7 +805,8 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
                     # print("Archivo corrupto general") - TO REMOVE
                     return RelaxApp_MessageBox_Options(self.root, "File_Corrupt")
                 else:
-                    RelaxApp_MessageBox_Options(self.root, "Valid Profile")
+                    
+                    RelaxApp_MessageBox_Options(self.root, "Valid Profile", None, file_values)
 
         except FileNotFoundError:
             pass
@@ -2148,11 +2147,12 @@ class RelaxApp_MessageBox_Options(RelaxApp_MessageBox_Structure):
     """This class defines all pop-ups of the App.
        Inherit all structure from parent."""
     
-    def __init__(self, root, message, user=None):
+    def __init__(self, root, message, user=None, values=None):
         super().__init__(root)
         self.root = root
         self.message = message
         self.user = user
+        self.values = values
         # Variable to set when the button "Accept", "Cancel" is activated
         self.select_button1 = False
         # Variable to set when the button "Continue" is activated
@@ -2177,6 +2177,13 @@ class RelaxApp_MessageBox_Options(RelaxApp_MessageBox_Structure):
         elif message == "Continue":
             # Label confirm user registration.
             self.continue_registration = ctk.CTkLabel(self.window, text=database.message, font=(font,14), 
+                                                      bg_color=colors["soft_grey"])
+            self.continue_registration.place(rely=0.35, relx=0.5, anchor="center")
+            self.select_button2 = True
+        
+        elif message == "Continue2":
+            # Label confirm user registration.
+            self.continue_registration = ctk.CTkLabel(self.window, text="El perfil ha sido importado exitósamente y se ha establecido \ncomo predeterminado.", font=(font,14), 
                                                       bg_color=colors["soft_grey"])
             self.continue_registration.place(rely=0.35, relx=0.5, anchor="center")
             self.select_button2 = True
@@ -2288,10 +2295,10 @@ class RelaxApp_MessageBox_Options(RelaxApp_MessageBox_Structure):
 
         elif message == "Valid Profile":
             # Label to alert to set at least 1 minute between alerts.
-            self.valid_profile = ctk.CTkLabel(self.window, text="El perfil ha sido importado exitósamente.", 
+            self.valid_profile = ctk.CTkLabel(self.window, text="Está seguro que desea importar el perfil seleccionado? Esto \neliminará el último de la lista  de perfiles si estuviera llena.", 
                                               font=(font,14), bg_color=colors["soft_grey"])
-            self.valid_profile.place(rely=0.3, relx=0.5, anchor="center")
-            self.select_button3 = True
+            self.valid_profile.place(rely=0.35, relx=0.5, anchor="center")
+            self.select_button1 = True
 
         elif message == "No Settings":
             # Label to alert to set at least one value (Visual or Stretch Break) to start the App.
@@ -2339,7 +2346,7 @@ class RelaxApp_MessageBox_Options(RelaxApp_MessageBox_Structure):
         if self.select_button2 == True:
             # Button to continue to the main menu.
             self.continue_registration_button = ctk.CTkButton(self.window, width=80, height=17, text="Continuar", font=(font,14), 
-                                                              command=self.continue_button, corner_radius=10, hover=True, 
+                                                              command=lambda: self.continue_button(message), corner_radius=10, hover=True, 
                                                               fg_color=colors["soft_green"], hover_color=colors["dark_green"],
                                                               bg_color=colors["soft_grey"])
             self.continue_registration_button.place(rely=0.65, relx=0.5, anchor="center")
@@ -2360,6 +2367,24 @@ class RelaxApp_MessageBox_Options(RelaxApp_MessageBox_Structure):
         elif message == "Password Correct":
              # App connects with the database to check if the information is valid or not. 
             database.edit_table(databases["database1"], tables["users_table"], self.user)
+        elif message == "Valid Profile":
+            database.query(f"SELECT ID FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}'")
+            id = []
+
+            for index in range(len(database.value)):
+                id.append(database.value[index][0])
+
+            print("el id final es:", id)
+            self.values.append(id)
+            print("valor final:",  self.values)
+
+            database.user_configuration(databases["database1"], tables["settings_table"], user["login"], 
+                                        "Import Profile", "Login, Profile_Name, Date_Time, Profile_Default, Visual_Configuration, \
+                                        Stretch_Configuration, Final_Sounds_Configuration, Lapse_Sounds_Configuration", self.values)
+            self.window.destroy()
+            RelaxApp_MessageBox_Options(self.root, "Continue2", user)
+            return
+
 
         # User registration is canceled and turn back to main menu.
         elif message == "Cancel" or message == "Cancel Change PW" or message == "Sign Out":
@@ -2384,9 +2409,12 @@ class RelaxApp_MessageBox_Options(RelaxApp_MessageBox_Structure):
     def cancel_button(self):
         self.window.destroy()
 
-    def continue_button(self):
-        self.window.destroy()
-        RelaxApp_Structure.close_create(self, RelaxApp_Initial_Frame)
+    def continue_button(self, message):
+        if message == "Continue":
+            self.window.destroy()
+            RelaxApp_Structure.close_create(self, RelaxApp_Initial_Frame)
+        elif message == "Continue2":
+            self.window.destroy()
 
     def return_button(self):
         self.window.destroy()

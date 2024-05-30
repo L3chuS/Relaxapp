@@ -429,47 +429,61 @@ values ('{user['name']}', '{user['lastname']}', '{user['login']}', '{password_en
     @connection
     @check_db
     @check_table
-    def user_configuration(self, database, table, user, action, field, configuration):
+    def user_configuration(self, database, table, user, action, field=None, configuration=None):
         """Method to add in the database configurations that the user makes from the application.
            It needs 5 arguments: A database (string type), a table (string type), a user (string type),
            a field to modify (string type) and the configuration values (string type)."""
         # It checks if the indicated table exists. It finish the call if it's "False".
+        self.validate_config = False
+
         if self.table_exists == False:
             print(f'Table "{table}" does not exists in the database "{database}". Check the information given.')
             return
             
         try:
+            self.cursor.execute(f"USE {database}")
             if action == "Update":
                 # Database is selected where the values of the user will be saved.
-                self.cursor.execute(f"USE {database}")
                 execute_command = f"UPDATE {table} SET {field[1]} = '{configuration[1]}' WHERE login = '{user}' and {field[0]} = '{configuration[0]}';"
                 print("The command executed is: ", execute_command)
-                self.cursor.execute(execute_command)
-                self.connector.commit()
             elif action == "UpdateNULL":
                 # Database is selected where the values of the user will be saved.
-                self.cursor.execute(f"USE {database}")
                 execute_command = f"UPDATE {table} SET {field[1]} = '{configuration}' WHERE login = '{user}' and {field[0]} IS NULL;"
                 print("The command executed is: ", execute_command)
-                self.cursor.execute(execute_command)
-                self.connector.commit()
             elif action == "Add":
-                self.cursor.execute(f"USE {database}")
                 execute_command = f"INSERT INTO {table} ({field}) values ('{user}', '{configuration[0]}', '{configuration[1]}', \
                 '{configuration[2]}', '{configuration[3]}', '{configuration[4]}', '{configuration[5]}', '{configuration[6]}');"
                 print("Final command: ", execute_command)
-                self.cursor.execute(execute_command)
-                self.connector.commit()
+            elif action == "Restore":
+                execute_command = f"UPDATE {table} SET Visual_Configuration = '', Stretch_Configuration = '', Final_Sounds_Configuration = '', \
+                Lapse_Sounds_Configuration = '' WHERE login = '{user}' and Profile_Name IS NULL;"
+                print("Final command: ", execute_command)
+            elif action == "Import Profile":
+                date_time = datetime.datetime.now().strftime("%d-%m-%Y - %H.%M.%Shs")
+
+                if len(configuration[5]) == 4:
+                    execute_command = f"UPDATE {table} SET Profile_Name = '{configuration[0]}', Date_Time = '{date_time}', Profile_Default = 'True', \
+                    Visual_Configuration = '{configuration[1]}', Stretch_Configuration = '{configuration[2]}', Final_Sounds_Configuration = '{configuration[3]}', \
+                    Lapse_Sounds_Configuration = '{configuration[4]}' WHERE login = '{user}' and ID = '{configuration[5][-1]}';"
+                    print("Final command: ", execute_command)
+                elif len(configuration[5]) < 4:
+                    execute_command = f"INSERT INTO {table} ({field}) values ('{user}', '{configuration[0]}', '{date_time}', \
+                    'True', '{configuration[1]}', '{configuration[2]}', '{configuration[3]}', '{configuration[4]}');"
+                    print("Final command: ", execute_command)
+                for i in range(1, len(configuration[5]) - 1):
+                    id = configuration[5][i]
+                    set_all_false = f"UPDATE {table} SET Profile_Default = 'False' WHERE login = '{user}' and ID = '{id}';"
+                    self.cursor.execute(set_all_false)
+
             elif action == "Remove":
-                self.cursor.execute(f"USE {database}")
                 execute_command = f"DELETE FROM {table} WHERE {field[0]} = '{user}' and {field[1]} = '{configuration}';"
                 print("Final command: ", execute_command)
-                self.cursor.execute(execute_command)
-                self.connector.commit()
+
+            self.cursor.execute(execute_command)
+            self.connector.commit()
 
         except:
             print("Error! Check the information given of the indicated user.")
-            return
 
     @connection
     @check_db
