@@ -870,29 +870,44 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
 
     # Function to start App.
     def start_relaxapp(self):
-        # Get if "self.visual_options_CB" is checked.
-        if self.visual_options_choice.get() == 0:
-            self.profile_set = True
-        else:
-            self.profile_set = False
+        self.visual_set = False
+        self.stretch_set = False
 
+        # Get if "self.visual_options_CB" is checked.
+        if self.profile_options_choice.get() == 1:
+            database.query(f"SELECT Visual_Configuration FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}' and Profile_Default = 'True'")
+            self.value_VO = database.value[0][0]
+            if self.value_VO != "":
+                self.visual_set = True
+
+            database.query(f"SELECT Stretch_Configuration FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}' and Profile_Default = 'True'")
+            self.value_SO = database.value[0][0]
+            if self.value_SO != "":
+                self.stretch_set = True
 
         # Get if "self.visual_options_CB" is checked.
         if self.visual_options_choice.get() == 1:
             self.visual_set = True
-        else:
-            self.visual_set = False
+            database.query(f"SELECT Visual_Configuration FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}'")
+            self.value_VO = database.value[0][0]
         
         # Get if "self.stretch_options_CB" is checked.
         if self.stretch_options_choice.get() == 1:
             self.stretch_set = True
-        else:
-            self.stretch_set = False
+            database.query(f"SELECT Stretch_Configuration FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}'")
+            self.value_SO = database.value[0][0]
+
+        print("visual set", self.visual_set)
+        print("stretch set", self.stretch_set)
 
         if self.visual_set == False and self.stretch_set == False:
             RelaxApp_MessageBox_Options(self.root, "No Settings")
+        elif self.value_VO == "" and self.visual_set == True:
+            RelaxApp_MessageBox_Options(self.root, "No Values Set")
+        elif self.value_SO == "" and self.stretch_set == True:
+            RelaxApp_MessageBox_Options(self.root, "No Values Set")
         else:  
-            self.close_create(RelaxApp_Running, self.visual_set, self.stretch_set)
+            self.close_create(RelaxApp_Running, self.visual_set, self.stretch_set, self.value_VO, self.value_SO)
         
 
 ##########################################################
@@ -1652,7 +1667,7 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
     """This class start RelaxApp. All countdown are executed depending on previus
        values choosen. Inherit all structure from parent."""
     
-    def __init__(self, root, visual_set, stretch_set):
+    def __init__(self, root, visual_set, stretch_set, value_VO, value_SO):
         super().__init__(root)
 
         self.root = root
@@ -1662,6 +1677,8 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
         # Variables to set which threading is started.
         self.visual_set = visual_set
         self.stretch_set = stretch_set
+        self.value_VO = value_VO
+        self.value_SO = value_SO
         
         # Variable to stop bucles when return button is used after countdown is finished.
         self.app_running = True
@@ -1669,29 +1686,29 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
         self.stop_countdown_VO = False
         self.stop_countdown_SO = False
 
-        # Query method is called to get user's visual options settings.
-        self.get_values_VO = database.query(f"SELECT Visual_Configuration FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}'")
-        database.value = database.value[0][0]
+        # # Query method is called to get user's visual options settings.
+        # self.get_values_VO = database.query(f"SELECT Visual_Configuration FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}'")
+        # database.value = database.value[0][0]
 
         # Dictionary that contains each value of user's visual options settings.
-        self.values_VO = {"time_left_HH" : database.value[0:2],
-                          "time_left_MM" : database.value[2:4],
-                          "next_alert_MM" : database.value[4:6],
-                          "breaktime_MM" : database.value[6:8],
-                          "breaktime_SS" : database.value[8:10],
-                          "sound_active" : database.value[10::]}
+        self.values_VO = {"time_left_HH" : self.value_VO[0:2],
+                          "time_left_MM" : self.value_VO[2:4],
+                          "next_alert_MM" : self.value_VO[4:6],
+                          "breaktime_MM" : self.value_VO[6:8],
+                          "breaktime_SS" : self.value_VO[8:10],
+                          "sound_active" : self.value_VO[10::]}
         
-        # Query method is called to get user's stretch options settings.
-        self.get_values_SO = database.query(f"SELECT Stretch_Configuration FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}'")
-        database.value = database.value[0][0]
+        # # Query method is called to get user's stretch options settings.
+        # self.get_values_SO = database.query(f"SELECT Stretch_Configuration FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}'")
+        # database.value = database.value[0][0]
         
         # Dictionary that contains each value of user's stretch options settings.
-        self.values_SO = {"time_left_HH" : database.value[0:2],
-                          "time_left_MM" : database.value[2:4],
-                          "next_alert_MM" : database.value[4:6],
-                          "breaktime_MM" : database.value[6:8],
-                          "breaktime_SS" : database.value[8:10],
-                          "sound_active" : database.value[10::]}
+        self.values_SO = {"time_left_HH" : self.value_SO[0:2],
+                          "time_left_MM" : self.value_SO[2:4],
+                          "next_alert_MM" : self.value_SO[4:6],
+                          "breaktime_MM" : self.value_SO[6:8],
+                          "breaktime_SS" : self.value_SO[8:10],
+                          "sound_active" : self.value_SO[10::]}
 
         # Initial values of all visual options settings.
         self.time_left_HH_VO = ctk.StringVar(value=self.values_VO["time_left_HH"])
@@ -2308,10 +2325,17 @@ class RelaxApp_MessageBox_Options(RelaxApp_MessageBox_Structure):
             self.select_button1 = True
 
         elif message == "No Settings":
-            # Label to alert to set at least one value (Visual or Stretch Break) to start the App.
+            # Label to alert to choose at least one option to start the App.
             self.no_settings_label = ctk.CTkLabel(self.window, text="Debes seleccionar al menos una opción antes de iniciar la aplicación.", 
                                                   font=(font,14), bg_color=colors["soft_grey"])
             self.no_settings_label.place(rely=0.3, relx=0.5, anchor="center")
+            self.select_button3 = True
+
+        elif message == "No Values Set":
+            # Label to alert to set the values of the option chosen to start the App.
+            self.no_values_set_label = ctk.CTkLabel(self.window, text="Cada opción elegida debe tener valores configurados antes \nde iniciar la aplicación.", 
+                                                    font=(font,14), bg_color=colors["soft_grey"])
+            self.no_values_set_label.place(rely=0.35, relx=0.5, anchor="center")
             self.select_button3 = True
 
         elif message == "No Sound":
