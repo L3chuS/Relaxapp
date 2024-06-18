@@ -458,6 +458,10 @@ values ('{user['name']}', '{user['lastname']}', '{user['login']}', '{password_en
                 execute_command = f"UPDATE {table} SET Visual_Configuration = '', Stretch_Configuration = '', Final_Sounds_Configuration = '', \
                 Lapse_Sounds_Configuration = '' WHERE login = '{user}' and Profile_Name IS NULL;"
                 print("Final command: ", execute_command)
+            elif action == "Restart":
+                execute_command = f"UPDATE {table} SET {field} = '', Final_Sounds_Configuration = '', Lapse_Sounds_Configuration = '' \
+                WHERE login = '{user}' and Profile_Name IS NULL;"
+                print("Final command: ", execute_command)
             elif action == "Import Profile":
                 date_time = datetime.datetime.now().strftime("%d-%m-%Y - %H.%M.%Shs")
 

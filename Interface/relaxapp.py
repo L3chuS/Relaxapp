@@ -718,7 +718,7 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
 
         # Button to restart VO values set.
         self.restart_button1 = ctk.CTkButton(self.frame_main, text=None, image=self.restart_button, width=20, height=20, hover=True,
-                                             command=self.restart_values, fg_color=colors["soft_grey"], hover_color=colors["dark_green"])
+                                             command=lambda: self.restart_values("VO"), fg_color=colors["soft_grey"], hover_color=colors["dark_green"])
         self.restart_button1.place(rely=0.4, relx=0.9, anchor="e")
 
         # Button to set stretch options.
@@ -736,7 +736,7 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
 
         # Button to restart SO values set.
         self.restart_button2 = ctk.CTkButton(self.frame_main, text=None, image=self.restart_button, width=20, height=20, hover=True,
-                                             command=self.restart_values, fg_color=colors["soft_grey"], hover_color=colors["dark_green"])
+                                             command=lambda: self.restart_values("SO"), fg_color=colors["soft_grey"], hover_color=colors["dark_green"])
         self.restart_button2.place(rely=0.5, relx=0.9, anchor="e")
 
         # Button to set sounds options.
@@ -877,8 +877,11 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
         self.stretch_options_values = True
         RelaxApp_User_Main_Menu_Settings(self.root, None, self.stretch_options_values)
 
-    def restart_values(self):
-        print("En desarrollo")
+    def restart_values(self, value):
+        if value == "VO":
+            database.user_configuration(databases["database1"], tables["settings_table"], user["login"], "Restart", "Visual_Configuration")
+        elif value == "SO":
+            database.user_configuration(databases["database1"], tables["settings_table"], user["login"], "Restart", "Stretch_Configuration")      
 
     def set_sounds_options(self):
         RelaxApp_User_Main_Menu_Sounds(self.root)
