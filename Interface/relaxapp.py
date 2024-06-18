@@ -710,12 +710,16 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
         self.visual_options_choice = ctk.IntVar()
         # Checkbox to activate or deactivate "visual_options".
         self.visual_options_CB = ctk.CTkCheckBox(self.frame_main, text=None, variable=self.visual_options_choice , width=20, height=20, hover=True, 
-                                                 command=self.checkbox_option2,
-                                                 fg_color=colors["soft_green"], hover_color=colors["dark_green"])
+                                                 command=self.checkbox_option2, fg_color=colors["soft_green"], hover_color=colors["dark_green"])
         self.visual_options_CB.place(rely=0.4, relx=0.8, anchor="e")
 
-        # # Image of a create simbol.
-        # self.create_button = ctk.CTkImage(Image.open(image_path + "Restart.png"))
+        # Image of a restart simbol.
+        self.restart_button = ctk.CTkImage(Image.open(image_path + "Restart.png"))
+
+        # Button to restart VO values set.
+        self.restart_button1 = ctk.CTkButton(self.frame_main, text=None, image=self.restart_button, width=20, height=20, hover=True,
+                                             command=lambda: self.restart_values("VO"), fg_color=colors["soft_grey"], hover_color=colors["dark_green"])
+        self.restart_button1.place(rely=0.4, relx=0.9, anchor="e")
 
         # Button to set stretch options.
         self.stretch_options = ctk.CTkButton(self.frame_main, text="Estirar", font=(font, 14), 
@@ -729,6 +733,11 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
                                                   command=self.checkbox_option3,
                                                   fg_color=colors["soft_green"], hover_color=colors["dark_green"])
         self.stretch_options_CB.place(rely=0.5, relx=0.8, anchor="e")
+
+        # Button to restart SO values set.
+        self.restart_button2 = ctk.CTkButton(self.frame_main, text=None, image=self.restart_button, width=20, height=20, hover=True,
+                                             command=lambda: self.restart_values("SO"), fg_color=colors["soft_grey"], hover_color=colors["dark_green"])
+        self.restart_button2.place(rely=0.5, relx=0.9, anchor="e")
 
         # Button to set sounds options.
         self.sounds_options = ctk.CTkButton(self.frame_main, text="Sonidos", font=(font, 14), 
@@ -867,6 +876,12 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
     def set_stretch_options(self):
         self.stretch_options_values = True
         RelaxApp_User_Main_Menu_Settings(self.root, None, self.stretch_options_values)
+
+    def restart_values(self, value):
+        if value == "VO":
+            database.user_configuration(databases["database1"], tables["settings_table"], user["login"], "Restart", "Visual_Configuration")
+        elif value == "SO":
+            database.user_configuration(databases["database1"], tables["settings_table"], user["login"], "Restart", "Stretch_Configuration")      
 
     def set_sounds_options(self):
         RelaxApp_User_Main_Menu_Sounds(self.root)
