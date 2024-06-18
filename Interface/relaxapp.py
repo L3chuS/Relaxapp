@@ -872,18 +872,30 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
     def start_relaxapp(self):
         self.visual_set = False
         self.stretch_set = False
+        self.value_VO = ""
+        self.value_SO = ""
 
         # Get if "self.visual_options_CB" is checked.
         if self.profile_options_choice.get() == 1:
             database.query(f"SELECT Visual_Configuration FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}' and Profile_Default = 'True'")
-            self.value_VO = database.value[0][0]
-            if self.value_VO != "":
-                self.visual_set = True
+            print("self value prof vo es:", database.value)
+            if database.value == []:
+                RelaxApp_MessageBox_Options(self.root, "No Values Set")
+                return
+            else:
+                self.value_VO = database.value[0][0]
+                if self.value_VO != "":
+                    self.visual_set = True
 
             database.query(f"SELECT Stretch_Configuration FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}' and Profile_Default = 'True'")
-            self.value_SO = database.value[0][0]
-            if self.value_SO != "":
-                self.stretch_set = True
+            print("self value prof so es:", database.value)
+            if database.value == []:
+                RelaxApp_MessageBox_Options(self.root, "No Values Set")
+                return
+            else:
+                self.value_SO = database.value[0][0]
+                if self.value_SO != "":
+                    self.stretch_set = True
 
         # Get if "self.visual_options_CB" is checked.
         if self.visual_options_choice.get() == 1:
@@ -897,17 +909,19 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
             database.query(f"SELECT Stretch_Configuration FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}'")
             self.value_SO = database.value[0][0]
 
-        print("visual set", self.visual_set)
-        print("stretch set", self.stretch_set)
-
         if self.visual_set == False and self.stretch_set == False:
             RelaxApp_MessageBox_Options(self.root, "No Settings")
-        elif self.value_VO == "" and self.visual_set == True:
-            RelaxApp_MessageBox_Options(self.root, "No Values Set")
-        elif self.value_SO == "" and self.stretch_set == True:
-            RelaxApp_MessageBox_Options(self.root, "No Values Set")
-        else:  
-            self.close_create(RelaxApp_Running, self.visual_set, self.stretch_set, self.value_VO, self.value_SO)
+            return
+        elif self.visual_set == True:
+            if self.value_VO == "":
+                RelaxApp_MessageBox_Options(self.root, "No Values Set")
+                return
+        elif self.stretch_set == True:
+            if self.value_SO == "":
+                RelaxApp_MessageBox_Options(self.root, "No Values Set")
+                return
+
+        self.close_create(RelaxApp_Running, self.visual_set, self.stretch_set, self.value_VO, self.value_SO)
         
 
 ##########################################################
@@ -1089,9 +1103,10 @@ class RelaxApp_User_Main_Menu_Profiles(RelaxApp_User_Settings_Structure):
         database.query(f"SELECT Profile_Name FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}'")
         profile_list = database.value
 
-        profile_selected = self.profile_choice.get()
+        
 
         if len(profile_list) > 1:
+            profile_selected = self.profile_choice.get()
             
             # This bucle set the profile select as "True" and the rest (if there's any) as "False".
             for profile in range(1, len(profile_list)):
@@ -2149,7 +2164,7 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
         self.app_running = False
         # Method is called to stop the sound alert.
         pygame.mixer.quit()
-        RelaxApp_Structure.close_create(self, RelaxApp_User_Main_Menu, False, False)
+        RelaxApp_Structure.close_create(self, RelaxApp_User_Main_Menu, False, False, True)
 
     # Function to run sounds alerts.
     def play_sounds(self, value):
