@@ -714,6 +714,9 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
                                                  fg_color=colors["soft_green"], hover_color=colors["dark_green"])
         self.visual_options_CB.place(rely=0.4, relx=0.8, anchor="e")
 
+        # # Image of a create simbol.
+        # self.create_button = ctk.CTkImage(Image.open(image_path + "Restart.png"))
+
         # Button to set stretch options.
         self.stretch_options = ctk.CTkButton(self.frame_main, text="Estirar", font=(font, 14), 
                                              command=self.set_stretch_options, corner_radius=10, height=35, 
@@ -912,11 +915,11 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
         if self.visual_set == False and self.stretch_set == False:
             RelaxApp_MessageBox_Options(self.root, "No Settings")
             return
-        elif self.visual_set == True:
+        if self.visual_set == True:
             if self.value_VO == "":
                 RelaxApp_MessageBox_Options(self.root, "No Values Set")
                 return
-        elif self.stretch_set == True:
+        if self.stretch_set == True:
             if self.value_SO == "":
                 RelaxApp_MessageBox_Options(self.root, "No Values Set")
                 return
