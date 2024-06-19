@@ -686,7 +686,7 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
         if len(len_profiles) > 1 or self.value_test == True:
             self.profile_state = "normal"
         else:
-            self.profile_state = ctk.DISABLED      
+            self.profile_state = ctk.DISABLED   
             
         # Button to create profiles.
         self.profile_options = ctk.CTkButton(self.frame_main, text="Perfiles", font=(font, 14), 
@@ -895,31 +895,34 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
 
         # Get if "self.visual_options_CB" is checked.
         if self.profile_options_choice.get() == 1:
-            database.query(f"SELECT Visual_Configuration FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}' and Profile_Default = 'True'")
-            print("self value prof vo es:", database.value)
-            if database.value == []:
-                RelaxApp_MessageBox_Options(self.root, "No Values Set")
-                return
-            else:
+            try:
+                database.query(f"SELECT Visual_Configuration FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}' and Profile_Default = 'True'")
+                print("self value prof vo es:", database.value)
                 self.value_VO = database.value[0][0]
+
+                database.query(f"SELECT Stretch_Configuration FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}' and Profile_Default = 'True'")
+                print("self value prof so es:", database.value)
+                self.value_SO = database.value[0][0]
                 if self.value_VO != "":
                     self.visual_set = True
-
-            database.query(f"SELECT Stretch_Configuration FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}' and Profile_Default = 'True'")
-            print("self value prof so es:", database.value)
-            if database.value == []:
-                RelaxApp_MessageBox_Options(self.root, "No Values Set")
-                return
-            else:
-                self.value_SO = database.value[0][0]
                 if self.value_SO != "":
                     self.stretch_set = True
+                else:
+                    RelaxApp_MessageBox_Options(self.root, "No Values Set")
+                    return
+            except:
+                RelaxApp_MessageBox_Options(self.root, "No Values Set")
+                return
 
         # Get if "self.visual_options_CB" is checked.
         if self.visual_options_choice.get() == 1:
             self.visual_set = True
             database.query(f"SELECT Visual_Configuration FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}'")
             self.value_VO = database.value[0][0]
+            
+            if self.value_VO == "":
+                RelaxApp_MessageBox_Options(self.root, "No Values Set")
+                return
         
         # Get if "self.stretch_options_CB" is checked.
         if self.stretch_options_choice.get() == 1:
@@ -927,17 +930,13 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
             database.query(f"SELECT Stretch_Configuration FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}'")
             self.value_SO = database.value[0][0]
 
-        if self.visual_set == False and self.stretch_set == False:
-            RelaxApp_MessageBox_Options(self.root, "No Settings")
-            return
-        if self.visual_set == True:
-            if self.value_VO == "":
-                RelaxApp_MessageBox_Options(self.root, "No Values Set")
-                return
-        if self.stretch_set == True:
             if self.value_SO == "":
                 RelaxApp_MessageBox_Options(self.root, "No Values Set")
                 return
+
+        if self.visual_set == False and self.stretch_set == False:
+            RelaxApp_MessageBox_Options(self.root, "No Settings")
+            return
 
         self.close_create(RelaxApp_Running, self.visual_set, self.stretch_set, self.value_VO, self.value_SO)
         
@@ -2447,6 +2446,7 @@ class RelaxApp_MessageBox_Options(RelaxApp_MessageBox_Structure):
                                         Stretch_Configuration, Final_Sounds_Configuration, Lapse_Sounds_Configuration", self.values)
             self.window.destroy()
             RelaxApp_MessageBox_Options(self.root, "Continue2", user)
+            RelaxApp_Structure.close_create(self, RelaxApp_User_Main_Menu, None, None, True)
             return
 
 
