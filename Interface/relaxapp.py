@@ -225,6 +225,13 @@ class Check_Values_Configuration():
         if len(value) > 20 or len(value) == 0:
             return False
         
+    def check_profile_duplicated(self, profile):
+        database.query(f"SELECT Profile_Name FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}' and Profile_Name = '{profile}'")
+        profile_name = database.value
+
+        if profile_name != []:
+            return True
+
     def check_settings(self, value):
 
         if value == "None":
@@ -769,17 +776,13 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
         try:
             import_file = ctk.filedialog.askopenfilename(title="Importar Perfil")
 
-            # print("texto importado", import_file) - TO REMOVE
             with open(import_file, mode="r", encoding="utf-8") as file:
-                # print("File equivale a:", file) - TO REMOVE
                 read_file = file.readlines()
-                # print("read_file equivale a:", read_file) - TO REMOVE
                 self.corrupt_file = False
                 file_values = []
 
                 # Bucle that add values in a list to check them easily.
                 for value in read_file:
-                    # print("Lineas archivo importado: ", value) - TO REMOVE
                     file_values.append(value[:-1])
                 
                 while self.corrupt_file == False:
@@ -787,7 +790,11 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
                     check_profile = Check_Values_Configuration.check_profile_lenght(self, file_values[0])
                     if check_profile == False:
                         self.corrupt_file = True
-                        # print("Archivo corrupto len prof") - TO REMOVE
+
+                    # Name of the profile is checked to avoid duplicated name.
+                    check_profile_duplicated = Check_Values_Configuration.check_profile_duplicated(self, file_values[0])
+                    if check_profile_duplicated == True:
+                        self.corrupt_file = True
 
                     # Settings of the profile values are checked.
                     check_settings_1 = Check_Values_Configuration.check_settings(self, file_values[1])
@@ -795,29 +802,23 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
                 
                     if check_settings_1[0] == False or check_settings_2[0] == False:
                         self.corrupt_file = True
-                        # print("Archivo corrupto settings") - TO REMOVE
 
                     if file_values[1] == "None" and file_values[2] == "None":
                         self.corrupt_file = True
-                        # print("Archivo corrupto 2 none") - TO REMOVE
 
                     check_sounds_settings_1 = Check_Values_Configuration.check_sounds_settings(self, file_values[3])
                     check_sounds_settings_2 = Check_Values_Configuration.check_sounds_settings(self, file_values[4])
 
                     if check_sounds_settings_1 == False or check_sounds_settings_2 == False:
                         self.corrupt_file = True
-                        # print("Archivo corrupto sounds") - TO REMOVE
 
                     if check_sounds_settings_1 != check_sounds_settings_2:
                         self.corrupt_file = True
-                        # print("Archivo corrupto sounds no match") - TO REMOVE
                     break
 
                 if self.corrupt_file == True:
-                    # print("Archivo corrupto general") - TO REMOVE
                     return RelaxApp_MessageBox_Options(self.root, "File_Corrupt")
                 else:
-                    
                     RelaxApp_MessageBox_Options(self.root, "Valid Profile", None, file_values)
 
         except FileNotFoundError:
@@ -989,25 +990,18 @@ class RelaxApp_User_Main_Menu_Profiles(RelaxApp_User_Settings_Structure):
 
         # Image of a create simbol.
         self.create_button = ctk.CTkImage(Image.open(image_path + "Create.png"))
-        # Image of an open simbol.
-        self.load_button = ctk.CTkImage(Image.open(image_path + "Open.png"))
         # Image of a remove simbol.
         self.remove_button = ctk.CTkImage(Image.open(image_path + "Remove.png"))
 
         # Button to create new profile.
         self.create_profile_button = ctk.CTkButton(self.frame2, text=None, image=self.create_button, width=0, command=self.create_profile,
                                                 hover=True, fg_color=colors["soft_grey"], hover_color=colors["dark_green"])
-        self.create_profile_button.place(rely=0.5, relx=0.2, anchor="center")
-
-        # Button to load new profile.
-        self.load_profile_button = ctk.CTkButton(self.frame2, text=None, image=self.load_button, width=0, command=self.load_profile,
-                                                hover=True, fg_color=colors["soft_grey"], hover_color=colors["dark_green"])
-        self.load_profile_button.place(rely=0.5, relx=0.5, anchor="center")
+        self.create_profile_button.place(rely=0.5, relx=0.3, anchor="center")
 
         # Button to remove profile selected.
         self.remove_profile_button = ctk.CTkButton(self.frame2, text=None, image=self.remove_button, width=0, command=self.remove_profile,
                                                 hover=True, fg_color=colors["soft_grey"], hover_color=colors["dark_green"])
-        self.remove_profile_button.place(rely=0.5, relx=0.8, anchor="center")
+        self.remove_profile_button.place(rely=0.5, relx=0.7, anchor="center")
 
         # Save button.
         self.save_button = ctk.CTkButton(self.frame6, width=10, height=10, text="Guardar", font=(font,14), 
@@ -1087,9 +1081,6 @@ class RelaxApp_User_Main_Menu_Profiles(RelaxApp_User_Settings_Structure):
 
     def create_profile(self):
         RelaxApp_Profile_Name(self.root, self.window)
-
-    def load_profile(self):
-        pass
 
     def remove_profile(self):
         # Search method is called to get all the profile set for current user.
@@ -1180,10 +1171,14 @@ class RelaxApp_Profile_Name(RelaxApp_Profile_Name_Structure):
         database.query(f"SELECT Profile_Name FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}'")
         profile_list = database.value
 
+        check_profile_duplicated = Check_Values_Configuration.check_profile_duplicated(self, profile_name)
+
         if len(profile_name) == 0:
             RelaxApp_MessageBox_Options(self.root, "No Name")
         elif len(profile_list) == 4:
             RelaxApp_MessageBox_Options(self.root, "Full Profile")
+        elif check_profile_duplicated == True:
+            RelaxApp_MessageBox_Options(self.root, "Duplicated")
         else:
             date_time = datetime.datetime.now().strftime("%d-%m-%Y - %H.%M.%Shs")
             # Search method is called to get all the profile set for current user.
@@ -1199,8 +1194,7 @@ class RelaxApp_Profile_Name(RelaxApp_Profile_Name_Structure):
                                         "Add", "Login, Profile_Name, Date_Time, Profile_Default, Visual_Configuration, \
                                         Stretch_Configuration, Final_Sounds_Configuration, Lapse_Sounds_Configuration", 
                                         (profile_name, date_time, False, visual_config, stretch_config, final_sound_config, lapse_sound_config))
-            
-            
+
             self.window2.destroy()
             RelaxApp_User_Main_Menu_Profiles(self.window, user["login"])
             self.window.destroy()
@@ -2389,7 +2383,14 @@ class RelaxApp_MessageBox_Options(RelaxApp_MessageBox_Structure):
             self.full_profile_label = ctk.CTkLabel(self.window, text="No se pueden agregar mas de 3 perfiles. Elimine alguno de los \nque tiene configurados.", 
                                                    font=(font,14), bg_color=colors["soft_grey"])
             self.full_profile_label.place(rely=0.35, relx=0.5, anchor="center")
-            self.select_button3 = True  
+            self.select_button3 = True
+        
+        elif message == "Duplicated":
+            # Label to alert that a load sounds is trying to save but no file is loaded.
+            self.duplicated_profile_label = ctk.CTkLabel(self.window, text="El nombre del perfil que intenta agregar ya existe. Elija \nuno distinto.", 
+                                            font=(font,14), bg_color=colors["soft_grey"])
+            self.duplicated_profile_label.place(rely=0.35, relx=0.5, anchor="center")
+            self.select_button3 = True 
 
         if self.select_button1 == True:
             # Button to accept user registration.
