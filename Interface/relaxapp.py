@@ -1093,25 +1093,14 @@ class RelaxApp_User_Main_Menu_Profiles(RelaxApp_User_Settings_Structure):
             profile_choosen = profile_list[default_profile+1][0]
             # Profile is removed from database.
             database.user_configuration(databases["database1"], tables["settings_table"], user["login"], "Remove", ("Login", "Profile_Name"), profile_choosen)
-            # Profile is removed from the app.
-            if len(profile_list) == 4:
-                self.clear_frame(self.frame5)
-            elif len(profile_list) == 3:
-                self.clear_frame(self.frame4)
-            elif len(profile_list) == 2:
-                self.clear_frame(self.frame3)
-        self.run_profiles()
-
-    def clear_frame(self, frame):
-        for child in frame.winfo_children():
-            child.destroy()
+            self.window.destroy()
+            # Profile Menu is runned to update changes.
+            RelaxApp_User_Main_Menu_Profiles(self.window, user["login"])
 
     def save_settings(self):
         # Search method is called to get all the profile set for current user.
         database.query(f"SELECT Profile_Name FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}'")
         profile_list = database.value
-
-        
 
         if len(profile_list) > 1:
             profile_selected = self.profile_choice.get()
