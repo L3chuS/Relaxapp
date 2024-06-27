@@ -656,6 +656,12 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
                                          height=2, background=colors["soft_grey"], foreground=colors["white"], 
                                          activebackground=colors["dark_green"], activeforeground=colors["white"])
         self.help_button.place(rely=0.5, relx=0.18, anchor="w")
+
+        # Profile button menu.
+        self.profile_button = tk.Menubutton(self.frame_top_menu, text="Cuenta", font=(font,9), width=4, 
+                                            height=2, background=colors["soft_grey"], foreground=colors["white"], 
+                                            activebackground=colors["dark_green"], activeforeground=colors["white"])
+        self.profile_button.place(rely=0.5, relx=0.34, anchor="w")
         
         # Sign out button menu.
         self.sign_out_button = ctk.CTkButton(self.frame_top_menu, width=10, height=50, text="Cerrar Sesión", 
@@ -671,6 +677,10 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
         self.menu_help = tk.Menu(self.help_button, tearoff=0)
         self.help_button.config(menu=self.menu_help)
 
+        # Profile menu cascade.
+        self.menu_profile = tk.Menu(self.profile_button, tearoff=0)
+        self.profile_button.config(menu=self.menu_profile)
+
         # Labels of archieve menu cascade.
         self.menu_archieve.add_command(label=" Importar Perfil  ", font=(font,9), command=self.import_profile, 
                                        background=colors["soft_grey"], foreground=colors["white"], activebackground=colors["dark_green"], 
@@ -682,6 +692,10 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
         # Label of help menu cascade.
         self.menu_help.add_command(label=" Conozca RelaxApp  ", font=(font,9), command=self.about_us, background=colors["soft_grey"], 
                                    foreground=colors["white"], activebackground=colors["dark_green"], hidemargin=True) 
+
+        # Label of profile menu cascade.
+        self.menu_profile.add_command(label=" Eliminar Cuenta  ", font=(font,9), command=self.remove_account, background=colors["soft_grey"], 
+                                      foreground=colors["white"], activebackground=colors["dark_green"], hidemargin=True) 
 
         # Options label.
         self.options = ctk.CTkLabel(self.frame_main, text="Configurar", font=(font, 16), corner_radius=10, height=35)
@@ -863,6 +877,9 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
         ###### TO SET ######
         print("about_us EN DESARROLLO")
         ###### TO SET ######
+
+    def remove_account(self):
+        RelaxApp_MessageBox_Options(self.root, "Remove Account", user["login"])
 
     # Function to sign out of the App.
     def sign_out(self):
@@ -2275,6 +2292,13 @@ class RelaxApp_MessageBox_Options(RelaxApp_MessageBox_Structure):
                                                    font=(font,14), bg_color=colors["soft_grey"])
             self.file_corrupt_label.place(rely=0.35, relx=0.5, anchor="center")
             self.select_button3 = True
+        
+        elif message == "Remove Account":
+            # Label ask/cancel to sign out.
+            self.pw_ask_cancel_label = ctk.CTkLabel(self.window, text=f"Esta opción permite eliminar completamente la cuenta \nde '{self.user}'. ¿Está seguro que desea continuar?", 
+                                                    font=(font,14), bg_color=colors["soft_grey"])
+            self.pw_ask_cancel_label.place(rely=0.3, relx=0.5, anchor="center")
+            self.select_button1 = True
 
         elif message == "Sign Out":
             # Label ask/cancel to sign out.
@@ -2414,6 +2438,7 @@ class RelaxApp_MessageBox_Options(RelaxApp_MessageBox_Structure):
 
     # Accept button to accept registration or accept cancelation
     def accept_button(self, message):
+
         if message == "Sign up":
             # App connects with the database to check if the information is valid or not.
             database.edit_table(databases["database1"], tables["users_table"], self.user)
@@ -2437,11 +2462,15 @@ class RelaxApp_MessageBox_Options(RelaxApp_MessageBox_Structure):
             self.window.destroy()
             RelaxApp_MessageBox_Options(self.root, "Continue2", user)
             RelaxApp_Structure.close_create(self, RelaxApp_User_Main_Menu, None, None, True)
-            return
-
 
         # User registration is canceled and turn back to main menu.
         elif message == "Cancel" or message == "Cancel Change PW" or message == "Sign Out":
+            self.window.destroy()
+            RelaxApp_Structure.close_create(self, RelaxApp_Initial_Frame)
+
+        elif message == "Remove Account":
+            database.user_configuration(databases["database1"], tables["users_table"], user["login"], "Remove Account")
+            database.user_configuration(databases["database1"], tables["settings_table"], user["login"], "Remove Account")
             self.window.destroy()
             RelaxApp_Structure.close_create(self, RelaxApp_Initial_Frame)
 

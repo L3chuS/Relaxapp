@@ -482,6 +482,10 @@ values ('{user['name']}', '{user['lastname']}', '{user['login']}', '{password_en
             elif action == "Remove":
                 execute_command = f"DELETE FROM {table} WHERE {field[0]} = '{user}' and {field[1]} = '{configuration}';"
                 print("Final command: ", execute_command)
+            
+            elif action == "Remove Account":
+                execute_command = f"DELETE FROM {table} WHERE login = '{user}';"
+                print("Final command: ", execute_command)
 
             self.cursor.execute(execute_command)
             self.connector.commit()
