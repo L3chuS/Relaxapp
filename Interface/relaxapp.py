@@ -925,7 +925,7 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
                     self.visual_set = True
                 if self.value_SO != "":
                     self.stretch_set = True
-                else:
+                if self.value_VO == "" and self.value_SO == "":
                     RelaxApp_MessageBox_Options(self.root, "No Values Set")
                     return
             except:
