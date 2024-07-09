@@ -2175,6 +2175,18 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
                 threading.Thread(target=self.NA_SO_countdown).start()
                 break
 
+    # Function to run sounds alerts.
+    def play_sounds(self, value):
+        if self.app_running == True:
+            # When value is "1" the sound related to "Time Remaining" is set.
+            if value == 1:
+                pygame.mixer.music.load(sounds_path + "Final.mp3")  
+                pygame.mixer.music.play(loops=0)
+            # When value is "2" the sound related to "Lapse" is set.
+            elif value == 2:
+                pygame.mixer.music.load(sounds_path + "Lapse.mp3")  
+                pygame.mixer.music.play(loops=0)
+    
     # Function to stop the app when return button is pressed.
     def stop_app(self):
         # Variable to stop all bucles running.
@@ -2182,17 +2194,6 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
         # Method is called to stop the sound alert.
         pygame.mixer.quit()
         RelaxApp_Structure.close_create(self, RelaxApp_User_Main_Menu, False, False, True)
-
-    # Function to run sounds alerts.
-    def play_sounds(self, value):
-        # When value is "1" the sound related to "Time Remaining" is set.
-        if value == 1:
-            pygame.mixer.music.load(sounds_path + "Final.mp3")  
-            pygame.mixer.music.play(loops=0)
-        # When value is "2" the sound related to "Lapse" is set.
-        elif value == 2:
-            pygame.mixer.music.load(sounds_path + "Lapse.mp3")  
-            pygame.mixer.music.play(loops=0)
 
 
 ####################################################
