@@ -936,7 +936,7 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
         # Get if "self.visual_options_CB" is checked.
         if self.visual_options_choice.get() == 1:
             self.visual_set = True
-            database.query(f"SELECT Visual_Configuration FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}'")
+            database.query(f"SELECT Visual_Configuration FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}' and Profile_Default is NULL")
             self.value_VO = database.value[0][0]
             
             if self.value_VO == "":
@@ -946,7 +946,7 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
         # Get if "self.stretch_options_CB" is checked.
         if self.stretch_options_choice.get() == 1:
             self.stretch_set = True
-            database.query(f"SELECT Stretch_Configuration FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}'")
+            database.query(f"SELECT Stretch_Configuration FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}' and Profile_Default is NULL")
             self.value_SO = database.value[0][0]
 
             if self.value_SO == "":
