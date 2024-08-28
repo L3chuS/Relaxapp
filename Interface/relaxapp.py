@@ -10,6 +10,7 @@ import pygame
 from PIL import Image
 from tktooltip import ToolTip
 import datetime
+import multiprocessing
 
 # Connect to the database.
 database = bd.Database(**bd.root_access)
@@ -1947,7 +1948,8 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
                 elif TR_HH_value > 0:     
                     TR_HH_value -=1
                     TR_MM_value = 59
-                else:
+                # When the main countdown is 0 all label change.    
+                if TR_HH_value == 0 and TR_MM_value == 0:
                     # Sound alert is called.
                     if self.sound_VO == "True":
                         self.play_sounds(1)
@@ -2084,8 +2086,8 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
                     TR_MM_value -=1
                 elif TR_HH_value > 0:     
                     TR_HH_value -=1
-                    TR_MM_value = 59
-                else:
+                    TR_MM_value = 59  
+                if TR_HH_value == 0 and TR_MM_value == 0:
                     if self.sound_SO == "True":
                         self.play_sounds(1)
                     self.time_left_HH_SO.set("")
