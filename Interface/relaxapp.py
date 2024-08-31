@@ -77,8 +77,8 @@ class RelaxApp_Structure:
 
         # Set a frame at the background.
         self.frame = ctk.CTkFrame(self.root, height=500, width=350, fg_color=colors["soft_grey"])
-        self.frame.pack(pady=10, padx=10, fill="both") 
-        
+        self.frame.pack(pady=10, padx=10, fill="both")
+
         # Set the title and the logo of the app.
         self.title = self.root.title("RelaxApp")
         self.root.after(200, lambda: self.root.iconbitmap(image_path + "logo.ico"))
@@ -929,6 +929,11 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
                 if self.value_VO == "" and self.value_SO == "":
                     RelaxApp_MessageBox_Options(self.root, "No Values Set")
                     return
+                database.query(f"SELECT Final_Sounds_Configuration, Lapse_Sounds_Configuration FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}' and Profile_Default = 'True'")
+                print("self value sound es:", database.value)
+                self.final_sound = database.value[0][0]
+                self.lapse_sound = database.value[0][1]
+
             except:
                 RelaxApp_MessageBox_Options(self.root, "No Values Set")
                 return
@@ -956,8 +961,14 @@ class RelaxApp_User_Main_Menu(RelaxApp_Structure):
         if self.visual_set == False and self.stretch_set == False:
             RelaxApp_MessageBox_Options(self.root, "No Settings")
             return
+        
+        if self.visual_options_choice.get() == 1 or self.stretch_options_choice.get() == 1:
+            database.query(f"SELECT Final_Sounds_Configuration, Lapse_Sounds_Configuration FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}' and Profile_Default is NULL")
+            print("self value sound es:", database.value)
+            self.final_sound = database.value[0][0]
+            self.lapse_sound = database.value[0][1]
 
-        self.close_create(RelaxApp_Running, self.visual_set, self.stretch_set, self.value_VO, self.value_SO)
+        self.close_create(RelaxApp_Running, self.visual_set, self.stretch_set, self.value_VO, self.value_SO, self.final_sound, self.lapse_sound)
         
 
 ##########################################################
@@ -1700,7 +1711,7 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
     """This class start RelaxApp. All countdown are executed depending on previus
        values choosen. Inherit all structure from parent."""
     
-    def __init__(self, root, visual_set, stretch_set, value_VO, value_SO):
+    def __init__(self, root, visual_set, stretch_set, value_VO, value_SO, final_sound, lapse_sound):
         super().__init__(root)
 
         self.root = root
@@ -1712,6 +1723,8 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
         self.stretch_set = stretch_set
         self.value_VO = value_VO
         self.value_SO = value_SO
+        self.final_sound = final_sound
+        self.lapse_sound = lapse_sound
         
         # Variable to stop bucles when return button is used after countdown is finished.
         self.app_running = True
@@ -2182,12 +2195,29 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
         if self.app_running == True:
             # When value is "1" the sound related to "Time Remaining" is set.
             if value == 1:
-                pygame.mixer.music.load(sounds_path + "Final.mp3")  
-                pygame.mixer.music.play(loops=0)
+                try:
+                    if self.final_sound == "":
+                        pygame.mixer.music.load(sounds_path + "Final.mp3")  
+                        pygame.mixer.music.play(loops=0)
+                    else:
+                        pygame.mixer.music.load(self.final_sound)  
+                        pygame.mixer.music.play(loops=0)
+                except:
+                    pygame.mixer.music.load(sounds_path + "Final.mp3")  
+                    pygame.mixer.music.play(loops=0)
+
             # When value is "2" the sound related to "Lapse" is set.
             elif value == 2:
-                pygame.mixer.music.load(sounds_path + "Lapse.mp3")  
-                pygame.mixer.music.play(loops=0)
+                try:    
+                    if self.lapse_sound == "":
+                        pygame.mixer.music.load(sounds_path + "Lapse.mp3")  
+                        pygame.mixer.music.play(loops=0)
+                    else:
+                        pygame.mixer.music.load(self.lapse_sound)  
+                        pygame.mixer.music.play(loops=0)
+                except:
+                    pygame.mixer.music.load(sounds_path + "Final.mp3")  
+                    pygame.mixer.music.play(loops=0)
     
     # Function to stop the app when return button is pressed.
     def stop_app(self):
