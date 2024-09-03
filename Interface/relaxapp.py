@@ -82,12 +82,14 @@ class RelaxApp_Structure:
         self.title = self.root.title("RelaxApp")
         self.root.after(200, lambda: self.root.iconbitmap(image_path + "logo.ico"))
         
+        RelaxApp_Initial_Frame(self.frame)
+
     # Method that creates a new root everytime the main root is destroyed.
     def close_create(self, new_window, *args):
-        self.root.withdraw()
-        self.root = ctk.CTkToplevel()
-        app = new_window(self.root, *args)
-        self.root.mainloop()
+        for wid in self.frame.winfo_children():
+            wid.destroy()
+
+        app = new_window(self.frame)
 
 
 ###########################################################
@@ -361,13 +363,12 @@ class Validate_CMD:
 ### Class that contains the first frame of the App ###
 ######################################################
 
-class RelaxApp_Initial_Frame(RelaxApp_Structure):
+class RelaxApp_Initial_Frame():
     """This class defines all buttons and options availables into
        the first frame. Inherit all structure from parent."""
 
-    def __init__(self, root):
-        super().__init__(root)
-        self.root = root
+    def __init__(self, frame):
+        self.frame = frame
 
         # User label.
         self.user = ctk.CTkLabel(self.frame, text="Usuario", font=(font,19))
@@ -418,7 +419,7 @@ class RelaxApp_Initial_Frame(RelaxApp_Structure):
         if database.valid_login:
             database.user_configuration(databases["database1"], tables["settings_table"], user["login"], 
                                         "Restore")
-            self.close_create(RelaxApp_User_Main_Menu)
+            RelaxApp_Structure.close_create(self, RelaxApp_User_Main_Menu)
 
         else:
             self.error_login = ctk.CTkLabel(self.frame, text="Usuario o contraseña incorrecta. Vuelva a intentarlo.", 
@@ -427,24 +428,24 @@ class RelaxApp_Initial_Frame(RelaxApp_Structure):
    
     # Method that register users.
     def sign_up(self):
-        self.close_create(RelaxApp_User_Registration)
+        RelaxApp_Structure.close_create(self, RelaxApp_User_Registration)
 
     # Method to change password.
     def change_password(self):
-        self.close_create(RelaxApp_User_Change_Password)
+        RelaxApp_Structure.close_create(self, RelaxApp_User_Change_Password)
    
 
 ###############################################################
 ###  Class that contains the window for users registrations ###
 ###############################################################
 
-class RelaxApp_User_Registration(RelaxApp_Structure):
+class RelaxApp_User_Registration():
     """This class opens a new window for users registrations. 
        Inherit all structure from parent."""
 
-    def __init__(self, root):
-        super().__init__(root)
-        self.root = root
+    def __init__(self, frame):
+
+        self.frame = frame
         
         # Top bar of the register menu.
         self.top_bar = ctk.CTkLabel(self.frame, text=None, fg_color=colors["dark_green"], width=310, height=0, 
@@ -531,13 +532,13 @@ class RelaxApp_User_Registration(RelaxApp_Structure):
 ###  Class that contains the window to change the password ###
 ##############################################################
 
-class RelaxApp_User_Change_Password(RelaxApp_Structure):
+class RelaxApp_User_Change_Password():
     """This class opens a new window to change the pasword. 
        Inherit all structure from parent."""
 
-    def __init__(self, root):
-        super().__init__(root)
-        self.root = root
+    def __init__(self, frame):
+
+        self.frame = frame
         
         # Top bar of the change password menu.
         self.top_bar = ctk.CTkLabel(self.frame, text=None, fg_color=colors["dark_green"], width=310, height=0, 
@@ -620,13 +621,13 @@ class RelaxApp_User_Change_Password(RelaxApp_Structure):
 ###  Class that contains the user's main menu window  ###
 #########################################################
 
-class RelaxApp_User_Main_Menu(RelaxApp_Structure):
+class RelaxApp_User_Main_Menu():
     """This class contains the user's main menu. It allows to start
        the app, set, save and load settings and knows about RelaxApp."""
 
-    def __init__(self, root, visual_set=False, stretch_set=False, value=False):
-        super().__init__(root)
-        self.root = root
+    def __init__(self, frame, visual_set=False, stretch_set=False, value=False):
+        
+        self.frame = frame
 
         self.visual_set = visual_set
         self.stretch_set = stretch_set
