@@ -2,7 +2,7 @@ import Interface.relaxapp as app
 
 root = app.ctk.CTk()
 
-app = app.RelaxApp_Initial_Frame(root)
+app = app.RelaxApp_Initial_Frame()
 
 root.mainloop()
 

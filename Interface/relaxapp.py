@@ -10,7 +10,6 @@ import pygame
 from PIL import Image
 from tktooltip import ToolTip
 import datetime
-import multiprocessing
 
 # Connect to the database.
 database = bd.Database(**bd.root_access)
