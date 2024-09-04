@@ -75,21 +75,23 @@ class RelaxApp_Structure:
         self.maximize = self.root.resizable(False,False)
 
         # Set a frame at the background.
-        self.frame = ctk.CTkFrame(self.root, height=500, width=350, fg_color=colors["soft_grey"])
-        self.frame.pack(pady=10, padx=10, fill="both")
+        self.main_frame = ctk.CTkFrame(self.root, height=500, width=350, fg_color=colors["soft_grey"])
+        self.main_frame.pack(pady=10, padx=10, fill="both")
 
         # Set the title and the logo of the app.
         self.title = self.root.title("RelaxApp")
         self.root.after(200, lambda: self.root.iconbitmap(image_path + "logo.ico"))
         
-        RelaxApp_Initial_Frame(self.frame)
+        RelaxApp_Initial_Frame(self.main_frame)
 
     # Method that creates a new root everytime the main root is destroyed.
-    def close_create(self, new_window, *args):
-        for wid in self.frame.winfo_children():
+    def close_create(self, new_window, clean_frame, *args):
+        for wid in clean_frame.winfo_children():
             wid.destroy()
+        # for wid in self.main_frame.winfo_children():
+        #     wid.destroy()
 
-        app = new_window(self.frame)
+        app = new_window(clean_frame)
 
 
 ###########################################################
@@ -100,8 +102,9 @@ class RelaxApp_MessageBox_Structure:
     """This class defines the general structure of the pop-ups.
        Defines the dimensions, title and creates a frame."""
 
-    def __init__(self, root):
-        self.root = root
+    def __init__(self):
+    # def __init__(self, root):
+        # self.root = root
 
         # New pop-ups is created.
         self.window = ctk.CTkToplevel()
@@ -419,7 +422,7 @@ class RelaxApp_Initial_Frame():
         if database.valid_login:
             database.user_configuration(databases["database1"], tables["settings_table"], user["login"], 
                                         "Restore")
-            RelaxApp_Structure.close_create(self, RelaxApp_User_Main_Menu)
+            RelaxApp_Structure.close_create(self, RelaxApp_User_Main_Menu, self.frame)
 
         else:
             self.error_login = ctk.CTkLabel(self.frame, text="Usuario o contraseña incorrecta. Vuelva a intentarlo.", 
@@ -428,11 +431,11 @@ class RelaxApp_Initial_Frame():
    
     # Method that register users.
     def sign_up(self):
-        RelaxApp_Structure.close_create(self, RelaxApp_User_Registration)
+        RelaxApp_Structure.close_create(self, RelaxApp_User_Registration, self.frame)
 
     # Method to change password.
     def change_password(self):
-        RelaxApp_Structure.close_create(self, RelaxApp_User_Change_Password)
+        RelaxApp_Structure.close_create(self, RelaxApp_User_Change_Password, self.frame)
    
 
 ###############################################################
@@ -522,10 +525,10 @@ class RelaxApp_User_Registration():
         user["login"] = get_username
         user["password"] = get_password
 
-        RelaxApp_MessageBox_Options(self.root, "Sign up", user)
+        RelaxApp_MessageBox_Options(self.frame, "Sign up", user)
 
     def cancel_sign_up (self):
-        RelaxApp_MessageBox_Options(self.root, "Cancel", user)
+        RelaxApp_MessageBox_Options(self.frame, "Cancel", user)
 
 
 ##############################################################
@@ -609,12 +612,15 @@ class RelaxApp_User_Change_Password():
 
         if user["password"] == get_password2_pw_menu:
             self.confirm_pw = True
-            RelaxApp_MessageBox_Options(self.root, "Password Correct", user)
+            # RelaxApp_MessageBox_Options(self.root, "Password Correct", user)
+            RelaxApp_MessageBox_Options(self.frame, "Password Correct", user)
         else:
-            RelaxApp_MessageBox_Options(self.root, "Password Incorrect", user)
+            # RelaxApp_MessageBox_Options(self.root, "Password Incorrect", user)
+            RelaxApp_MessageBox_Options(self.frame, "Password Incorrect", user)
 
     def cancel_change_pw (self):
-        RelaxApp_MessageBox_Options(self.root, "Cancel Change PW", user)
+        # RelaxApp_MessageBox_Options(self.root, "Cancel Change PW", user)
+        RelaxApp_MessageBox_Options(self.frame, "Cancel Change PW", user)
 
 
 #########################################################
@@ -2236,9 +2242,13 @@ class RelaxApp_MessageBox_Options(RelaxApp_MessageBox_Structure):
     """This class defines all pop-ups of the App.
        Inherit all structure from parent."""
     
-    def __init__(self, root, message, user=None, values=None):
-        super().__init__(root)
-        self.root = root
+    # def __init__(self, root, message, user=None, values=None): Original
+    # def __init__(self, message, user=None, values=None):
+    def __init__(self, frame, message, user=None, values=None):
+        super().__init__()
+        # super().__init__(root) Original
+        # self.root = root Original
+        self.frame = frame
         self.message = message
         self.user = user
         self.values = values
@@ -2493,33 +2503,36 @@ class RelaxApp_MessageBox_Options(RelaxApp_MessageBox_Structure):
                                         "Import Profile", "Login, Profile_Name, Date_Time, Profile_Default, Visual_Configuration, \
                                         Stretch_Configuration, Final_Sounds_Configuration, Lapse_Sounds_Configuration", self.values)
             self.window.destroy()
-            RelaxApp_MessageBox_Options(self.root, "Continue2", user)
-            RelaxApp_Structure.close_create(self, RelaxApp_User_Main_Menu, None, None, True)
+            RelaxApp_MessageBox_Options(self.frame, "Continue2", user)
+            RelaxApp_Structure.close_create(self, RelaxApp_User_Main_Menu, self.frame, None, None, True)
 
         # User registration is canceled and turn back to main menu.
         elif message == "Cancel" or message == "Cancel Change PW" or message == "Sign Out":
             self.window.destroy()
-            RelaxApp_Structure.close_create(self, RelaxApp_Initial_Frame)
-
+            RelaxApp_Structure.close_create(self, RelaxApp_Initial_Frame, self.frame)
+            return
+        
         elif message == "Remove Account":
             database.user_configuration(databases["database1"], tables["users_table"], user["login"], "Remove Account")
             database.user_configuration(databases["database1"], tables["settings_table"], user["login"], "Remove Account")
             self.window.destroy()
-            RelaxApp_Structure.close_create(self, RelaxApp_Initial_Frame)
+            RelaxApp_Structure.close_create(self, RelaxApp_Initial_Frame, self.frame)
 
         # User is registered.
+        # validate_editing = True
         if database.validate_editing == True:
+        # if validate_editing == True:
             # Registration pop-up window is closed.
             self.window.destroy()
             # "Continue" label is created.
-            RelaxApp_MessageBox_Options(self.root, "Continue", user)
+            RelaxApp_MessageBox_Options(self.frame, "Continue", user)
         
         # User is not registered.
         else:
             # Registration pop-up window is closed.
             self.window.destroy()
             # "Error" label is created.
-            RelaxApp_MessageBox_Options(self.root, "Error", user)
+            RelaxApp_MessageBox_Options(self.frame, "Error", user)
  
     # Cancel button to accept cancelation or cancel cancelation.    
     def cancel_button(self):
@@ -2528,7 +2541,7 @@ class RelaxApp_MessageBox_Options(RelaxApp_MessageBox_Structure):
     def continue_button(self, message):
         if message == "Continue":
             self.window.destroy()
-            RelaxApp_Structure.close_create(self, RelaxApp_Initial_Frame)
+            RelaxApp_Structure.close_create(self, RelaxApp_Initial_Frame, self.frame)
         elif message == "Continue2":
             self.window.destroy()
 
