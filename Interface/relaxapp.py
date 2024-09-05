@@ -75,21 +75,19 @@ class RelaxApp_Structure:
         self.maximize = self.root.resizable(False,False)
 
         # Set a frame at the background.
-        self.main_frame = ctk.CTkFrame(self.root, height=500, width=350, fg_color=colors["soft_grey"])
-        self.main_frame.pack(pady=10, padx=10, fill="both")
+        self.general_frame = ctk.CTkFrame(self.root, height=500, width=350, fg_color=colors["soft_grey"])
+        self.general_frame.pack(pady=10, padx=10, fill="both")
 
         # Set the title and the logo of the app.
         self.title = self.root.title("RelaxApp")
         self.root.after(200, lambda: self.root.iconbitmap(image_path + "logo.ico"))
         
-        RelaxApp_Initial_Frame(self.main_frame)
+        RelaxApp_Initial_Frame(self.general_frame)
 
     # Method that creates a new root everytime the main root is destroyed.
     def close_create(self, new_window, clean_frame, *args):
         for wid in clean_frame.winfo_children():
             wid.destroy()
-        # for wid in self.main_frame.winfo_children():
-        #     wid.destroy()
 
         app = new_window(clean_frame)
 
@@ -125,6 +123,16 @@ class RelaxApp_MessageBox_Structure:
         # Set the title and the logo of the app.
         self.title = self.window.title("RelaxApp")
         self.window.after(200, lambda: self.window.iconbitmap(image_path + "logo.ico"))
+
+    def clean_MB_widgets(self, clean_MB_frame):
+        counter = 1
+        for wid in clean_MB_frame.winfo_children():
+            if counter != 1:
+                wid.destroy()
+            counter += 1
+        # self.clean_MB_frame = clean_MB_frame
+        
+        # return self.clean_MB_frame
 
 
 ####################################################################
@@ -791,7 +799,7 @@ class RelaxApp_User_Main_Menu():
         self.profile_options_choice.set(0)
 
     def create_profile(self):
-        RelaxApp_User_Main_Menu_Profiles(self.root, user["login"])
+        RelaxApp_User_Main_Menu_Profiles(self.frame, user["login"])
     
     def import_profile(self):
         try:
@@ -838,16 +846,16 @@ class RelaxApp_User_Main_Menu():
                     break
 
                 if self.corrupt_file == True:
-                    return RelaxApp_MessageBox_Options(self.root, "File_Corrupt")
+                    return RelaxApp_MessageBox_Options(self.frame, "File_Corrupt")
                 else:
-                    RelaxApp_MessageBox_Options(self.root, "Valid Profile", None, file_values)
+                    RelaxApp_MessageBox_Options(self.frame, "Valid Profile", None, file_values)
 
         except FileNotFoundError:
             pass
         except UnicodeDecodeError:
-            RelaxApp_MessageBox_Options(self.root, "Invalid_Format")
+            RelaxApp_MessageBox_Options(self.frame, "Invalid_Format")
         except:
-            RelaxApp_MessageBox_Options(self.root, "File_Corrupt")
+            RelaxApp_MessageBox_Options(self.frame, "File_Corrupt")
 
     # Function to save profiles set.
     def export_profile(self):
@@ -859,7 +867,7 @@ class RelaxApp_User_Main_Menu():
         
         # Message box is called if there no profile to export.
         if database.value == []:
-            RelaxApp_MessageBox_Options(self.root, "No Profile")
+            RelaxApp_MessageBox_Options(self.frame, "No Profile")
         else:
             try:
                 save_file = ctk.filedialog.asksaveasfilename(title="Exportar Perfil")
@@ -886,21 +894,21 @@ class RelaxApp_User_Main_Menu():
         ###### TO SET ######
 
     def remove_account(self):
-        RelaxApp_MessageBox_Options(self.root, "Remove Account", user["login"])
+        RelaxApp_MessageBox_Options(self.frame, "Remove Account", user["login"])
 
     # Function to sign out of the App.
     def sign_out(self):
-        RelaxApp_MessageBox_Options(self.root, "Sign Out", user["login"])
+        RelaxApp_MessageBox_Options(self.frame, "Sign Out", user["login"])
 
     # Function to set visual options of the App.
     def set_visual_options(self):
         self.visual_options_values = True
-        RelaxApp_User_Main_Menu_Settings(self.root, self.visual_options_values)
+        RelaxApp_User_Main_Menu_Settings(self.frame, self.visual_options_values)
 
     # Function to set stretch options of the App.
     def set_stretch_options(self):
         self.stretch_options_values = True
-        RelaxApp_User_Main_Menu_Settings(self.root, None, self.stretch_options_values)
+        RelaxApp_User_Main_Menu_Settings(self.frame, None, self.stretch_options_values)
 
     def restart_values(self, value):
         if value == "VO":
@@ -909,7 +917,7 @@ class RelaxApp_User_Main_Menu():
             database.user_configuration(databases["database1"], tables["settings_table"], user["login"], "Restart", "Stretch_Configuration")      
 
     def set_sounds_options(self):
-        RelaxApp_User_Main_Menu_Sounds(self.root)
+        RelaxApp_User_Main_Menu_Sounds(self.frame)
 
     # Function to start App.
     def start_relaxapp(self):
@@ -933,7 +941,7 @@ class RelaxApp_User_Main_Menu():
                 if self.value_SO != "":
                     self.stretch_set = True
                 if self.value_VO == "" and self.value_SO == "":
-                    RelaxApp_MessageBox_Options(self.root, "No Values Set")
+                    RelaxApp_MessageBox_Options(self.frame, "No Values Set")
                     return
                 database.query(f"SELECT Final_Sounds_Configuration, Lapse_Sounds_Configuration FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}' and Profile_Default = 'True'")
                 print("self value sound es:", database.value)
@@ -941,7 +949,7 @@ class RelaxApp_User_Main_Menu():
                 self.lapse_sound = database.value[0][1]
 
             except:
-                RelaxApp_MessageBox_Options(self.root, "No Values Set")
+                RelaxApp_MessageBox_Options(self.frame, "No Values Set")
                 return
 
         # Get if "self.visual_options_CB" is checked.
@@ -951,7 +959,7 @@ class RelaxApp_User_Main_Menu():
             self.value_VO = database.value[0][0]
             
             if self.value_VO == "":
-                RelaxApp_MessageBox_Options(self.root, "No Values Set")
+                RelaxApp_MessageBox_Options(self.frame, "No Values Set")
                 return
         
         # Get if "self.stretch_options_CB" is checked.
@@ -961,11 +969,11 @@ class RelaxApp_User_Main_Menu():
             self.value_SO = database.value[0][0]
 
             if self.value_SO == "":
-                RelaxApp_MessageBox_Options(self.root, "No Values Set")
+                RelaxApp_MessageBox_Options(self.frame, "No Values Set")
                 return
 
         if self.visual_set == False and self.stretch_set == False:
-            RelaxApp_MessageBox_Options(self.root, "No Settings")
+            RelaxApp_MessageBox_Options(self.frame, "No Settings")
             return
         
         if self.visual_options_choice.get() == 1 or self.stretch_options_choice.get() == 1:
@@ -974,7 +982,7 @@ class RelaxApp_User_Main_Menu():
             self.final_sound = database.value[0][0]
             self.lapse_sound = database.value[0][1]
 
-        self.close_create(RelaxApp_Running, self.visual_set, self.stretch_set, self.value_VO, self.value_SO, self.final_sound, self.lapse_sound)
+        RelaxApp_Structure.close_create(self, RelaxApp_Running, self.visual_set, self.stretch_set, self.value_VO, self.value_SO, self.final_sound, self.lapse_sound)
         
 
 ##########################################################
@@ -2255,9 +2263,9 @@ class RelaxApp_MessageBox_Options(RelaxApp_MessageBox_Structure):
         # Variable to set when the button "Accept", "Cancel" is activated
         self.select_button1 = False
         # Variable to set when the button "Continue" is activated
-        self.select_button2 = False
+        # self.select_button2 = False
         # Variable to set when the button "Return" is activated
-        self.select_button3 = False
+        self.select_button2 = False
 
         if message == "Sign up":
             # Label ask/cancel user registration.
@@ -2273,26 +2281,26 @@ class RelaxApp_MessageBox_Options(RelaxApp_MessageBox_Structure):
             self.ask_cancel_label.place(rely=0.3, relx=0.5, anchor="center")
             self.select_button1 = True
 
-        elif message == "Continue":
-            # Label confirm user registration.
-            self.continue_registration = ctk.CTkLabel(self.window, text=database.message, font=(font,14), 
-                                                      bg_color=colors["soft_grey"])
-            self.continue_registration.place(rely=0.35, relx=0.5, anchor="center")
-            self.select_button2 = True
+        # elif message == "Continue":
+        #     # Label confirm user registration.
+        #     self.continue_registration = ctk.CTkLabel(self.window, text=database.message, font=(font,14), 
+        #                                               bg_color=colors["soft_grey"])
+        #     self.continue_registration.place(rely=0.35, relx=0.5, anchor="center")
+        #     self.select_button2 = True
         
-        elif message == "Continue2":
-            # Label confirm user registration.
-            self.continue_registration = ctk.CTkLabel(self.window, text="El perfil ha sido importado exitósamente y se ha establecido \ncomo predeterminado.", font=(font,14), 
-                                                      bg_color=colors["soft_grey"])
-            self.continue_registration.place(rely=0.35, relx=0.5, anchor="center")
-            self.select_button2 = True
+        # elif message == "Continue2":
+        #     # Label confirm user registration.
+        #     self.continue_registration = ctk.CTkLabel(self.window, text="El perfil ha sido importado exitósamente y se ha establecido \ncomo predeterminado.", font=(font,14), 
+        #                                               bg_color=colors["soft_grey"])
+        #     self.continue_registration.place(rely=0.35, relx=0.5, anchor="center")
+        #     self.select_button2 = True
 
-        elif message == "Error":
-            # Label confirm user registration.
-            self.continue_registration = ctk.CTkLabel(self.window, text=database.message, font=(font,14), 
-                                                      bg_color=colors["soft_grey"])
-            self.continue_registration.place(rely=0.35, relx=0.5, anchor="center")
-            self.select_button3 = True
+        # elif message == "Error":
+        #     # Label confirm user registration.
+        #     self.continue_registration = ctk.CTkLabel(self.window, text=database.message, font=(font,14), 
+        #                                               bg_color=colors["soft_grey"])
+        #     self.continue_registration.place(rely=0.35, relx=0.5, anchor="center")
+        #     self.select_button2 = True
 
         elif message == "Password Correct":
             # Label to confirm or not to change the password.
@@ -2320,21 +2328,21 @@ class RelaxApp_MessageBox_Options(RelaxApp_MessageBox_Structure):
             self.no_profile_label = ctk.CTkLabel(self.window, text="No tienes ningún perfil creado actualmente. Configura al menos un \nvalue para poder habilitar la opción de perfiles.", 
                                                  font=(font,14), bg_color=colors["soft_grey"])
             self.no_profile_label.place(rely=0.35, relx=0.5, anchor="center")
-            self.select_button3 = True
+            self.select_button2 = True
         
         elif message == "File_Corrupt":
             # Label to alert that the file was modified or is broken.
             self.file_corrupt_label = ctk.CTkLabel(self.window, text="El archivo que intenta abrir está dañado o ha sido modificado y \nno puede abrirse. Compruebe con otro archivo.", 
                                                    font=(font,14), bg_color=colors["soft_grey"])
             self.file_corrupt_label.place(rely=0.35, relx=0.5, anchor="center")
-            self.select_button3 = True
+            self.select_button2 = True
 
         elif message == "Invalid_Format":
             # Label to alert that the file was modified or is broken.
             self.file_corrupt_label = ctk.CTkLabel(self.window, text="El archivo que intenta abrir no tiene un formato soportado y \nno puede abrirse. Compruebe con otro archivo.", 
                                                    font=(font,14), bg_color=colors["soft_grey"])
             self.file_corrupt_label.place(rely=0.35, relx=0.5, anchor="center")
-            self.select_button3 = True
+            self.select_button2 = True
         
         elif message == "Remove Account":
             # Label ask/cancel to sign out.
@@ -2355,49 +2363,49 @@ class RelaxApp_MessageBox_Options(RelaxApp_MessageBox_Structure):
             self.empty_entry_label = ctk.CTkLabel(self.window, text="Los campos tienen que tener 2 números entre el 0 y el 60 \npara guardarlos.", 
                                                   font=(font,14), bg_color=colors["soft_grey"])
             self.empty_entry_label.place(rely=0.35, relx=0.5, anchor="center")
-            self.select_button3 = True
+            self.select_button2 = True
 
         elif message == "Extra Hours":
             # Label to alert not to work extra hours.
             self.extra_hours_label = ctk.CTkLabel(self.window, text="No puedes configurar mas de 16hs de duración. Recuerda que \nmínimo debes dormir 8hs.", 
                                                   font=(font,14), bg_color=colors["soft_grey"])
             self.extra_hours_label.place(rely=0.35, relx=0.5, anchor="center")
-            self.select_button3 = True
+            self.select_button2 = True
 
         elif message == "Minimum Time":
             # Label to alert not to work extra hours.
             self.minimum_time_label = ctk.CTkLabel(self.window, text="Debes configurar al menos 1 minuto de duración.", 
                                                    font=(font,14), bg_color=colors["soft_grey"])
             self.minimum_time_label.place(rely=0.3, relx=0.5, anchor="center")
-            self.select_button3 = True
+            self.select_button2 = True
         
         elif message == "Over Duration":
             # Label to alert not to set breaktime over lapse time.
             self.over_lapse_label = ctk.CTkLabel(self.window, text="El tiempo de intervalo no puede ser superior a la duración configurada.", 
                                                  font=(font,14), bg_color=colors["soft_grey"])
             self.over_lapse_label.place(rely=0.3, relx=0.5, anchor="center")
-            self.select_button3 = True
+            self.select_button2 = True
         
         elif message == "Over Lapse":
             # Label to alert not to set breaktime over lapse time.
             self.over_lapse_label = ctk.CTkLabel(self.window, text="El tiempo de descanso no puede ser superior al intervalo \nde alertas configurado.", 
                                                  font=(font,14), bg_color=colors["soft_grey"])
             self.over_lapse_label.place(rely=0.35, relx=0.5, anchor="center")
-            self.select_button3 = True
+            self.select_button2 = True
         
         elif message == "No Lapse":
             # Label to alert to set at least 1 minute between alerts.
             self.no_lapse_label = ctk.CTkLabel(self.window, text="El tiempo de intervalo entre alertas debe tener al menos 1 minuto.", 
                                                font=(font,14), bg_color=colors["soft_grey"])
             self.no_lapse_label.place(rely=0.3, relx=0.5, anchor="center")
-            self.select_button3 = True
+            self.select_button2 = True
         
         elif message == "No Break":
             # Label to alert to set at least 1 minute between alerts.
             self.no_break_label = ctk.CTkLabel(self.window, text="El tiempo de descanso debe tener al menos 30 segundos.", 
                                                font=(font,14), bg_color=colors["soft_grey"])
             self.no_break_label.place(rely=0.3, relx=0.5, anchor="center")
-            self.select_button3 = True
+            self.select_button2 = True
 
         elif message == "Valid Profile":
             # Label to alert to set at least 1 minute between alerts.
@@ -2411,42 +2419,42 @@ class RelaxApp_MessageBox_Options(RelaxApp_MessageBox_Structure):
             self.no_settings_label = ctk.CTkLabel(self.window, text="Debes seleccionar al menos una opción antes de iniciar la aplicación.", 
                                                   font=(font,14), bg_color=colors["soft_grey"])
             self.no_settings_label.place(rely=0.3, relx=0.5, anchor="center")
-            self.select_button3 = True
+            self.select_button2 = True
 
         elif message == "No Values Set":
             # Label to alert to set the values of the option chosen to start the App.
             self.no_values_set_label = ctk.CTkLabel(self.window, text="Cada opción elegida debe tener valores configurados antes \nde iniciar la aplicación.", 
                                                     font=(font,14), bg_color=colors["soft_grey"])
             self.no_values_set_label.place(rely=0.35, relx=0.5, anchor="center")
-            self.select_button3 = True
+            self.select_button2 = True
 
         elif message == "No Sound":
             # Label to alert that a load sounds is trying to save but no file is loaded.
             self.no_sound_label = ctk.CTkLabel(self.window, text="No puedes guardar una configuración con un sonido propio \nsin cargarlo previamente.", 
                                                font=(font,14), bg_color=colors["soft_grey"])
             self.no_sound_label.place(rely=0.35, relx=0.5, anchor="center")
-            self.select_button3 = True
+            self.select_button2 = True
         
         elif message == "No Name":
             # Label to alert that a load sounds is trying to save but no file is loaded.
             self.no_name_label = ctk.CTkLabel(self.window, text="El nombre del perfil deber tener al menos un caracter y un \nmáximo de 20.", 
                                               font=(font,14), bg_color=colors["soft_grey"])
             self.no_name_label.place(rely=0.35, relx=0.5, anchor="center")
-            self.select_button3 = True
+            self.select_button2 = True
          
         elif message == "Full Profile":
             # Label to alert that a load sounds is trying to save but no file is loaded.
             self.full_profile_label = ctk.CTkLabel(self.window, text="No se pueden agregar mas de 3 perfiles. Elimine alguno de los \nque tiene configurados.", 
                                                    font=(font,14), bg_color=colors["soft_grey"])
             self.full_profile_label.place(rely=0.35, relx=0.5, anchor="center")
-            self.select_button3 = True
+            self.select_button2 = True
         
         elif message == "Duplicated":
             # Label to alert that a load sounds is trying to save but no file is loaded.
             self.duplicated_profile_label = ctk.CTkLabel(self.window, text="El nombre del perfil que intenta agregar ya existe. Elija \nuno distinto.", 
                                             font=(font,14), bg_color=colors["soft_grey"])
             self.duplicated_profile_label.place(rely=0.35, relx=0.5, anchor="center")
-            self.select_button3 = True 
+            self.select_button2 = True 
 
         if self.select_button1 == True:
             # Button to accept user registration.
@@ -2463,15 +2471,15 @@ class RelaxApp_MessageBox_Options(RelaxApp_MessageBox_Structure):
                                                           bg_color=colors["soft_grey"])
             self.cancel_ask_cancel_button.place(rely=0.65, relx=0.75, anchor="e")
 
-        if self.select_button2 == True:
-            # Button to continue to the main menu.
-            self.continue_registration_button = ctk.CTkButton(self.window, width=80, height=17, text="Continuar", font=(font,14), 
-                                                              command=lambda: self.continue_button(message), corner_radius=10, hover=True, 
-                                                              fg_color=colors["soft_green"], hover_color=colors["dark_green"],
-                                                              bg_color=colors["soft_grey"])
-            self.continue_registration_button.place(rely=0.65, relx=0.5, anchor="center")
+        # if self.select_button2 == True:
+        #     # Button to continue to the main menu.
+        #     self.continue_registration_button = ctk.CTkButton(self.window, width=80, height=17, text="Continuar", font=(font,14), 
+        #                                                       command=lambda: self.continue_button(message), corner_radius=10, hover=True, 
+        #                                                       fg_color=colors["soft_green"], hover_color=colors["dark_green"],
+        #                                                       bg_color=colors["soft_grey"])
+        #     self.continue_registration_button.place(rely=0.65, relx=0.5, anchor="center")
 
-        if self.select_button3 == True:
+        if self.select_button2 == True:
             # Button to continue to the main menu.
             self.continue_registration_button = ctk.CTkButton(self.window, width=80, height=17, text="Volver", font=(font,14), 
                                                               command=self.return_button, corner_radius=10, hover=True,
@@ -2502,10 +2510,14 @@ class RelaxApp_MessageBox_Options(RelaxApp_MessageBox_Structure):
             database.user_configuration(databases["database1"], tables["settings_table"], user["login"], 
                                         "Import Profile", "Login, Profile_Name, Date_Time, Profile_Default, Visual_Configuration, \
                                         Stretch_Configuration, Final_Sounds_Configuration, Lapse_Sounds_Configuration", self.values)
-            self.window.destroy()
-            RelaxApp_MessageBox_Options(self.frame, "Continue2", user)
-            RelaxApp_Structure.close_create(self, RelaxApp_User_Main_Menu, self.frame, None, None, True)
 
+            RelaxApp_MessageBox_Structure.clean_MB_widgets(self, self.window)
+            self.new_message_box("Continue2")
+
+            RelaxApp_Structure.close_create(self, RelaxApp_User_Main_Menu, self.frame, None, None, True)
+            
+            return
+        
         # User registration is canceled and turn back to main menu.
         elif message == "Cancel" or message == "Cancel Change PW" or message == "Sign Out":
             self.window.destroy()
@@ -2517,22 +2529,19 @@ class RelaxApp_MessageBox_Options(RelaxApp_MessageBox_Structure):
             database.user_configuration(databases["database1"], tables["settings_table"], user["login"], "Remove Account")
             self.window.destroy()
             RelaxApp_Structure.close_create(self, RelaxApp_Initial_Frame, self.frame)
-
-        # User is registered.
-        # validate_editing = True
-        if database.validate_editing == True:
-        # if validate_editing == True:
-            # Registration pop-up window is closed.
-            self.window.destroy()
-            # "Continue" label is created.
-            RelaxApp_MessageBox_Options(self.frame, "Continue", user)
+            return
         
+        # User is registered.
+        if database.validate_editing == True:
+
+            RelaxApp_MessageBox_Structure.clean_MB_widgets(self, self.window)
+            self.new_message_box("Continue")
+
         # User is not registered.
         else:
-            # Registration pop-up window is closed.
-            self.window.destroy()
-            # "Error" label is created.
-            RelaxApp_MessageBox_Options(self.frame, "Error", user)
+            # # Registration pop-up window is closed.
+            RelaxApp_MessageBox_Structure.clean_MB_widgets(self, self.window)
+            self.new_message_box("Error")
  
     # Cancel button to accept cancelation or cancel cancelation.    
     def cancel_button(self):
@@ -2547,6 +2556,51 @@ class RelaxApp_MessageBox_Options(RelaxApp_MessageBox_Structure):
 
     def return_button(self):
         self.window.destroy()
+
+    def new_message_box(self, message):
+        
+        if message == "Error":
+            # Label confirm user registration.
+            self.continue_registration = ctk.CTkLabel(self.window, text=database.message, font=(font,14), 
+                                                      bg_color=colors["soft_grey"])
+            self.continue_registration.place(rely=0.35, relx=0.5, anchor="center")
+
+            # Button to continue to the main menu.
+            self.continue_registration_button = ctk.CTkButton(self.window, width=80, height=17, text="Volver", font=(font,14), 
+                                                              command=self.return_button, corner_radius=10, hover=True,
+                                                              fg_color=colors["soft_green"], hover_color=colors["dark_green"],
+                                                              bg_color=colors["soft_grey"])
+            self.continue_registration_button.place(rely=0.65, relx=0.5, anchor="center")
+
+            return
+        
+        elif message == "Continue":
+
+            # Label confirm user registration.
+            self.continue_registration = ctk.CTkLabel(self.window, text=database.message, font=(font,14), 
+                                                      bg_color=colors["soft_grey"])
+            self.continue_registration.place(rely=0.35, relx=0.5, anchor="center")
+        
+        elif message == "Continue2":
+            # Label confirm user registration.
+            self.continue_registration = ctk.CTkLabel(self.window, text="El perfil ha sido importado exitósamente y se ha establecido \ncomo predeterminado.", font=(font,14), 
+                                                      bg_color=colors["soft_grey"])
+            self.continue_registration.place(rely=0.35, relx=0.5, anchor="center")
+
+        # Button to continue to the main menu.
+        self.continue_registration_button = ctk.CTkButton(self.window, width=80, height=17, text="Continuar", font=(font,14), 
+                                                            command=lambda: self.continue_button(message), corner_radius=10, hover=True, 
+                                                            fg_color=colors["soft_green"], hover_color=colors["dark_green"],
+                                                            bg_color=colors["soft_grey"])
+        self.continue_registration_button.place(rely=0.65, relx=0.5, anchor="center")
+
+
+
+
+
+
+    
+
 
 
 

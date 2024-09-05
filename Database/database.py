@@ -413,7 +413,7 @@ values ('{user['name']}', '{user['lastname']}', '{user['login']}', '{password_en
                 return self.validate_editing, self.message
             elif user['action'] == "modify":
                 self.validate_editing = True
-                self.message = "El user ha sido actualizado correctamente."
+                self.message = "El usuario ha sido actualizado correctamente."
                 self.message_terminal = "User has been updated successfully."
                 print(self.message_terminal)
                 return self.validate_editing, self.message 
