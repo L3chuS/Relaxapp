@@ -74,9 +74,13 @@ class RelaxApp_Structure:
         self.dimentions = self.root.geometry(f"{width}x{height}+{width_resolution}+{height_resolution}")
         self.maximize = self.root.resizable(False,False)
 
-        # Set a frame at the background.
-        self.general_frame = ctk.CTkFrame(self.root, height=500, width=350, fg_color=colors["soft_grey"])
-        self.general_frame.pack(pady=10, padx=10, fill="both")
+        # # Set a frame at the background.
+        # self.general_frame = ctk.CTkFrame(self.root, height=500, width=350, fg_color=colors["soft_grey"])
+        # self.general_frame.pack(pady=10, padx=10, fill="both")
+
+        self.general_frame = ctk.CTkFrame(self.root, height=485, width=336, fg_color=colors["soft_grey"],
+                                          corner_radius=10)
+        self.general_frame.place(rely=0.015, relx=0.02)
 
         # Set the title and the logo of the app.
         self.title = self.root.title("RelaxApp")
@@ -90,6 +94,17 @@ class RelaxApp_Structure:
             wid.destroy()
 
         app = new_window(clean_frame)
+
+    def close_create2(self, new_window, clean_frame, *args):
+        
+        for wid in clean_frame.winfo_children():
+            wid.destroy()
+
+        self.general_frame = ctk.CTkFrame(clean_frame, height=485, width=336, fg_color=colors["soft_grey"],
+                                          corner_radius=10)
+        self.general_frame.place(rely=0.0, relx=0.0)
+
+        app = new_window(self.general_frame)      
 
 
 ###########################################################
@@ -118,7 +133,7 @@ class RelaxApp_MessageBox_Structure:
 
         # Set a frame at the background.
         self.frame = ctk.CTkFrame(self.window, height=200, width=550, fg_color=colors["soft_grey"])
-        self.frame.pack(pady=10, padx=10, fill="both") 
+        self.frame.pack(pady=10, padx=10, fill="both")
         
         # Set the title and the logo of the app.
         self.title = self.window.title("RelaxApp")
@@ -130,9 +145,6 @@ class RelaxApp_MessageBox_Structure:
             if counter != 1:
                 wid.destroy()
             counter += 1
-        # self.clean_MB_frame = clean_MB_frame
-        
-        # return self.clean_MB_frame
 
 
 ####################################################################
@@ -143,8 +155,9 @@ class RelaxApp_User_Settings_Structure:
     """This class defines the general structure of the user's main 
        menu settings. Defines the appearance, dimensions and title."""
 
-    def __init__(self, root):
-        self.root = root
+    # def __init__(self, root):
+    #     self.root = root
+    def __init__(self):
 
         # New pop-ups is created.
         self.window = ctk.CTkToplevel()
@@ -166,6 +179,14 @@ class RelaxApp_User_Settings_Structure:
         self.title = self.window.title("RelaxApp")
         self.window.after(200, lambda: self.window.iconbitmap(image_path + "logo.ico"))
 
+    # Method that creates a new root everytime the main root is destroyed.
+    def close_create_profiles(self, new_window, clean_frame, *args):
+        for wid in clean_frame.winfo_children():
+            wid.destroy()
+            print(wid)
+        print("##############")
+
+        app = new_window(clean_frame)
 
 ######################################################################
 ### Class that contains general settings while RelaxApp is running ###
@@ -649,16 +670,17 @@ class RelaxApp_User_Main_Menu():
 
         # Frame at the back.
         self.frame.configure(fg_color=colors["black"])
-        self.frame.pack(pady=10, padx=0, fill="both")  
+        # self.frame.place(rely=0.00, relx=0.00) 
 
         # Frame at the top that contains menu options.
-        self.frame_top_menu = ctk.CTkFrame(self.frame, height=30, width=350, fg_color=colors["soft_grey"], 
+        self.frame_top_menu = ctk.CTkFrame(self.frame, height=30, width=340, fg_color=colors["soft_grey"], 
                                            corner_radius=3)
-        self.frame_top_menu.pack(pady=2, padx=10) 
+        self.frame_top_menu.place(rely=0.0)
 
         # Main frame that contains all user options.
-        self.frame_main = ctk.CTkFrame(self.frame, height=450, width=350, fg_color=colors["soft_grey"])
-        self.frame_main.pack(padx=10, fill="both")
+        self.frame_main = ctk.CTkFrame(self.frame, height=450, width=336, fg_color=colors["soft_grey"],
+                                       corner_radius=10)
+        self.frame_main.place(rely=0.07)
 
         # Archieve button menu.
         self.archieve_menu_button = tk.Menubutton(self.frame_top_menu, text="Archivo", font=(font,9), width=5, 
@@ -891,6 +913,7 @@ class RelaxApp_User_Main_Menu():
     def about_us(self):
         ###### TO SET ######
         print("about_us EN DESARROLLO")
+        RelaxApp_Structure.close_create2(self, RelaxApp_Initial_Frame, self.frame)
         ###### TO SET ######
 
     def remove_account(self):
@@ -993,8 +1016,12 @@ class RelaxApp_User_Main_Menu_Profiles(RelaxApp_User_Settings_Structure):
     """This class opens a new window to set the user's personal profiles 
        of the App. Inherit all structure from parent."""
     
+    # def __init__(self, root, user):
+    #     super().__init__(root)
+    #     self.root = root
+    #     self.user = user
     def __init__(self, root, user):
-        super().__init__(root)
+        super().__init__()
         self.root = root
         self.user = user
 
@@ -2521,7 +2548,7 @@ class RelaxApp_MessageBox_Options(RelaxApp_MessageBox_Structure):
         # User registration is canceled and turn back to main menu.
         elif message == "Cancel" or message == "Cancel Change PW" or message == "Sign Out":
             self.window.destroy()
-            RelaxApp_Structure.close_create(self, RelaxApp_Initial_Frame, self.frame)
+            RelaxApp_Structure.close_create2(self, RelaxApp_Initial_Frame, self.frame)
             return
         
         elif message == "Remove Account":
