@@ -11,7 +11,7 @@ root = app.ctk.CTk()
 app = app.RelaxApp_Structure(root)
 root.mainloop()
 #############
-# lechu
+
 # import Database.database as bd
 
 # from Database.presets_values import columns_users_default, columns_configuration_default, user

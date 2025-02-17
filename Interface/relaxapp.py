@@ -104,7 +104,12 @@ class RelaxApp_Structure:
                                           corner_radius=10)
         self.general_frame.place(rely=0.0, relx=0.0)
 
-        app = new_window(self.general_frame)      
+        app = new_window(self.general_frame, *args)
+
+    def clean_MMP_widgets(self, clean_MMP_frame):
+        for element in clean_MMP_frame:
+            for wid in element.winfo_children():
+                wid.destroy()
 
 
 ###########################################################
@@ -821,7 +826,7 @@ class RelaxApp_User_Main_Menu():
         self.profile_options_choice.set(0)
 
     def create_profile(self):
-        RelaxApp_User_Main_Menu_Profiles(self.frame, user["login"])
+        RelaxApp_User_Main_Menu_Profiles(user["login"])
     
     def import_profile(self):
         try:
@@ -1020,14 +1025,14 @@ class RelaxApp_User_Main_Menu_Profiles(RelaxApp_User_Settings_Structure):
     #     super().__init__(root)
     #     self.root = root
     #     self.user = user
-    def __init__(self, root, user):
+    def __init__(self, user):
         super().__init__()
-        self.root = root
+        # self.root = root
         self.user = user
 
         # Frame at the back.
         self.frame.configure(fg_color=colors["black"])
-        self.frame.pack(pady=0, padx=0, fill="both")  
+        self.frame.pack(pady=0, padx=0, fill="both")
 
         # Frame that contains the alert configuration label.
         self.frame1 = ctk.CTkFrame(self.frame, height=50, width=250, fg_color=colors["soft_grey"], corner_radius=3)
@@ -1085,10 +1090,11 @@ class RelaxApp_User_Main_Menu_Profiles(RelaxApp_User_Settings_Structure):
                                            fg_color=colors["soft_grey"], hover_color=colors["dark_green"])
         self.cancel_button.place(rely=0.5, relx=0.9, anchor="e")
 
+        self.dinamics_frames = (self.frame3, self.frame4, self.frame5)
         self.run_profiles()
 
 
-    def run_profiles(self):
+    def run_profiles(self, *args):
         """This function writes all profiles set if there's any."""
 
         # Search method is called to get all the profile set for current user.
@@ -1120,37 +1126,37 @@ class RelaxApp_User_Main_Menu_Profiles(RelaxApp_User_Settings_Structure):
             # Bucle to write each profile on each frame.
             for profile in range(1, len(profile_list)):
                 if frame_counter == 3:
-                    frame = self.frame3
+                    frame = self.dinamics_frames[0]
                 elif frame_counter == 4:
-                    frame = self.frame4
+                    frame = self.dinamics_frames[1]
                 elif frame_counter == 5:
-                    frame = self.frame5
+                    frame = self.dinamics_frames[2]
 
                 profile_set = ctk.CTkLabel(frame, text=profile_list[profile][0], font=(font, 15))
                 profile_set.place(rely=0.5, relx=0.02, anchor="w")
                 frame_counter += 1
 
             # Checkbox to activate or deactivate profiles selected.
-            profile_set1 = ctk.CTkRadioButton(self.frame3, text=None, value=0, variable=self.profile_choice, hover=True, 
+            profile_set1 = ctk.CTkRadioButton(self.dinamics_frames[0], text=None, value=0, variable=self.profile_choice, hover=True, 
                                               border_width_unchecked=2, border_width_checked=5, fg_color=colors["soft_green"], 
                                               hover_color=colors["dark_green"])
             profile_set1.place(rely=0.5, relx=0.87, anchor="w")
 
             # Checkboxs are being created every time a profile is created. 
             if len(profile_list) > 2:
-                profile_set2 = ctk.CTkRadioButton(self.frame4, text=None, value=1, variable=self.profile_choice, hover=True, 
+                profile_set2 = ctk.CTkRadioButton(self.dinamics_frames[1], text=None, value=1, variable=self.profile_choice, hover=True, 
                                                   border_width_unchecked=2, border_width_checked=5, fg_color=colors["soft_green"], 
                                                   hover_color=colors["dark_green"])
                 profile_set2.place(rely=0.5, relx=0.87, anchor="w")
 
             if len(profile_list) > 3:
-                profile_set3 = ctk.CTkRadioButton(self.frame5, text=None, value=2, variable=self.profile_choice, hover=True, 
+                profile_set3 = ctk.CTkRadioButton(self.dinamics_frames[2], text=None, value=2, variable=self.profile_choice, hover=True, 
                                                   border_width_unchecked=2, border_width_checked=5, fg_color=colors["soft_green"], 
                                                   hover_color=colors["dark_green"])
                 profile_set3.place(rely=0.5, relx=0.87, anchor="w")
 
     def create_profile(self):
-        RelaxApp_Profile_Name(self.root, self.window)
+        RelaxApp_Profile_Name(self.frame, self.window)
 
     def remove_profile(self):
         # Search method is called to get all the profile set for current user.
@@ -1163,9 +1169,11 @@ class RelaxApp_User_Main_Menu_Profiles(RelaxApp_User_Settings_Structure):
             profile_choosen = profile_list[default_profile+1][0]
             # Profile is removed from database.
             database.user_configuration(databases["database1"], tables["settings_table"], user["login"], "Remove", ("Login", "Profile_Name"), profile_choosen)
-            self.window.destroy()
-            # Profile Menu is runned to update changes.
-            RelaxApp_User_Main_Menu_Profiles(self.window, user["login"])
+
+            # Frames 3,5,6 are cleaned where the profiles are located.
+            RelaxApp_Structure.clean_MMP_widgets(self, self.dinamics_frames)
+            # Profiles are run again after one was removed.
+            self.run_profiles(self.dinamics_frames)
 
     def save_settings(self):
         # Search method is called to get all the profile set for current user.
@@ -1255,7 +1263,7 @@ class RelaxApp_Profile_Name(RelaxApp_Profile_Name_Structure):
                                         (profile_name, date_time, False, visual_config, stretch_config, final_sound_config, lapse_sound_config))
 
             self.window2.destroy()
-            RelaxApp_User_Main_Menu_Profiles(self.window, user["login"])
+            RelaxApp_User_Main_Menu_Profiles(user["login"])
             self.window.destroy()
 
     def close(self):
@@ -1271,7 +1279,7 @@ class RelaxApp_User_Main_Menu_Settings(RelaxApp_User_Settings_Structure):
        of the App. Inherit all structure from parent."""
     
     def __init__(self, root, visual_values=None, stretch_values=None):
-        super().__init__(root)
+        super().__init__()
         self.root = root
         
         self.visual_options_values = visual_values
@@ -1472,7 +1480,7 @@ class RelaxApp_User_Main_Menu_Settings(RelaxApp_User_Settings_Structure):
                                             "UpdateNULL", ("Profile_Name", "Stretch_Configuration"), self.values)
 
             self.window.destroy()
-            RelaxApp_Structure.close_create(self, RelaxApp_User_Main_Menu, None, None, True)
+            RelaxApp_Structure.close_create2(self, RelaxApp_User_Main_Menu, self.root, None, None, True)
 
     def cancel_settings(self):
         self.window.destroy()
@@ -1487,7 +1495,7 @@ class RelaxApp_User_Main_Menu_Sounds(RelaxApp_User_Settings_Structure):
        of the App. Inherit all structure from parent."""
     
     def __init__(self, root):
-        super().__init__(root)
+        super().__init__()
         self.root = root
 
         # An empty string which is going to save all values when user save a configuration.
@@ -2555,7 +2563,7 @@ class RelaxApp_MessageBox_Options(RelaxApp_MessageBox_Structure):
             database.user_configuration(databases["database1"], tables["users_table"], user["login"], "Remove Account")
             database.user_configuration(databases["database1"], tables["settings_table"], user["login"], "Remove Account")
             self.window.destroy()
-            RelaxApp_Structure.close_create(self, RelaxApp_Initial_Frame, self.frame)
+            RelaxApp_Structure.close_create2(self, RelaxApp_Initial_Frame, self.frame)
             return
         
         # User is registered.
