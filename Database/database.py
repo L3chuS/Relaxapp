@@ -272,18 +272,18 @@ class Database:
             self.cursor.execute(query)
             # Variable that contains all the values of the query run.
             self.value = self.cursor.fetchall()
-            print(f'The result of the query "{query}" is: \n')
+            # print(f'The result of the query "{query}" is: \n')
             # It returns a message in the case there's no result to show.
             if not self.value:
                 print("There's no result to show.")
                 return
 
             # Iteration and format over each value gotten.
-            for query in self.value:
-                for element in query:
-                    print(str(element), end=" - ")
-                print("")
-            print("")
+            # for query in self.value:
+            #     for element in query:
+            #         print(str(element), end=" - ")
+            #     print("")
+            # print("")
             return self.value
 
         # Exepction executed if the query given contains sintax errors.
@@ -445,23 +445,23 @@ values ('{user['name']}', '{user['lastname']}', '{user['login']}', '{password_en
             if action == "Update":
                 # Database is selected where the values of the user will be saved.
                 execute_command = f"UPDATE {table} SET {field[1]} = '{configuration[1]}' WHERE login = '{user}' and {field[0]} = '{configuration[0]}';"
-                print("The command executed is: ", execute_command)
+                # print("The command executed is: ", execute_command)
             elif action == "UpdateNULL":
                 # Database is selected where the values of the user will be saved.
                 execute_command = f"UPDATE {table} SET {field[1]} = '{configuration}' WHERE login = '{user}' and {field[0]} IS NULL;"
-                print("The command executed is: ", execute_command)
+                # print("The command executed is: ", execute_command)
             elif action == "Add":
                 execute_command = f"INSERT INTO {table} ({field}) values ('{user}', '{configuration[0]}', '{configuration[1]}', \
                 '{configuration[2]}', '{configuration[3]}', '{configuration[4]}', '{configuration[5]}', '{configuration[6]}');"
-                print("Final command: ", execute_command)
+                # print("Final command: ", execute_command)
             elif action == "Restore":
                 execute_command = f"UPDATE {table} SET Visual_Configuration = '', Stretch_Configuration = '', Final_Sounds_Configuration = '', \
                 Lapse_Sounds_Configuration = '' WHERE login = '{user}' and Profile_Name IS NULL;"
-                print("Final command: ", execute_command)
+                # print("Final command: ", execute_command)
             elif action == "Restart":
                 execute_command = f"UPDATE {table} SET {field} = '', Final_Sounds_Configuration = '', Lapse_Sounds_Configuration = '' \
                 WHERE login = '{user}' and Profile_Name IS NULL;"
-                print("Final command: ", execute_command)
+                # print("Final command: ", execute_command)
             elif action == "Import Profile":
                 date_time = datetime.datetime.now().strftime("%d-%m-%Y - %H.%M.%Shs")
 
@@ -469,11 +469,11 @@ values ('{user['name']}', '{user['lastname']}', '{user['login']}', '{password_en
                     execute_command = f"UPDATE {table} SET Profile_Name = '{configuration[0]}', Date_Time = '{date_time}', Profile_Default = 'True', \
                     Visual_Configuration = '{configuration[1]}', Stretch_Configuration = '{configuration[2]}', Final_Sounds_Configuration = '{configuration[3]}', \
                     Lapse_Sounds_Configuration = '{configuration[4]}' WHERE login = '{user}' and ID = '{configuration[5][-1]}';"
-                    print("Final command: ", execute_command)
+                    # print("Final command: ", execute_command)
                 elif len(configuration[5]) < 4:
                     execute_command = f"INSERT INTO {table} ({field}) values ('{user}', '{configuration[0]}', '{date_time}', \
                     'True', '{configuration[1]}', '{configuration[2]}', '{configuration[3]}', '{configuration[4]}');"
-                    print("Final command: ", execute_command)
+                    # print("Final command: ", execute_command)
                 for i in range(1, len(configuration[5]) - 1):
                     id = configuration[5][i]
                     set_all_false = f"UPDATE {table} SET Profile_Default = 'False' WHERE login = '{user}' and ID = '{id}';"
@@ -481,11 +481,11 @@ values ('{user['name']}', '{user['lastname']}', '{user['login']}', '{password_en
 
             elif action == "Remove":
                 execute_command = f"DELETE FROM {table} WHERE {field[0]} = '{user}' and {field[1]} = '{configuration}';"
-                print("Final command: ", execute_command)
+                # print("Final command: ", execute_command)
             
             elif action == "Remove Account":
                 execute_command = f"DELETE FROM {table} WHERE login = '{user}';"
-                print("Final command: ", execute_command)
+                # print("Final command: ", execute_command)
 
             self.cursor.execute(execute_command)
             self.connector.commit()

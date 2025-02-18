@@ -1156,24 +1156,33 @@ class RelaxApp_User_Main_Menu_Profiles(RelaxApp_User_Settings_Structure):
                 profile_set3.place(rely=0.5, relx=0.87, anchor="w")
 
     def create_profile(self):
-        RelaxApp_Profile_Name(self.frame, self.window)
+        RelaxApp_Profile_Name(self.frame, self.window, self.dinamics_frames)
 
     def remove_profile(self):
+        # self.run_profiles()
         # Search method is called to get all the profile set for current user.
         database.query(f"SELECT Profile_Name FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}'")
         profile_list = database.value
 
         if len(profile_list) > 1:
+
             # Profile to remove is selected.
             default_profile = self.profile_choice.get()
+            print("default_profile1", default_profile)
             profile_choosen = profile_list[default_profile+1][0]
+            print("profile_choosen", profile_choosen)
             # Profile is removed from database.
             database.user_configuration(databases["database1"], tables["settings_table"], user["login"], "Remove", ("Login", "Profile_Name"), profile_choosen)
 
-            # Frames 3,5,6 are cleaned where the profiles are located.
-            RelaxApp_Structure.clean_MMP_widgets(self, self.dinamics_frames)
-            # Profiles are run again after one was removed.
-            self.run_profiles(self.dinamics_frames)
+        #     # Frames 3,5,6 are cleaned where the profiles are located.
+        #     RelaxApp_Structure.clean_MMP_widgets(self, self.dinamics_frames)
+        #     # Profiles are run again after one was removed.
+        #     self.run_profiles(self.dinamics_frames)
+        
+        # default_profile2 = self.profile_choice.get()
+        # print("default_profile2", default_profile2)
+
+
 
     def save_settings(self):
         # Search method is called to get all the profile set for current user.
@@ -1202,10 +1211,11 @@ class RelaxApp_User_Main_Menu_Profiles(RelaxApp_User_Settings_Structure):
 ##################################################################
 
 class RelaxApp_Profile_Name(RelaxApp_Profile_Name_Structure):
-    def __init__(self, root, window):
+    def __init__(self, root, window, dinamics_frames):
         super().__init__(root)
         self.root = root
         self.window = window
+        self.dinamics_frames = dinamics_frames
 
         # Image of an accept simbol.
         self.accept_image = ctk.CTkImage(Image.open(image_path + "Accept.png"))
@@ -1263,8 +1273,10 @@ class RelaxApp_Profile_Name(RelaxApp_Profile_Name_Structure):
                                         (profile_name, date_time, False, visual_config, stretch_config, final_sound_config, lapse_sound_config))
 
             self.window2.destroy()
-            RelaxApp_User_Main_Menu_Profiles(user["login"])
-            self.window.destroy()
+            RelaxApp_User_Main_Menu_Profiles.run_profiles(self, self.dinamics_frames)
+
+            # RelaxApp_User_Main_Menu_Profiles(user["login"])
+            # self.window.destroy()
 
     def close(self):
         self.window2.destroy()
