@@ -466,7 +466,7 @@ values ('{user['name']}', '{user['lastname']}', '{user['login']}', '{password_en
                 date_time = datetime.datetime.now().strftime("%d-%m-%Y - %H.%M.%Shs")
 
                 if len(configuration[5]) == 4:
-                    execute_command = f"UPDATE {table} SET Profile_Name = '{configuration[0]}', Date_Time = '{date_time}', Profile_Default = 'True', \
+                    execute_command = f"UPDATE {table} SET Profile_Name = '{configuration[0]}', Date_Time = '{date_time}', Default_Profile = 'True', \
                     Visual_Configuration = '{configuration[1]}', Stretch_Configuration = '{configuration[2]}', Final_Sounds_Configuration = '{configuration[3]}', \
                     Lapse_Sounds_Configuration = '{configuration[4]}' WHERE login = '{user}' and ID = '{configuration[5][-1]}';"
                     # print("Final command: ", execute_command)
@@ -476,7 +476,7 @@ values ('{user['name']}', '{user['lastname']}', '{user['login']}', '{password_en
                     # print("Final command: ", execute_command)
                 for i in range(1, len(configuration[5]) - 1):
                     id = configuration[5][i]
-                    set_all_false = f"UPDATE {table} SET Profile_Default = 'False' WHERE login = '{user}' and ID = '{id}';"
+                    set_all_false = f"UPDATE {table} SET Default_Profile = 'False' WHERE login = '{user}' and ID = '{id}';"
                     self.cursor.execute(set_all_false)
 
             elif action == "Remove":
