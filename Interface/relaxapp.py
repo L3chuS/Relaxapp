@@ -110,7 +110,7 @@ class RelaxApp_Structure:
         for element in clean_MMP_frame:
             for wid in element.winfo_children():
                 wid.destroy()
-
+        return clean_MMP_frame
 
 ###########################################################
 ### Class that contains general settings of the Pop-ups ###
@@ -1021,15 +1021,11 @@ class RelaxApp_User_Main_Menu_Profiles(RelaxApp_User_Settings_Structure):
     """This class opens a new window to set the user's personal profiles 
        of the App. Inherit all structure from parent."""
     
-    # def __init__(self, root, user):
-    #     super().__init__(root)
-    #     self.root = root
-    #     self.user = user
     def __init__(self, user):
-        super().__init__()
-        # self.root = root
-        self.user = user
 
+        super().__init__()
+        self.user = user
+        print("-------------------------------------")
         # Frame at the back.
         self.frame.configure(fg_color=colors["black"])
         self.frame.pack(pady=0, padx=0, fill="both")
@@ -1060,13 +1056,17 @@ class RelaxApp_User_Main_Menu_Profiles(RelaxApp_User_Settings_Structure):
 
         # Alert configuration label.
         self.setting_title = ctk.CTkLabel(self.frame1, text="Perfil Predeterminado", font=(font, 15), 
-                                          corner_radius=5, fg_color=colors["soft_green"])
+                                        corner_radius=5, fg_color=colors["soft_green"])
         self.setting_title.place(rely=0.5, relx=0.5, anchor="center")
 
         # Image of a create simbol.
         self.create_button = ctk.CTkImage(Image.open(image_path + "Create.png"))
         # Image of a remove simbol.
         self.remove_button = ctk.CTkImage(Image.open(image_path + "Remove.png"))
+
+#################
+        self.remove2_button = ctk.CTkImage(Image.open(image_path + "Remove.png"))
+#################
 
         # Button to create new profile.
         self.create_profile_button = ctk.CTkButton(self.frame2, text=None, image=self.create_button, width=0, command=self.create_profile,
@@ -1078,123 +1078,176 @@ class RelaxApp_User_Main_Menu_Profiles(RelaxApp_User_Settings_Structure):
                                                 hover=True, fg_color=colors["soft_grey"], hover_color=colors["dark_green"])
         self.remove_profile_button.place(rely=0.5, relx=0.7, anchor="center")
 
+#################
+        # Button to remove profile selected.
+        self.remove2_profile_button = ctk.CTkButton(self.frame2, text=None, image=self.remove2_button, width=0, command=self.remove2,
+                                                hover=True, fg_color=colors["soft_grey"], hover_color=colors["dark_green"])
+        self.remove2_profile_button.place(rely=0.5, relx=0.5, anchor="center")
+#################
+
         # Save button.
         self.save_button = ctk.CTkButton(self.frame6, width=10, height=10, text="Guardar", font=(font,14), 
-                                         command=self.save_settings, corner_radius=10, hover=True, 
-                                         fg_color=colors["soft_grey"], hover_color=colors["dark_green"])
+                                        command=self.save_settings, corner_radius=10, hover=True, 
+                                        fg_color=colors["soft_grey"], hover_color=colors["dark_green"])
         self.save_button.place(rely=0.5, relx=0.1, anchor="w")
 
         # Cancel button.
         self.cancel_button = ctk.CTkButton(self.frame6, width=10, height=10, text="Cancelar", font=(font,14),
-                                           command=self.cancel_settings, corner_radius=10, hover=True, 
-                                           fg_color=colors["soft_grey"], hover_color=colors["dark_green"])
+                                        command=self.cancel_settings, corner_radius=10, hover=True, 
+                                        fg_color=colors["soft_grey"], hover_color=colors["dark_green"])
         self.cancel_button.place(rely=0.5, relx=0.9, anchor="e")
 
         self.dinamics_frames = (self.frame3, self.frame4, self.frame5)
-        self.run_profiles()
 
+        profile_list = self.get_profile_list()
+        
+        self.variable_saved = [self.get_profile_chossen_default()]
+        print("self.variable_saved al entrar al init", self.variable_saved)
 
-    def run_profiles(self, *args):
+        if len(profile_list) > 1:
+            self.run_profiles(profile_list)
+
+    def get_profile_list(self):
+        # Search method is called to get all the profile set for current user.
+        database.query(f"SELECT Profile_Name FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}'")
+        profile_list = database.value
+        return profile_list
+
+    def get_profile_default(self):
+        # Search method is called to get if there's a profile set as default.
+        database.query(f"SELECT Profile_Default FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}'")
+        default_profile = database.value
+        return default_profile
+    
+    def check_profile_true(self):
+        default_profile = RelaxApp_User_Main_Menu_Profiles.get_profile_default(self)
+        for profile in default_profile:
+            if profile[0] == "True":
+                return True
+    
+    def get_choice(self):
+
+        try:
+            profile_chosen = self.profile_choice.get()
+        except:
+            profile_chosen = 0
+        print("profile_chosen desde get choice", profile_chosen)
+
+        self.variable_saved.append(profile_chosen)
+        self.variable_saved.remove(self.variable_saved[0])
+        print("self.variable_saved es", self.variable_saved)
+        return self.variable_saved
+
+    def get_profile_chossen_default(self):
+        default = RelaxApp_User_Main_Menu_Profiles.get_profile_default(self)
+        choice_counter = -1
+        profile_choice = 0
+        for value in default:
+            if value[0] == "True":
+                profile_choice = choice_counter
+                break
+            choice_counter += 1
+        return profile_choice
+
+    def set_profile_true(self, profile_list):
+
+        profile = 1
+        print("el perfil desde set profile true es:", profile)
+
+        self.profile_choice = ctk.IntVar(value=profile-1)
+        print("el perfil elegido .get desde set profile true es:", self.profile_choice.get())
+
+        # When there's no profile set as "True" database is modified to set the first one as default. 
+        database.user_configuration(databases["database1"], tables["settings_table"], user["login"], "Update",
+                                            ("Profile_Name", "Profile_Default"), (profile_list[profile][0], "True"))
+
+    def create_RB_profile(self, profile_list, dinamics_frames, profile_choice=0, *args):
+
+        self.profile_choice = ctk.IntVar(value=profile_choice)
+
+        # Checkbox to activate or deactivate profiles selected.
+        profile_set1 = ctk.CTkRadioButton(dinamics_frames[0], text=None, value=0, variable=self.profile_choice, command=lambda:RelaxApp_User_Main_Menu_Profiles.get_choice(self),
+                                          hover=True, border_width_unchecked=2, border_width_checked=5, fg_color=colors["soft_green"], 
+                                          hover_color=colors["dark_green"])
+        profile_set1.place(rely=0.5, relx=0.87, anchor="w")
+
+        # Checkboxs are being created every time a profile is created. 
+        if len(profile_list) > 2:
+            profile_set2 = ctk.CTkRadioButton(dinamics_frames[1], text=None, value=1, variable=self.profile_choice, command=lambda:RelaxApp_User_Main_Menu_Profiles.get_choice(self),
+                                              hover=True, border_width_unchecked=2, border_width_checked=5, fg_color=colors["soft_green"], 
+                                              hover_color=colors["dark_green"])
+            profile_set2.place(rely=0.5, relx=0.87, anchor="w")
+
+        if len(profile_list) > 3:
+            profile_set3 = ctk.CTkRadioButton(dinamics_frames[2], text=None, value=2, variable=self.profile_choice, command=lambda:RelaxApp_User_Main_Menu_Profiles.get_choice(self),
+                                              hover=True, border_width_unchecked=2, border_width_checked=5, fg_color=colors["soft_green"], 
+                                              hover_color=colors["dark_green"])
+            profile_set3.place(rely=0.5, relx=0.87, anchor="w")
+    
+    def run_profiles(self, profile_list, *args):
         """This function writes all profiles set if there's any."""
 
-        # Search method is called to get all the profile set for current user.
-        database.query(f"SELECT Profile_Name FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}'")
-        profile_list = database.value
+        check_profile = RelaxApp_User_Main_Menu_Profiles.check_profile_true(self)
+        if check_profile == None:
+            print("Entre a check_profile")
+            profile_choice = RelaxApp_User_Main_Menu_Profiles.set_profile_true(self, profile_list)
+
+
+        # Variable to be used to write the profile selected in the frame 3, 4 or 5.
+        frame_counter = 3
+        # Bucle to write each profile on each frame.
+        for profile in range(1, len(profile_list)):
+            if frame_counter == 3:
+                frame = self.dinamics_frames[0]
+            elif frame_counter == 4:
+                frame = self.dinamics_frames[1]
+            elif frame_counter == 5:
+                frame = self.dinamics_frames[2]
+
+            profile_set = ctk.CTkLabel(frame, text=profile_list[profile][0], font=(font, 15))
+            profile_set.place(rely=0.5, relx=0.02, anchor="w")
+            frame_counter += 1
         
+        profile_choice = RelaxApp_User_Main_Menu_Profiles.get_profile_chossen_default(self)
 
-        if len(profile_list) > 1:
-            # Search method is called to get if there's a profile set as default.
-            database.query(f"SELECT Profile_Default FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}'")
-            default_profile = database.value
-            # Variable to be used to write the profile selected in the frame 3, 4 or 5.
-            frame_counter = 3
-            counter = 1
-
-            # Bucle to check if there's a profile set as "True" in the database to set it as default profile.
-            for default in range(1, len(default_profile)):
-                if default_profile[default][0] == "True":
-                    self.profile_choice = ctk.IntVar(value=default-1)
-                # This else condition is run when there's no profiles set as "True".
-                else:
-                    counter += 1
-                    if counter == len(profile_list):
-                        self.profile_choice = ctk.IntVar(value=0)
-                        # When there's no profile set as "True" database is modified to set the first one as default. 
-                        database.user_configuration(databases["database1"], tables["settings_table"], user["login"], "Update",
-                                                          ("Profile_Name", "Profile_Default"), (profile_list[default][0], "True"))
-
-            # Bucle to write each profile on each frame.
-            for profile in range(1, len(profile_list)):
-                if frame_counter == 3:
-                    frame = self.dinamics_frames[0]
-                elif frame_counter == 4:
-                    frame = self.dinamics_frames[1]
-                elif frame_counter == 5:
-                    frame = self.dinamics_frames[2]
-
-                profile_set = ctk.CTkLabel(frame, text=profile_list[profile][0], font=(font, 15))
-                profile_set.place(rely=0.5, relx=0.02, anchor="w")
-                frame_counter += 1
-
-            # Checkbox to activate or deactivate profiles selected.
-            profile_set1 = ctk.CTkRadioButton(self.dinamics_frames[0], text=None, value=0, variable=self.profile_choice, hover=True, 
-                                              border_width_unchecked=2, border_width_checked=5, fg_color=colors["soft_green"], 
-                                              hover_color=colors["dark_green"])
-            profile_set1.place(rely=0.5, relx=0.87, anchor="w")
-
-            # Checkboxs are being created every time a profile is created. 
-            if len(profile_list) > 2:
-                profile_set2 = ctk.CTkRadioButton(self.dinamics_frames[1], text=None, value=1, variable=self.profile_choice, hover=True, 
-                                                  border_width_unchecked=2, border_width_checked=5, fg_color=colors["soft_green"], 
-                                                  hover_color=colors["dark_green"])
-                profile_set2.place(rely=0.5, relx=0.87, anchor="w")
-
-            if len(profile_list) > 3:
-                profile_set3 = ctk.CTkRadioButton(self.dinamics_frames[2], text=None, value=2, variable=self.profile_choice, hover=True, 
-                                                  border_width_unchecked=2, border_width_checked=5, fg_color=colors["soft_green"], 
-                                                  hover_color=colors["dark_green"])
-                profile_set3.place(rely=0.5, relx=0.87, anchor="w")
+        RelaxApp_User_Main_Menu_Profiles.create_RB_profile(self, profile_list, self.dinamics_frames, profile_choice, self.variable_saved)
 
     def create_profile(self):
-        RelaxApp_Profile_Name(self.frame, self.window, self.dinamics_frames)
+        RelaxApp_Profile_Name(self.frame, self.window, self.dinamics_frames, self.variable_saved)
 
     def remove_profile(self):
-        # self.run_profiles()
-        # Search method is called to get all the profile set for current user.
-        database.query(f"SELECT Profile_Name FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}'")
-        profile_list = database.value
 
+        profile_list = self.get_profile_list()
         if len(profile_list) > 1:
-
-            # Profile to remove is selected.
-            default_profile = self.profile_choice.get()
-            print("default_profile1", default_profile)
-            profile_choosen = profile_list[default_profile+1][0]
+            # self.variable_saved = RelaxApp_User_Main_Menu_Profiles.get_choice(self)
+            print("variable dentro de remove_profile", self.variable_saved)
+            profile_choosen = profile_list[self.variable_saved[0]+1][0]
             print("profile_choosen", profile_choosen)
             # Profile is removed from database.
             database.user_configuration(databases["database1"], tables["settings_table"], user["login"], "Remove", ("Login", "Profile_Name"), profile_choosen)
 
-        #     # Frames 3,5,6 are cleaned where the profiles are located.
-        #     RelaxApp_Structure.clean_MMP_widgets(self, self.dinamics_frames)
-        #     # Profiles are run again after one was removed.
-        #     self.run_profiles(self.dinamics_frames)
+            # Frames 3,5,6 are cleaned where the profiles are located.
+            RelaxApp_Structure.clean_MMP_widgets(self, self.dinamics_frames)
+            profile_list = self.get_profile_list()
+            # Profiles are run again after one was removed.
+            if len(profile_list) > 1:
+                self.variable_saved = [0]
+                RelaxApp_User_Main_Menu_Profiles.run_profiles(self, profile_list, self.dinamics_frames, self.variable_saved)
+    
+    def remove2(self):
         
-        # default_profile2 = self.profile_choice.get()
-        # print("default_profile2", default_profile2)
-
-
+        # pr_chosen = RelaxApp_User_Main_Menu_Profiles.get_choice(self)
+        # print("pr_chosen desde remove2", pr_chosen)
+        print("self.variable_saved desde remove2", self.variable_saved)
 
     def save_settings(self):
-        # Search method is called to get all the profile set for current user.
-        database.query(f"SELECT Profile_Name FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}'")
-        profile_list = database.value
+        profile_list = self.get_profile_list()
 
         if len(profile_list) > 1:
-            profile_selected = self.profile_choice.get()
-            
+            profile_selected = self.variable_saved
             # This bucle set the profile select as "True" and the rest (if there's any) as "False".
             for profile in range(1, len(profile_list)):
-                if profile == profile_selected + 1:
+                if profile == profile_selected[0] + 1:
                     database.user_configuration(databases["database1"], tables["settings_table"], user["login"], 
                                                 "Update", ("Profile_Name", "Profile_Default"), (profile_list[profile][0], "True"))
                 else:
@@ -1211,11 +1264,12 @@ class RelaxApp_User_Main_Menu_Profiles(RelaxApp_User_Settings_Structure):
 ##################################################################
 
 class RelaxApp_Profile_Name(RelaxApp_Profile_Name_Structure):
-    def __init__(self, root, window, dinamics_frames):
+    def __init__(self, root, window, dinamics_frames, variable_saved):
         super().__init__(root)
         self.root = root
         self.window = window
         self.dinamics_frames = dinamics_frames
+        self.variable_saved = variable_saved
 
         # Image of an accept simbol.
         self.accept_image = ctk.CTkImage(Image.open(image_path + "Accept.png"))
@@ -1245,8 +1299,7 @@ class RelaxApp_Profile_Name(RelaxApp_Profile_Name_Structure):
     def accept(self):
         profile_name = self.profile_name_entry.get()
 
-        database.query(f"SELECT Profile_Name FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}'")
-        profile_list = database.value
+        profile_list = RelaxApp_User_Main_Menu_Profiles.get_profile_list(self)
 
         check_profile_duplicated = Check_Values_Configuration.check_profile_duplicated(self, profile_name)
 
@@ -1271,12 +1324,13 @@ class RelaxApp_Profile_Name(RelaxApp_Profile_Name_Structure):
                                         "Add", "Login, Profile_Name, Date_Time, Profile_Default, Visual_Configuration, \
                                         Stretch_Configuration, Final_Sounds_Configuration, Lapse_Sounds_Configuration", 
                                         (profile_name, date_time, False, visual_config, stretch_config, final_sound_config, lapse_sound_config))
+            
+            profile_list = RelaxApp_User_Main_Menu_Profiles.get_profile_list(self)
 
             self.window2.destroy()
-            RelaxApp_User_Main_Menu_Profiles.run_profiles(self, self.dinamics_frames)
 
-            # RelaxApp_User_Main_Menu_Profiles(user["login"])
-            # self.window.destroy()
+            dinamics_frames = RelaxApp_Structure.clean_MMP_widgets(self, self.dinamics_frames)
+            RelaxApp_User_Main_Menu_Profiles.run_profiles(self, profile_list, dinamics_frames, self.variable_saved)
 
     def close(self):
         self.window2.destroy()
