@@ -469,12 +469,12 @@ values ('{user['name']}', '{user['lastname']}', '{user['login']}', '{password_en
                     execute_command = f"UPDATE {table} SET Profile_Name = '{configuration[0]}', Date_Time = '{date_time}', Default_Profile = 'True', \
                     Visual_Configuration = '{configuration[1]}', Stretch_Configuration = '{configuration[2]}', Final_Sounds_Configuration = '{configuration[3]}', \
                     Lapse_Sounds_Configuration = '{configuration[4]}' WHERE login = '{user}' and ID = '{configuration[5][-1]}';"
-                    # print("Final command: ", execute_command)
+                    # print("Final command1: ", execute_command)
                 elif len(configuration[5]) < 4:
                     execute_command = f"INSERT INTO {table} ({field}) values ('{user}', '{configuration[0]}', '{date_time}', \
                     'True', '{configuration[1]}', '{configuration[2]}', '{configuration[3]}', '{configuration[4]}');"
-                    # print("Final command: ", execute_command)
-                for i in range(1, len(configuration[5]) - 1):
+                    # print("Final command2: ", execute_command)
+                for i in range(1, len(configuration[5])):
                     id = configuration[5][i]
                     set_all_false = f"UPDATE {table} SET Default_Profile = 'False' WHERE login = '{user}' and ID = '{id}';"
                     self.cursor.execute(set_all_false)
