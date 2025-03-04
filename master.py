@@ -18,7 +18,7 @@ root.mainloop()
 
 # connect = bd.Database(**bd.root_access)
 
-# connect.create_db("lechus")
+# # connect.create_db("lechus")
 
 # connect.create_table("lechus", "users", columns_users_default)
 
