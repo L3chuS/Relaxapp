@@ -2,14 +2,27 @@ import os
 
 user = os.environ.get("UserMySql")
 password = os.environ.get("PasswordMySql")
+database = "railway"
+# database = "lechus"
 
 # Dictionary which contains the values by default to be use to establish connection with the database.
 
+# root_access = {
+#             "host" : "localhost",
+#             "user" : user,
+#             "password" : password,
+#             "database" : ""
+#             }
+
+# Full URL Database
+# mysql://root:heKGALwRHKMTaYYQKIEAfThykmmpgfWj@yamanote.proxy.rlwy.net:35540/railway
+
 root_access = {
-            "host" : "localhost",
-            "user" : user,
-            "password" : password,
-            "database" : ""
+            "host" : "yamanote.proxy.rlwy.net",
+            "port" : "35540",
+            "user" : "root",
+            "password" : "heKGALwRHKMTaYYQKIEAfThykmmpgfWj",
+            "database" : database
             }
 
 # List of dictionaries to be used as presets to create new tables.
@@ -149,7 +162,7 @@ user = {
         }
 
 # Main database used.
-databases = {"database1": "lechus"}
+databases = {"database1": database}
 
 # Tables used.
 tables = {"users_table": "users", 

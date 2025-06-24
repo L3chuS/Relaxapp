@@ -18,11 +18,17 @@ root.mainloop()
 
 # connect = bd.Database(**bd.root_access)
 
-# # connect.create_db("lechus")
+# connect.create_db("lechus")
 
 # connect.create_table("lechus", "users", columns_users_default)
 
 # connect.create_table("lechus", "users_configurations", columns_configuration_default)
+
+#######
+# connect.create_table("railway", "users", columns_users_default)
+
+# connect.create_table("railway", "users_configurations", columns_configuration_default)
+####
 
 # connect.remove_db("lechus")
 
