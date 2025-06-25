@@ -1,8 +1,9 @@
 import os
+from dotenv import load_dotenv
 
-user = os.environ.get("UserMySql")
-password = os.environ.get("PasswordMySql")
-database = "railway"
+# user = os.environ.get("UserMySql")
+# password = os.environ.get("PasswordMySql")
+# database = "railway"
 # database = "lechus"
 
 # Dictionary which contains the values by default to be use to establish connection with the database.
@@ -14,16 +15,32 @@ database = "railway"
 #             "database" : ""
 #             }
 
-# Full URL Database
-# mysql://root:heKGALwRHKMTaYYQKIEAfThykmmpgfWj@yamanote.proxy.rlwy.net:35540/railway
+# Dataserver file is loaded.
+env_path = os.path.join(os.path.dirname(__file__), 'dataserver.env')
+load_dotenv(dotenv_path=env_path)
+
+host = os.environ.get("MYSQL_HOST")
+port = os.environ.get("MYSQL_PORT")
+user = os.environ.get("MYSQL_USER")
+password = os.environ.get("MYSQL_PASSWORD")
+database = os.environ.get("MYSQL_DATABASE")
 
 root_access = {
-            "host" : "yamanote.proxy.rlwy.net",
-            "port" : "35540",
-            "user" : "root",
-            "password" : "heKGALwRHKMTaYYQKIEAfThykmmpgfWj",
+            "host" : host,
+            "port" : port,
+            "user" : user,
+            "password" : password,
             "database" : database
             }
+
+# root_access = {
+#             "host" : "yamanote.proxy.rlwy.net",
+#             "port" : "35540",
+#             "user" : "root",
+#             "password" : "heKGALwRHKMTaYYQKIEAfThykmmpgfWj",
+#             "database" : "railway"
+#             }
+
 
 # List of dictionaries to be used as presets to create new tables.
 # Between index [0:-1] there're each name of the column with their specific configuration.
