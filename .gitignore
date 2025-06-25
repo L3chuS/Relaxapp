@@ -1,7 +1,7 @@
 **/__pycache__
 **/test.py
-**/dependencies.docx
+**/*dencies.docx
 **/Videos
 **/*.psd
 **/Profile_Test
-**/dataserver.env
+**/*.env
