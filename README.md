@@ -22,10 +22,23 @@
 
 ---
 
-### Instalación:
+### Instalación usuarios finales:
 
 #### Ejecuta el archivo "RelaxApp.exe" ubicado en la carpeta principal descargada.
 #### Sigue los pasos indicados por el instalador hasta finalizar.
+#### Inicia la aplicación.
+#### En el menú de inicio registra tu usuario desde el botón ubicado a la izquierda abajo.
+#### Completa los campos requeridos y pulsa aceptar.
+#### Disfruta de RelaxApp.
+
+---
+
+### Instalación desarrolladores:
+
+#### Clona el repositorio: https://github.com/L3chuS/Relaxapp.git
+#### Instala las dependencias.
+#### Crea un archivo ".env" con los datos del servidor MySQL.
+#### Ejecuta RelaxApp.
 
 ---
 
