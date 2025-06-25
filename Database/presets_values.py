@@ -1,15 +1,24 @@
 import os
+from dotenv import load_dotenv
 
-user = os.environ.get("UserMySql")
-password = os.environ.get("PasswordMySql")
+# Dataserver file is loaded.
+env_path = os.path.join(os.path.dirname(__file__), 'dataserver.env')
+load_dotenv(dotenv_path=env_path)
+
+# The values of the server are gotten from dataserver.env.
+host = os.environ.get("MYSQL_HOST")
+port = os.environ.get("MYSQL_PORT")
+user = os.environ.get("MYSQL_USER")
+password = os.environ.get("MYSQL_PASSWORD")
+database = os.environ.get("MYSQL_DATABASE")
 
 # Dictionary which contains the values by default to be use to establish connection with the database.
-
 root_access = {
-            "host" : "localhost",
+            "host" : host,
+            "port" : port,
             "user" : user,
             "password" : password,
-            "database" : ""
+            "database" : database
             }
 
 # List of dictionaries to be used as presets to create new tables.
@@ -139,7 +148,6 @@ columns_configuration_default = [
     }]
 
 # Dictionary to be used to get values given by users and sign up, update or remove them (only editables from the GUI).
-
 user = {
         "action" : "",
         "name" : "",
@@ -149,7 +157,7 @@ user = {
         }
 
 # Main database used.
-databases = {"database1": "lechus"}
+databases = {"database1": database}
 
 # Tables used.
 tables = {"users_table": "users", 

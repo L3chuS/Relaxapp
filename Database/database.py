@@ -24,8 +24,10 @@ class Database:
             self.connector = mysql.connector.connect(**kwargs)
             self.cursor = self.connector.cursor()
             self.host = kwargs["host"]
+            self.port = kwargs["port"]
             self.user = kwargs["user"]
             self.password = kwargs["password"]
+            self.database = kwargs["database"]
             self.connection_status = True
             # print("Conection with the server successful")
 
@@ -43,11 +45,21 @@ class Database:
                     pass
                 # It connects if it's not.
                 else:
+
+                    # self.connector = mysql.connector.connect(
+                    #     host = self.host,
+                    #     user = self.user,
+                    #     password = self.password
+                    #     )
+
                     self.connector = mysql.connector.connect(
                         host = self.host,
+                        port = self.port,
                         user = self.user,
-                        password = self.password
+                        password = self.password,
+                        database = self.database
                         )
+
                     self.cursor = self.connector.cursor()
                     # print("Conection with the server is reopen.")
                     self.connection_status = True
