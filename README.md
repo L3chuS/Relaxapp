@@ -104,6 +104,8 @@ https://github.com/L3chuS/Relaxapp/assets/144654765/e4e71781-4ff4-48f2-a00d-d74c
 #### Nombre: Esteban Santos Mendoza
 #### Github: https://github.com/L3chuS
 
+---
+
 # ![Imágen perfil.](https://raw.githubusercontent.com/L3chuS/L3chus/main/Perfil_Emoji.png) Hola, soy Esteban Santos Mendoza!! 👋 
 
 ### Soy informático que trabaja hace 6 años en el mundo del soporte técnico. Actualmente me estoy formando como desarrollador en Python y estudiando un grado superior en el IOC (Institut Obert de Catalunya) en Desarrollo de Aplicaciones Web.
