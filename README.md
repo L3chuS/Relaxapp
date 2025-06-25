@@ -1,4 +1,4 @@
-# RelaxApp (En desarrollo)
+# RelaxApp
 
 ##### Vista previa del estado actual:
 <img src="./Configuration_Files/Images/3.PNG" width=25% height=25%>
@@ -7,6 +7,25 @@
 ### Qué es RelaxApp?
 
 #### Es una aplicación de escritorio creada para gestionar descansos musculares y visuales. Permite personalizar temporizadores y establecer alertas mientras estés realizando alguna actividad en particular.
+
+---
+
+### Tecnologías utilizadas
+
+#### >> Python 3: Lenguaje de desarrollo
+#### >> Customtkinter: Interfaz gráfica
+#### >> MySql-connector-python: Conexión a la base de datos
+#### >> Railway: Base de datos en la nube
+#### >> Pygame: Gestión de sonidos
+#### >> Dotenv: Gestión de variables de entorno
+#### >> Werkzeug: Encriptar contraseñas
+
+---
+
+### Instalación:
+
+#### Ejecuta el archivo "RelaxApp.exe" ubicado en la carpeta principal descargada.
+#### Sigue los pasos indicados por el instalador hasta finalizar.
 
 ---
 
@@ -28,8 +47,8 @@
 
 <img src="./Configuration_Files/Images/3.PNG" width=25% height=25%> 
 
-#### >> Si elijes el sub-menú de descanso visual o de estirar podrás establecer la configuración general. Allí verás distintos campos a editar:
-* Duración: hace referencia al tiempo en horas y minutos que la aplicación está realizando una cuenta atrás.
+#### >> Si elijes el sub-menú de descanso visual o de estirar podrás establecer la configuración general. Allí verás distintos campos a configurar:
+* Duración: hace referencia al tiempo en horas y minutos que el usuario prevee que estará realizando la actividad.
 * Intervalo Alertas: define cuanto tiempo en minutos transcurre entre cada descanso.
 * Tiempo Descanso: es la duración establecida antes de volver a tu actividad principal.
 * Activar sonido: permite habilitar una alerta sonora cada vez que haya un descanso o cuando la aplicación finalice.
@@ -67,7 +86,12 @@ https://github.com/L3chuS/Relaxapp/assets/144654765/e4e71781-4ff4-48f2-a00d-d74c
 
 ---
 
+### Autor:
+
+#### Nombre: Esteban Santos Mendoza
+#### Github: https://github.com/L3chuS
+
 # ![Imágen perfil.](https://raw.githubusercontent.com/L3chuS/L3chus/main/Perfil_Emoji.png) Hola, soy Esteban Santos Mendoza!! 👋 
 
-### Soy informático que trabaja hace 5 años en el mundo del soporte técnico. Actualmente me estoy formando como desarrollador en Python.
+### Soy informático que trabaja hace 6 años en el mundo del soporte técnico. Actualmente me estoy formando como desarrollador en Python y estudiando un grado superior en el IOC (Institut Obert de Catalunya) en Desarrollo de Aplicaciones Web.
 ### En mi perfil de GitHub tienes más información sobre mi. Saludos!
