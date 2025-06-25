@@ -194,7 +194,6 @@ class RelaxApp_User_Settings_Structure:
         self.root = root
         for wid in clean_frame.winfo_children():
             wid.destroy()
-            print(wid)
         app = new_window(self.root, clean_frame)
 
 ######################################################################
@@ -295,7 +294,7 @@ class Check_Values_Configuration():
                 break_time_SS = value[8:10]
                 sound = value[10:]
             except:
-                print("Archivo corrupto texto")
+                # print("Archivo corrupto texto")
                 return False, False
             
             valid_numbers = [str(x).zfill(2) for x in range(61)]
@@ -303,36 +302,36 @@ class Check_Values_Configuration():
             if lenght_HH not in valid_numbers or lenght_MM not in valid_numbers or \
             lapse not in valid_numbers or break_time_MM not in valid_numbers or \
             break_time_SS not in valid_numbers:
-                print("Archivo corrupto invalid numbers")
+                # print("Archivo corrupto invalid numbers")
                 return False, "Invalid Time"
             
             elif int(lenght_HH) * 60 + int(lenght_MM) > 960:
-                print("Archivo corrupto extra hours")
+                # print("Archivo corrupto extra hours")
                 return False, "Extra Hours"
             
             elif int(lenght_HH) * 60 + int(lenght_MM) < 1:
-                print("Archivo corrupto minimum time")
+                # print("Archivo corrupto minimum time")
                 return False, "Minimum Time"
             
             elif int(lapse) > int(lenght_HH) * 60 + int(lenght_MM):
-                print("Archivo corrupto over duration")
+                # print("Archivo corrupto over duration")
                 return False, "Over Duration"
             
             elif int(break_time_MM) * 60 + int(break_time_SS) > \
             int(lapse) * 60:
-                print("Archivo corrupto over lapse")
+                # print("Archivo corrupto over lapse")
                 return False, "Over Lapse"
             
             elif int(lapse) == 0:
-                print("Archivo corrupto no lapse")
+                # print("Archivo corrupto no lapse")
                 return False, "No Lapse"
             
             elif int(break_time_MM) == 0 and int(break_time_SS) < 30:
-                print("Archivo corrupto no break")
+                # print("Archivo corrupto no break")
                 return False, "No Break"
             
             elif sound != "True" and sound != "False":
-                print("Archivo corrupto sound")
+                # print("Archivo corrupto sound")
                 return False, False
             else:
                 return True, "Valid Profile"
@@ -341,25 +340,22 @@ class Check_Values_Configuration():
     def check_sounds_settings(self, value):
         if value == "":
             return None
-
         sound_path = path.isfile(value)
         extension_sound_path = path.splitext(value)
-        print("ext:", extension_sound_path[1])
 
         if sound_path == False:
-            print(f"comprobar ruta: {sound_path}")
-            print("ruta: ", value)
+            # print(f"comprobar ruta: {sound_path}")
+            # print("ruta: ", value)
             return False
 
         extension = False
         for values in audio_accepted_files:
-            print(values[1])
             if extension_sound_path[1] in values[1]:
                 extension = True
                 break
 
         if extension == False:
-            print("Ruta correcta. Error extension: ", extension)
+            # print("Ruta correcta. Error extension: ", extension)
             return False
 
         return True
@@ -979,11 +975,9 @@ class RelaxApp_User_Main_Menu():
         if self.profile_options_choice.get() == 1:
             try:
                 database.query(f"SELECT Visual_Configuration FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}' and Default_Profile = 'True'")
-                print("self value prof vo es:", database.value)
                 self.value_VO = database.value[0][0]
 
                 database.query(f"SELECT Stretch_Configuration FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}' and Default_Profile = 'True'")
-                print("self value prof so es:", database.value)
                 self.value_SO = database.value[0][0]
                 if self.value_VO != "":
                     self.visual_set = True
@@ -993,7 +987,6 @@ class RelaxApp_User_Main_Menu():
                     RelaxApp_MessageBox_Options(self.root, self.frame, "No Values Set")
                     return
                 database.query(f"SELECT Final_Sounds_Configuration, Lapse_Sounds_Configuration FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}' and Default_Profile = 'True'")
-                print("self value sound es:", database.value)
                 self.final_sound = database.value[0][0]
                 self.lapse_sound = database.value[0][1]
 
@@ -1027,7 +1020,6 @@ class RelaxApp_User_Main_Menu():
         
         if self.visual_options_choice.get() == 1 or self.stretch_options_choice.get() == 1:
             database.query(f"SELECT Final_Sounds_Configuration, Lapse_Sounds_Configuration FROM {databases['database1']}.{tables['settings_table']} WHERE login = '{user['login']}' and Default_Profile is NULL")
-            print("self value sound es:", database.value)
             self.final_sound = database.value[0][0]
             self.lapse_sound = database.value[0][1]
 
@@ -2601,9 +2593,7 @@ class RelaxApp_MessageBox_Options(RelaxApp_MessageBox_Structure):
             for index in range(len(database.value)):
                 id.append(database.value[index][0])
 
-            print("el id final es:", id)
             self.values.append(id)
-            print("valor final:",  self.values)
 
             database.user_configuration(databases["database1"], tables["settings_table"], user["login"], 
                                         "Import Profile", "Login, Profile_Name, Date_Time, Default_Profile, Visual_Configuration, \
@@ -2694,5 +2684,3 @@ class RelaxApp_MessageBox_Options(RelaxApp_MessageBox_Structure):
                                                             fg_color=colors["soft_green"], hover_color=colors["dark_green"],
                                                             bg_color=colors["soft_grey"])
         self.continue_registration_button.place(rely=0.65, relx=0.5, anchor="center")
-
-
