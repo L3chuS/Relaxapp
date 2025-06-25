@@ -1,30 +1,18 @@
 import os
 from dotenv import load_dotenv
 
-# user = os.environ.get("UserMySql")
-# password = os.environ.get("PasswordMySql")
-# database = "railway"
-# database = "lechus"
-
-# Dictionary which contains the values by default to be use to establish connection with the database.
-
-# root_access = {
-#             "host" : "localhost",
-#             "user" : user,
-#             "password" : password,
-#             "database" : ""
-#             }
-
 # Dataserver file is loaded.
 env_path = os.path.join(os.path.dirname(__file__), 'dataserver.env')
 load_dotenv(dotenv_path=env_path)
 
+# The values of the server are gotten from dataserver.env.
 host = os.environ.get("MYSQL_HOST")
 port = os.environ.get("MYSQL_PORT")
 user = os.environ.get("MYSQL_USER")
 password = os.environ.get("MYSQL_PASSWORD")
 database = os.environ.get("MYSQL_DATABASE")
 
+# Dictionary which contains the values by default to be use to establish connection with the database.
 root_access = {
             "host" : host,
             "port" : port,
@@ -32,15 +20,6 @@ root_access = {
             "password" : password,
             "database" : database
             }
-
-# root_access = {
-#             "host" : "yamanote.proxy.rlwy.net",
-#             "port" : "35540",
-#             "user" : "root",
-#             "password" : "heKGALwRHKMTaYYQKIEAfThykmmpgfWj",
-#             "database" : "railway"
-#             }
-
 
 # List of dictionaries to be used as presets to create new tables.
 # Between index [0:-1] there're each name of the column with their specific configuration.
@@ -169,7 +148,6 @@ columns_configuration_default = [
     }]
 
 # Dictionary to be used to get values given by users and sign up, update or remove them (only editables from the GUI).
-
 user = {
         "action" : "",
         "name" : "",

@@ -5,3 +5,4 @@
 **/*.psd
 **/Profile_Test
 **/*.env
+**/queries.py
