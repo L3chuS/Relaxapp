@@ -4,5 +4,4 @@
 **/Videos
 **/*.psd
 **/Profile_Test
-./Database/dataserver.env
-Database/dataserver.env
+**/*.env
