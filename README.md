@@ -24,21 +24,21 @@
 
 ### Instalación usuarios finales:
 
-#### Ejecuta el archivo "RelaxApp.exe" ubicado en la carpeta principal descargada.
-#### Sigue los pasos indicados por el instalador hasta finalizar.
-#### Inicia la aplicación.
-#### En el menú de inicio registra tu usuario desde el botón ubicado a la izquierda abajo.
-#### Completa los campos requeridos y pulsa aceptar.
-#### Disfruta de RelaxApp.
+#### 1 - Ejecuta el archivo "RelaxApp.exe" ubicado en la carpeta principal descargada.
+#### 2 - Sigue los pasos indicados por el instalador hasta finalizar.
+#### 3 - Inicia la aplicación.
+#### 4 - En el menú de inicio registra tu usuario desde el botón ubicado a la izquierda abajo.
+#### 5 - Completa los campos requeridos y pulsa aceptar.
+#### 6 - Disfruta de RelaxApp.
 
 ---
 
 ### Instalación desarrolladores:
 
-#### Clona el repositorio: https://github.com/L3chuS/Relaxapp.git
-#### Instala las dependencias.
-#### Crea un archivo ".env" con los datos del servidor MySQL.
-#### Ejecuta RelaxApp.
+#### 1 - Clona el repositorio: https://github.com/L3chuS/Relaxapp.git
+#### 2 - Instala las dependencias.
+#### 3 - Crea un archivo ".env" con los datos del servidor MySQL.
+#### 4 - Ejecuta RelaxApp.
 
 ---
 
@@ -103,6 +103,8 @@ https://github.com/L3chuS/Relaxapp/assets/144654765/e4e71781-4ff4-48f2-a00d-d74c
 
 #### Nombre: Esteban Santos Mendoza
 #### Github: https://github.com/L3chuS
+
+---
 
 # ![Imágen perfil.](https://raw.githubusercontent.com/L3chuS/L3chus/main/Perfil_Emoji.png) Hola, soy Esteban Santos Mendoza!! 👋 
 

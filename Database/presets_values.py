@@ -1,16 +1,27 @@
 import os
-from dotenv import load_dotenv
+from io import StringIO
+from dotenv import dotenv_values
+from cryptography.fernet import Fernet
+from Scripts.dcfile import pw_dcfile
+
+fernet = Fernet(pw_dcfile)
 
 # Dataserver file is loaded.
-env_path = os.path.join(os.path.dirname(__file__), 'dataserver.env')
-load_dotenv(dotenv_path=env_path)
+ec_dataserver = os.path.join(os.path.dirname(__file__), 'ec_dataserver.env')
+
+with open(ec_dataserver, "rb") as file:
+    ec_data = file.read()
+
+dc_data = fernet.decrypt(ec_data).decode()
+
+env_vars = dotenv_values(stream=StringIO(dc_data))
 
 # The values of the server are gotten from dataserver.env.
-host = os.environ.get("MYSQL_HOST")
-port = os.environ.get("MYSQL_PORT")
-user = os.environ.get("MYSQL_USER")
-password = os.environ.get("MYSQL_PASSWORD")
-database = os.environ.get("MYSQL_DATABASE")
+host = env_vars.get("MYSQL_HOST")
+port = env_vars.get("MYSQL_PORT")
+user = env_vars.get("MYSQL_USER")
+password = env_vars.get("MYSQL_PASSWORD")
+database = env_vars.get("MYSQL_DATABASE")
 
 # Dictionary which contains the values by default to be use to establish connection with the database.
 root_access = {
