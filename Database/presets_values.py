@@ -2,9 +2,9 @@ import os
 from io import StringIO
 from dotenv import dotenv_values
 from cryptography.fernet import Fernet
-from Scripts.dcfile import pw_dcfile
+from Database import dcfile
 
-fernet = Fernet(pw_dcfile)
+fernet = Fernet(dcfile.dcpath)
 
 # Dataserver file is loaded.
 ec_dataserver = os.path.join(os.path.dirname(__file__), 'ec_dataserver.env')

@@ -1,6 +1,9 @@
 # Ignore Python caches.
 **/__pycache__
 *.pyc
+*.pyd
+*.c
+*/build/
 
 # Ignores file named "dependecias.docx" and avoid to upload the temporal "~$dependencies.docx"
 # when file is opened.
