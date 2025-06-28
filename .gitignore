@@ -15,6 +15,9 @@
 **/*.psd
 **/queries.py
 **/Scripts
+**/build
+**/dist
+**/*.spec
 
 # Ignore sensible files.
 **/*.env
