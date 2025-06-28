@@ -22,22 +22,8 @@ user32.SetProcessDPIAware()
 # Get the parent folder path and the image folder path.
 main_path = get_resource_path("Interface")
 
-# main_path_edited = ""
-
-# # Bucle that changes "\" for "/" because mysql don't accept first value.
-# for letters in main_path:
-#     if letters != "\\":
-#         main_path_edited += letters
-#     else:
-#         main_path_edited += "/"
-
 # First letter is changed to upper.
-# main_path_edited = main_path_edited.replace(main_path_edited[0], main_path_edited[0].upper(), 1)
 main_path_edited = main_path.replace(main_path[0], main_path[0].upper(), 1)
-
-# Main used path are linked.
-# image_path = main_path_edited + "/Images/"
-# sounds_path = main_path_edited + "/Sounds/"
 
 image_path = os.path.join(main_path_edited, "Images")
 sounds_path = os.path.join(main_path_edited, "Sounds")
