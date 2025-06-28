@@ -3,11 +3,14 @@ from io import StringIO
 from dotenv import dotenv_values
 from cryptography.fernet import Fernet
 from Database import dcfile
+from utils import get_resource_path
 
 fernet = Fernet(dcfile.dcpath)
 
+abs_path = get_resource_path("Database")
+
 # Dataserver file is loaded.
-ec_dataserver = os.path.join(os.path.dirname(__file__), 'ec_dataserver.env')
+ec_dataserver = os.path.join(abs_path, "ec_dataserver.env")
 
 with open(ec_dataserver, "rb") as file:
     ec_data = file.read()
@@ -31,7 +34,7 @@ root_access = {
             "password" : password,
             "database" : database
             }
-
+print(root_access)
 # List of dictionaries to be used as presets to create new tables.
 # Between index [0:-1] there're each name of the column with their specific configuration.
 # In the index [-1] primary key is set.

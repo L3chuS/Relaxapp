@@ -4,10 +4,12 @@ import subprocess
 import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 from Database.presets_values import root_access
+from utils import get_resource_path
+
 
 # Variable to get the location of the project.
-main_path = os.path.dirname(__file__)
-backup_path = main_path + "\\Backup"
+main_path = get_resource_path("Database")
+backup_path = os.path.join(main_path, "Backup")
 
 # Main class of the database.
 class Database:
