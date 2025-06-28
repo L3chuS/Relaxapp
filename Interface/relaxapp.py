@@ -2048,10 +2048,16 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
         self.start.place(rely=0.9, relx=0.5, anchor="center")
 
         # Button that returns to the user's main menu.
-        self.stop = ctk.CTkButton(self.window_RS, text="Volver", font=(font, 20), command=self.stop_app, width=100, height=20, 
-                                  corner_radius=90, hover=True, fg_color=colors["soft_green"], hover_color=colors["dark_green"],
+        self.stop = ctk.CTkButton(self.window_RS, text="Volver", font=(font, 14), command=self.stop_app, width=80, height=20, 
+                                  corner_radius=10, hover=True, fg_color=colors["soft_green"], hover_color=colors["dark_green"],
                                   bg_color=colors["soft_grey"])
-        self.stop.place(rely=0.85, relx=0.5, anchor="center")
+        self.stop.place(rely=0.85, relx=0.1, anchor="w")
+
+        # Button that stop music when is playing.
+        self.pause_alarm = ctk.CTkButton(self.window_RS, text="Silenciar", font=(font, 14), command=self.stop_sound, width=60, height=20, 
+                                  corner_radius=10, hover=True, fg_color=colors["soft_green"], hover_color=colors["dark_green"],
+                                  bg_color=colors["soft_grey"])
+        self.pause_alarm.place(rely=0.85, relx=0.9, anchor="e")
 
     # This method calls 4 of the 6 countdown.
     def threading(self): 
@@ -2369,6 +2375,10 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
         pygame.mixer.quit()
         self.window_RS.destroy()
         self.root.deiconify()
+
+    def stop_sound(self):
+        pygame.mixer.quit()
+        pygame.mixer.init()
 
 
 ####################################################

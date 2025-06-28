@@ -34,7 +34,7 @@ root_access = {
             "password" : password,
             "database" : database
             }
-print(root_access)
+
 # List of dictionaries to be used as presets to create new tables.
 # Between index [0:-1] there're each name of the column with their specific configuration.
 # In the index [-1] primary key is set.
