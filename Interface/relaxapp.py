@@ -2,7 +2,6 @@ import tkinter as tk
 import customtkinter as ctk
 import Database.database as bd
 from Database.presets_values import user, databases, tables
-from os import path
 import ctypes
 import time
 import threading
@@ -10,6 +9,8 @@ import pygame
 from PIL import Image
 from tktooltip import ToolTip
 import datetime
+import os
+from utils import get_resource_path
 
 # Connect to the database.
 database = bd.Database(**bd.root_access)
@@ -19,22 +20,13 @@ user32 = ctypes.windll.user32
 user32.SetProcessDPIAware()
 
 # Get the parent folder path and the image folder path.
-main_path = path.dirname(__file__)
-main_path_edited = ""
-
-# Bucle that changes "\" for "/" because mysql don't accept first value.
-for letters in main_path:
-    if letters != "\\":
-        main_path_edited += letters
-    else:
-        main_path_edited += "/"
+main_path = get_resource_path("Interface")
 
 # First letter is changed to upper.
-main_path_edited = main_path_edited.replace(main_path_edited[0], main_path_edited[0].upper(), 1)
+main_path_edited = main_path.replace(main_path[0], main_path[0].upper(), 1)
 
-# Main used path are linked.
-image_path = main_path_edited + "/Images/"
-sounds_path = main_path_edited + "/Sounds/"
+image_path = os.path.join(main_path_edited, "Images")
+sounds_path = os.path.join(main_path_edited, "Sounds")
 
 # Set appearance.
 appearance = ctk.set_appearance_mode("dark")
@@ -81,7 +73,7 @@ class RelaxApp_Structure:
 
         # Set the title and the logo of the app.
         self.title = self.root.title("RelaxApp")
-        self.root.after(200, lambda: self.root.iconbitmap(image_path + "logo.ico"))
+        self.root.after(200, lambda: self.root.iconbitmap(os.path.join(image_path, "logo.ico")))
         
         # The main menu is run.
         RelaxApp_Initial_Frame(self.root, self.general_frame)
@@ -148,7 +140,7 @@ class RelaxApp_MessageBox_Structure:
         
         # Set the title and the logo of the app.
         self.title = self.window_MS.title("RelaxApp")
-        self.window_MS.after(200, lambda: self.window_MS.iconbitmap(image_path + "logo.ico"))
+        self.window_MS.after(200, lambda: self.window_MS.iconbitmap(os.path.join(image_path, "logo.ico")))
 
     # Method that remove widget from the main menu profile.
     def clean_MB_widgets(self, clean_MB_frame):
@@ -187,7 +179,7 @@ class RelaxApp_User_Settings_Structure:
 
         # Set the title and the logo of the app.
         self.title = self.window_User_SS.title("RelaxApp")
-        self.window_User_SS.after(200, lambda: self.window_User_SS.iconbitmap(image_path + "logo.ico"))
+        self.window_User_SS.after(200, lambda: self.window_User_SS.iconbitmap(os.path.join(image_path, "logo.ico")))
 
     # Method that creates a new root everytime the main root is destroyed.
     def close_create_profiles(self, new_window, root, clean_frame, *args):
@@ -224,7 +216,7 @@ class RelaxApp_Running_Structure:
 
         # Set the title and the logo of the app.
         self.title = self.window_RS.title("RelaxApp")
-        self.window_RS.after(200, lambda: self.window_RS.iconbitmap(image_path + "logo.ico"))
+        self.window_RS.after(200, lambda: self.window_RS.iconbitmap(os.path.join(image_path, "logo.ico")))
 
 
 ############################################################################
@@ -256,7 +248,7 @@ class RelaxApp_Profile_Name_Structure:
 
         # Set the title and the logo of the app.
         self.title = self.window_PFS.title("RelaxApp")
-        self.window_PFS.after(200, lambda: self.window_PFS.iconbitmap(image_path + "logo.ico"))
+        self.window_PFS.after(200, lambda: self.window_PFS.iconbitmap(os.path.join(image_path, "logo.ico")))
 
 
 #############################################################
@@ -340,8 +332,8 @@ class Check_Values_Configuration():
     def check_sounds_settings(self, value):
         if value == "":
             return None
-        sound_path = path.isfile(value)
-        extension_sound_path = path.splitext(value)
+        sound_path = os.path.isfile(value)
+        extension_sound_path = os.path.splitext(value)
 
         if sound_path == False:
             # print(f"comprobar ruta: {sound_path}")
@@ -791,7 +783,8 @@ class RelaxApp_User_Main_Menu():
         self.visual_options_CB.place(rely=0.4, relx=0.8, anchor="e")
 
         # Image of a restart simbol.
-        self.restart_button = ctk.CTkImage(Image.open(image_path + "Restart.png"))
+        self.restart_button = ctk.CTkImage(Image.open(os.path.join(image_path, "Restart.png")))
+        
 
         # Button to restart VO values set.
         self.restart_button1 = ctk.CTkButton(self.frame_main, text=None, image=self.restart_button, width=20, height=20, hover=True,
@@ -1076,9 +1069,9 @@ class RelaxApp_User_Main_Menu_Profiles(RelaxApp_User_Settings_Structure):
         self.setting_title.place(rely=0.5, relx=0.5, anchor="center")
 
         # Image of a create simbol.
-        self.create_button = ctk.CTkImage(Image.open(image_path + "Create.png"))
+        self.create_button = ctk.CTkImage(Image.open(os.path.join(image_path, "Create.png")))
         # Image of a remove simbol.
-        self.remove_button = ctk.CTkImage(Image.open(image_path + "Remove.png"))
+        self.remove_button = ctk.CTkImage(Image.open(os.path.join(image_path, "Remove.png")))
 
         # Button to create new profile.
         self.create_profile_button = ctk.CTkButton(self.frame2, text=None, image=self.create_button, width=0, command=self.create_profile,
@@ -1289,9 +1282,9 @@ class RelaxApp_Profile_Name(RelaxApp_Profile_Name_Structure):
         self.get_profile_saved = variable_saved
 
         # Image of an accept simbol.
-        self.accept_image = ctk.CTkImage(Image.open(image_path + "Accept.png"))
+        self.accept_image = ctk.CTkImage(Image.open(os.path.join(image_path, "Accept.png")))
         # Image of a remove simbol.
-        self.close_image = ctk.CTkImage(Image.open(image_path + "Remove.png"))
+        self.close_image = ctk.CTkImage(Image.open(os.path.join(image_path, "Remove.png")))
 
         # Validate character limit. 
         self.lenght_name = self.root.register(Validate_CMD.validate_lenght_name)
@@ -1625,10 +1618,10 @@ class RelaxApp_User_Main_Menu_Sounds(RelaxApp_User_Settings_Structure):
         self.setting_title.place(rely=0.5, relx=0.5, anchor="center")
 
         # Image of a play simbol.
-        self.play_button_image = ctk.CTkImage(Image.open(image_path + "Play.png").resize((40,40)))
+        self.play_button_image = ctk.CTkImage(Image.open(os.path.join(image_path, "Play.png")).resize((40,40)))
 
         # Image of a play simbol.
-        self.pause_button_image = ctk.CTkImage(Image.open(image_path + "Pause.png").resize((40,40)))
+        self.pause_button_image = ctk.CTkImage(Image.open(os.path.join(image_path, "Pause.png")).resize((40,40)))
 
         # Sound by default 1 label.
         self.sound_alert_D1 = ctk.CTkLabel(self.frame2, text="Default 1", font=(font, 14))
@@ -1761,9 +1754,10 @@ entre cada alerta.", parent_kwargs = { "bg": colors["black"]}, delay=0.5, font=(
         pygame.mixer.init()
         if action == "Play":
             if sound == "Final":
-                pygame.mixer.music.load(sounds_path + "Final.mp3")
+                pygame.mixer.music.load(os.path.join(sounds_path, "Final.mp3"))
             elif sound == "Lapse":
-                pygame.mixer.music.load(sounds_path + "Lapse.mp3")
+                pygame.mixer.music.load(os.path.join(sounds_path, "Lapse.mp3"))
+
             pygame.mixer.music.play(loops=0)
         elif action == "Pause":
             pygame.mixer.quit()
@@ -1795,9 +1789,9 @@ entre cada alerta.", parent_kwargs = { "bg": colors["black"]}, delay=0.5, font=(
         try:
             # Final sound is choosen.
             if self.sound_alert_choice1.get() == 0:
-                self.final_sound = sounds_path + "Final.mp3"
+                self.final_sound = os.path.join(sounds_path, "Final.mp3")
             elif self.sound_alert_choice1.get() == 1:
-                self.final_sound = sounds_path + "Lapse.mp3"
+                self.final_sound = os.path.join(sounds_path, "Lapse.mp3")
             elif self.sound_alert_choice1.get() == 2:
                 self.final_sound = self.sound_loaded1_path
             elif self.sound_alert_choice1.get() == 3:
@@ -1808,9 +1802,9 @@ entre cada alerta.", parent_kwargs = { "bg": colors["black"]}, delay=0.5, font=(
         try:
             # Lapse sound is choosen.
             if self.sound_alert_choice2.get() == 0:
-                self.lapse_sound = sounds_path + "Final.mp3"
+                self.lapse_sound = os.path.join(sounds_path, "Final.mp3")
             elif self.sound_alert_choice2.get() == 1:
-                self.lapse_sound = sounds_path + "Lapse.mp3"
+                self.lapse_sound = os.path.join(sounds_path, "Lapse.mp3")
             elif self.sound_alert_choice2.get() == 2:
                 self.lapse_sound = self.sound_loaded1_path
             elif self.sound_alert_choice2.get() == 3:
@@ -2040,10 +2034,16 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
         self.start.place(rely=0.9, relx=0.5, anchor="center")
 
         # Button that returns to the user's main menu.
-        self.stop = ctk.CTkButton(self.window_RS, text="Volver", font=(font, 20), command=self.stop_app, width=100, height=20, 
-                                  corner_radius=90, hover=True, fg_color=colors["soft_green"], hover_color=colors["dark_green"],
+        self.stop = ctk.CTkButton(self.window_RS, text="Volver", font=(font, 14), command=self.stop_app, width=80, height=20, 
+                                  corner_radius=10, hover=True, fg_color=colors["soft_green"], hover_color=colors["dark_green"],
                                   bg_color=colors["soft_grey"])
-        self.stop.place(rely=0.85, relx=0.5, anchor="center")
+        self.stop.place(rely=0.85, relx=0.1, anchor="w")
+
+        # Button that stop music when is playing.
+        self.pause_alarm = ctk.CTkButton(self.window_RS, text="Silenciar", font=(font, 14), command=self.stop_sound, width=60, height=20, 
+                                  corner_radius=10, hover=True, fg_color=colors["soft_green"], hover_color=colors["dark_green"],
+                                  bg_color=colors["soft_grey"])
+        self.pause_alarm.place(rely=0.85, relx=0.9, anchor="e")
 
     # This method calls 4 of the 6 countdown.
     def threading(self): 
@@ -2331,26 +2331,26 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
             if value == 1:
                 try:
                     if self.final_sound == "":
-                        pygame.mixer.music.load(sounds_path + "Final.mp3")  
+                        pygame.mixer.music.load(os.path.join(sounds_path, "Final.mp3"))  
                         pygame.mixer.music.play(loops=0)
                     else:
                         pygame.mixer.music.load(self.final_sound)  
                         pygame.mixer.music.play(loops=0)
                 except:
-                    pygame.mixer.music.load(sounds_path + "Final.mp3")  
+                    pygame.mixer.music.load(os.path.join(sounds_path, "Final.mp3"))  
                     pygame.mixer.music.play(loops=0)
 
             # When value is "2" the sound related to "Lapse" is set.
             elif value == 2:
                 try:    
                     if self.lapse_sound == "":
-                        pygame.mixer.music.load(sounds_path + "Lapse.mp3")  
+                        pygame.mixer.music.load(os.path.join(sounds_path, "Lapse.mp3"))  
                         pygame.mixer.music.play(loops=0)
                     else:
                         pygame.mixer.music.load(self.lapse_sound)  
                         pygame.mixer.music.play(loops=0)
                 except:
-                    pygame.mixer.music.load(sounds_path + "Final.mp3")  
+                    pygame.mixer.music.load(os.path.join(sounds_path, "Final.mp3"))  
                     pygame.mixer.music.play(loops=0)
     
     # This method stops the app when return button is pressed.
@@ -2361,6 +2361,10 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
         pygame.mixer.quit()
         self.window_RS.destroy()
         self.root.deiconify()
+
+    def stop_sound(self):
+        pygame.mixer.quit()
+        pygame.mixer.init()
 
 
 ####################################################
