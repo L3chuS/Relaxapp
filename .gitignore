@@ -14,13 +14,15 @@
 **/Videos
 **/*.psd
 **/queries.py
-**/Scripts
+**/Scripts/*
+!/Scripts/script_compiler.bat
 **/build
 **/dist
 **/*.spec
 
 # Ignore sensible files.
-**/*.env
+**/*.en
+**/AppSupport
 
 
 

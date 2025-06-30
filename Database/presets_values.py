@@ -2,17 +2,18 @@ import os
 from io import StringIO
 from dotenv import dotenv_values
 from cryptography.fernet import Fernet
-from Database import dcfile
+# from Database import dcfile
+from AppSupport.Lib.Temp import dcfile
 from utils import get_resource_path
 
 fernet = Fernet(dcfile.dcpath)
 
-abs_path = get_resource_path("Database")
+abs_path = get_resource_path("AppSupport/Lib/Temp")
 
 # Dataserver file is loaded.
-ec_dataserver = os.path.join(abs_path, "ec_dataserver.env")
+ec_rvsdt = os.path.join(abs_path, "ec_rvsdt.env")
 
-with open(ec_dataserver, "rb") as file:
+with open(ec_rvsdt, "rb") as file:
     ec_data = file.read()
 
 dc_data = fernet.decrypt(ec_data).decode()
