@@ -21,7 +21,7 @@
 **/*.spec
 
 # Ignore sensible files.
-**/*.en
+**/*.env
 **/AppSupport
 
 
