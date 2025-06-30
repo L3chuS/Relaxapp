@@ -11,6 +11,7 @@ from tktooltip import ToolTip
 import datetime
 import os
 from utils import get_resource_path
+import webbrowser
 
 # Connect to the database.
 database = bd.Database(**bd.root_access)
@@ -922,11 +923,8 @@ class RelaxApp_User_Main_Menu():
             except:
                 pass            
 
-    ###### TO SET ######
     def about_us(self):
-        ###### TO SET ######
-        print("about_us EN DESARROLLO")
-        ###### TO SET ######
+        webbrowser.open("https://github.com/L3chuS/Relaxapp.git")
 
     # This method removes profiles set.
     def remove_account(self):
