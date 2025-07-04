@@ -1,6 +1,6 @@
 import tkinter as tk
 import customtkinter as ctk
-import Database.database as bd
+import Database.database as db
 from Database.presets_values import user, databases, tables
 import ctypes
 import time
@@ -14,7 +14,7 @@ from utils import get_resource_path
 import webbrowser
 
 # Connect to the database.
-database = bd.Database(**bd.root_access)
+database = db.Database(**db.root_access)
 
 # Get the windows resolution regardless of rescaling
 user32 = ctypes.windll.user32
