@@ -1850,6 +1850,7 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
         self.root = root
         self.frame = frame
         pygame.mixer.init()
+        self.start_time = time.perf_counter()
         
         # Variables to set which threading is started.
         self.visual_set = visual_set
@@ -2043,7 +2044,10 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
         self.pause_alarm.place(rely=0.85, relx=0.9, anchor="e")
 
         # This variable is counting how many round have been lunched.
-        self.round_multiplier = 0
+        self.init_TR_multiplier = 0
+        self.init_VO_countdown_multiplier = 0
+        self.init_SO_countdown_multiplier = 0
+        # self.sinc_multiplier = 0
 
     # This method calls 4 of the 6 countdown.
     def threading(self):
@@ -2064,7 +2068,7 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
     # This method starts the main countdown "Time Remaining" of the visual options.
     def TR_VO_countdown(self):
 
-        self.VO_start_time = time.perf_counter()
+        # self.VO_start_time = time.perf_counter()
         # Hours and minutes of time remaining are gotten.
         TR_HH_value = int(self.time_left_HH_VO.get())
         TR_MM_value = int(self.time_left_MM_VO.get())
@@ -2085,7 +2089,7 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
                 else:
                     self.time_left_HH_VO.set("0" + str(TR_HH_value))
 
-                self.init_timer(60)
+                self.init_timer(60, "TR")
                 if TR_MM_value > 0:
                     TR_MM_value -= 1
                 # When minute is cero one is subtracted from the hours.
@@ -2117,14 +2121,14 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
     # This method starts the countdown "Next Alert" of the visual options.
     def NA_VO_countdown(self):
         
-        self.NA_start_time = time.perf_counter()
+        # self.NA_start_time = time.perf_counter()
         # Minutes and seconds of next alert are gotten.
         initial_value_MM = self.next_alert_MM_VO.get()
         initial_value_SS = self.next_alert_SS_VO.get()
 
         NA_MM_value = int(initial_value_MM)
         NA_SS_value = int(initial_value_SS)
-        sinc_counter = 0
+        # sinc_counter = 0
  
         while NA_MM_value > -1:
             
@@ -2145,21 +2149,21 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
             
             # This conditional checks every 29 seconds the sincronization of this timer with 
             # self.VO_start_time and correct it on the next call to the function self.init_timer.
-            if sinc_counter == 29:
-                seconds_to_init_timer = self.sinc_timer()
-                sinc_counter = -1
-            sinc_counter += 1
+            # if sinc_counter == 29:
+            #     seconds_to_init_timer = self.sinc_timer()
+            #     sinc_counter = -1
+            # sinc_counter += 1
 
-            if seconds_to_init_timer < 1:
-                print("Tiempo de seconds_to_init_timer", seconds_to_init_timer)
+            # if seconds_to_init_timer < 1:
+            #     print("Tiempo de seconds_to_init_timer", seconds_to_init_timer)
 
             # After 1 second one is subtracted from the seconds.
             if NA_SS_value > 0:
-                self.init_timer(seconds_to_init_timer)
+                self.init_timer(seconds_to_init_timer, "VO_countdown")
                 NA_SS_value -= 1
             # When second is cero one is subtracted from the minutes.
             elif NA_MM_value > 0:
-                self.init_timer(seconds_to_init_timer)
+                self.init_timer(seconds_to_init_timer, "VO_countdown")
                 NA_MM_value -= 1
                 NA_SS_value = 59
             else:
@@ -2182,7 +2186,7 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
 
         BT_MM_value = int(initial_value_MM)
         BT_SS_value = int(initial_value_SS)
-        sinc_counter = 0
+        # sinc_counter = 0
 
         while BT_MM_value > -1:
             # Conditional that stop bucle when return button is pressed or time remaining is finished.
@@ -2203,21 +2207,21 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
 
             # This conditional checks every 29 seconds the sincronization of this timer with 
             # self.VO_start_time and correct it on the next call to the function self.init_timer.
-            if sinc_counter == 29:
-                seconds_to_init_timer = self.sinc_timer()
-                sinc_counter = -1
+            # if sinc_counter == 29:
+            #     seconds_to_init_timer = self.sinc_timer()
+            #     sinc_counter = -1
 
-            sinc_counter += 1
-            if seconds_to_init_timer < 1:
-                print("Tiempo de seconds_to_init_timer", seconds_to_init_timer)
+            # sinc_counter += 1
+            # if seconds_to_init_timer < 1:
+            #     print("Tiempo de seconds_to_init_timer", seconds_to_init_timer)
 
             # After 1 second one is subtracted from the seconds.
             if BT_SS_value > 0:
-                self.init_timer(seconds_to_init_timer)
+                self.init_timer(seconds_to_init_timer, "VO_countdown")
                 BT_SS_value -= 1
             # When second is cero one is subtracted from the minutes.
             elif BT_MM_value > 0:
-                self.init_timer(seconds_to_init_timer)
+                self.init_timer(seconds_to_init_timer, "VO_countdown")
                 BT_MM_value -= 1
                 BT_SS_value = 59
             else:
@@ -2394,35 +2398,71 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
         pygame.mixer.init()
       
     # This method start timer and compare the time elapsed with "time.time".
-    def init_timer(self, num_seconds):
-        start_time = time.perf_counter()
-        time.sleep(num_seconds-0.1)
-        current_time = time.perf_counter()
+    def init_timer(self, num_seconds, thread):
+        # print("----------------------------------------------------")
+        # print("###INIT TIMER###")
         # print(f"Tiempo inicial: {self.start_time:.3f}s")
+        # print("Esto es self.init_TR_multiplier", self.init_TR_multiplier)
+        # print("Esto es self.sinc_multiplier ", self.init_VO_countdown_multiplier)
+
+
+        if self.init_TR_multiplier == 0 and self.init_VO_countdown_multiplier == 0 :
+            # print("Entro aca")
+            init_elapsed_seconds = time.perf_counter() - self.start_time
+            # print("Init elapsed seconds: ", init_elapsed_seconds)
+            time.sleep(num_seconds - 0.1 - init_elapsed_seconds)
+        else:
+            time.sleep(num_seconds - 0.1)
+
+        current_time = time.perf_counter()
         # print(f"Tiempo current_time: {current_time:.3f}s")
-        elapsed_seconds = current_time - start_time
-        remaining_to_compensate = num_seconds - elapsed_seconds
+
+        elapsed_seconds = current_time - self.start_time
+
+        if thread == "TR":
+            # print("Estoy en thread tr")
+            # print("num de seconds: ", num_seconds)
+            # print("elapsed_seconds: ", elapsed_seconds)
+            # print("self.init_TR_multiplier: ", self.init_TR_multiplier)
+            
+            remaining_to_compensate = num_seconds - (elapsed_seconds - (num_seconds * self.init_TR_multiplier))
+            self.init_TR_multiplier += 1
+        elif thread == "VO_countdown":
+            remaining_to_compensate = num_seconds - (elapsed_seconds - (num_seconds * self.init_VO_countdown_multiplier))
+            self.init_VO_countdown_multiplier += 1
+        # elif thread == "SO_countdown":
+        #     remaining_to_compensate = num_seconds - (elapsed_seconds - (num_seconds * self.init_SO_countdown_multiplier))
+        #     self.init_VO_countdown_multiplier += 1
+        if remaining_to_compensate < 0:
+            print("remaining_to_compensate antes:", remaining_to_compensate)
+            remaining_to_compensate == 0
+            print("remaining_to_compensate despues:", remaining_to_compensate)
         # print(f"Tiempo transcurrido: {elapsed_seconds:.3f}s")
         # print(f"Tiempo a compensar: {remaining_to_compensate:.3f}s")
-        compensated_time = elapsed_seconds + remaining_to_compensate
+        # compensated_time = elapsed_seconds + remaining_to_compensate
         time.sleep(remaining_to_compensate)
-        # print(f"Tiempo final: {compensated_time:.3f}s")
-
-    def sinc_timer(self):
-        print("----------------------------------------------------")
-        current_time = time.perf_counter()
-        time_elapsed = current_time - self.VO_start_time
-        final_time_elapsed = time_elapsed - (30 * self.round_multiplier)
-        self.round_multiplier += 1
-
-        print(f"Tiempo VO_start_time: {self.VO_start_time:.3f}s")
-        print(f"Tiempo time_elapsed: {time_elapsed:.3f}s")
-        print(f"Tiempo final_time_elapsed: {final_time_elapsed:.3f}s")
-        remaining_to_compensate = 30 - final_time_elapsed
         
-        print(f"Tiempo a compensar: {remaining_to_compensate:.3f}s")
-        print("----------------------------------------------------")
-        return remaining_to_compensate
+
+        # print(f"Tiempo final: {compensated_time:.3f}s")
+        # print("----------------------------------------------------")
+
+
+    # def sinc_timer(self):
+    #     print("----------------------------------------------------")
+    #     print("###SINC TIMER###")
+    #     current_time = time.perf_counter()
+    #     time_elapsed = current_time - self.start_time
+    #     final_time_elapsed = time_elapsed - (30 * self.sinc_multiplier)
+    #     self.sinc_multiplier += 1
+
+    #     print(f"Tiempo VO_start_time: {self.start_time:.3f}s")
+    #     print(f"Tiempo time_elapsed: {time_elapsed:.3f}s")
+    #     print(f"Tiempo final_time_elapsed: {final_time_elapsed:.3f}s")
+    #     remaining_to_compensate = 30 - final_time_elapsed
+        
+    #     print(f"Tiempo a compensar: {remaining_to_compensate:.3f}s")
+    #     print("----------------------------------------------------")
+    #     return remaining_to_compensate
 
 
 ####################################################
