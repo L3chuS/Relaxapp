@@ -455,6 +455,9 @@ class RelaxApp_Initial_Frame():
         database.verify_login(databases["database1"], tables["users_table"], user)
         
         if database.valid_login:
+            waiting_logging = ctk.CTkLabel(self.frame, text="Iniciando Sesión...", font=(font,12))
+            waiting_logging.place(rely=0.81, relx=0.5, anchor="center")
+            self.frame.update_idletasks()
             database.user_configuration(databases["database1"], tables["settings_table"], user["login"], 
                                         "Restore")
             RelaxApp_Structure.close_create(self, RelaxApp_User_Main_Menu, self.root, self.frame)
@@ -2043,11 +2046,11 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
                                   bg_color=colors["soft_grey"])
         self.pause_alarm.place(rely=0.85, relx=0.9, anchor="e")
 
-        # This variable is counting how many round have been lunched.
-        self.init_TR_multiplier = 0
+        # This variables are counting how many round have been lunched.
+        self.init_TR_VO_multiplier = 0
+        self.init_TR_SO_multiplier = 0
         self.init_VO_countdown_multiplier = 0
         self.init_SO_countdown_multiplier = 0
-        # self.sinc_multiplier = 0
 
     # This method calls 4 of the 6 countdown.
     def threading(self):
@@ -2068,7 +2071,6 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
     # This method starts the main countdown "Time Remaining" of the visual options.
     def TR_VO_countdown(self):
 
-        # self.VO_start_time = time.perf_counter()
         # Hours and minutes of time remaining are gotten.
         TR_HH_value = int(self.time_left_HH_VO.get())
         TR_MM_value = int(self.time_left_MM_VO.get())
@@ -2089,7 +2091,7 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
                 else:
                     self.time_left_HH_VO.set("0" + str(TR_HH_value))
 
-                self.init_timer(60, "TR")
+                self.init_timer(60, "TR_VO")
                 if TR_MM_value > 0:
                     TR_MM_value -= 1
                 # When minute is cero one is subtracted from the hours.
@@ -2121,14 +2123,12 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
     # This method starts the countdown "Next Alert" of the visual options.
     def NA_VO_countdown(self):
         
-        # self.NA_start_time = time.perf_counter()
         # Minutes and seconds of next alert are gotten.
         initial_value_MM = self.next_alert_MM_VO.get()
         initial_value_SS = self.next_alert_SS_VO.get()
 
         NA_MM_value = int(initial_value_MM)
         NA_SS_value = int(initial_value_SS)
-        # sinc_counter = 0
  
         while NA_MM_value > -1:
             
@@ -2145,32 +2145,20 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
             else:
                 self.next_alert_MM_VO.set("0" + str(NA_MM_value))
 
-            seconds_to_init_timer = 1
-            
-            # This conditional checks every 29 seconds the sincronization of this timer with 
-            # self.VO_start_time and correct it on the next call to the function self.init_timer.
-            # if sinc_counter == 29:
-            #     seconds_to_init_timer = self.sinc_timer()
-            #     sinc_counter = -1
-            # sinc_counter += 1
-
-            # if seconds_to_init_timer < 1:
-            #     print("Tiempo de seconds_to_init_timer", seconds_to_init_timer)
-
             # After 1 second one is subtracted from the seconds.
             if NA_SS_value > 0:
-                self.init_timer(seconds_to_init_timer, "VO_countdown")
+                self.init_timer(1, "VO_countdown")
                 NA_SS_value -= 1
             # When second is cero one is subtracted from the minutes.
             elif NA_MM_value > 0:
-                self.init_timer(seconds_to_init_timer, "VO_countdown")
+                self.init_timer(1, "VO_countdown")
                 NA_MM_value -= 1
                 NA_SS_value = 59
             else:
                 # Sound alert is called.
                 if self.sound_VO == "True":
                     self.play_sounds(2)
-                # Minutos and second are set as there was at the beggining.
+                # Minutes and second are set as there was at the beggining.
                 self.next_alert_SS_VO.set(initial_value_SS)
                 self.next_alert_MM_VO.set(initial_value_MM)
                 # New threading is run to start BT_VO_countdown function.
@@ -2186,7 +2174,6 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
 
         BT_MM_value = int(initial_value_MM)
         BT_SS_value = int(initial_value_SS)
-        # sinc_counter = 0
 
         while BT_MM_value > -1:
             # Conditional that stop bucle when return button is pressed or time remaining is finished.
@@ -2203,25 +2190,13 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
             else:
                 self.breaktime_SS_VO.set("0" + str(BT_SS_value))
 
-            seconds_to_init_timer = 1
-
-            # This conditional checks every 29 seconds the sincronization of this timer with 
-            # self.VO_start_time and correct it on the next call to the function self.init_timer.
-            # if sinc_counter == 29:
-            #     seconds_to_init_timer = self.sinc_timer()
-            #     sinc_counter = -1
-
-            # sinc_counter += 1
-            # if seconds_to_init_timer < 1:
-            #     print("Tiempo de seconds_to_init_timer", seconds_to_init_timer)
-
             # After 1 second one is subtracted from the seconds.
             if BT_SS_value > 0:
-                self.init_timer(seconds_to_init_timer, "VO_countdown")
+                self.init_timer(1, "VO_countdown")
                 BT_SS_value -= 1
             # When second is cero one is subtracted from the minutes.
             elif BT_MM_value > 0:
-                self.init_timer(seconds_to_init_timer, "VO_countdown")
+                self.init_timer(1, "VO_countdown")
                 BT_MM_value -= 1
                 BT_SS_value = 59
             else:
@@ -2238,8 +2213,6 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
     # This method starts the main countdown "Time Remaining" of the stretch options.
     def TR_SO_countdown(self):
 
-        self.SO_start_time = time.perf_counter()
-        print("esto es self.SO_start_time = time.perf_counter()", self.SO_start_time)
         TR_HH_value = int(self.time_left_HH_SO.get())
         TR_MM_value = int(self.time_left_MM_SO.get())
 
@@ -2257,7 +2230,7 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
                 else:
                     self.time_left_HH_SO.set("0" + str(TR_HH_value))
 
-                # self.init_timer(60)
+                self.init_timer(60, "TR_SO")
                 if TR_MM_value > 0:
                     TR_MM_value -=1
                 elif TR_HH_value > 0:     
@@ -2291,8 +2264,7 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
         while NA_MM_value > -1:
             # Conditional that stop bucle when return button is pressed or time remaining is finished.
             if self.app_running == False or self.stop_countdown_SO == True:
-                break 
-
+                break
             elif NA_SS_value > 9:
                 self.next_alert_SS_SO.set(NA_SS_value)
             else:
@@ -2303,12 +2275,12 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
                 self.next_alert_MM_SO.set("0" + str(NA_MM_value))
 
             if NA_SS_value > 0:
+                self.init_timer(1, "SO_countdown")
                 NA_SS_value -=1
-                time.sleep(1)
             elif NA_MM_value > 0:
+                self.init_timer(1, "SO_countdown")
                 NA_MM_value -= 1
                 NA_SS_value = 59
-                time.sleep(1)
             else:
                 if self.sound_SO == "True":
                     self.play_sounds(2)
@@ -2339,14 +2311,14 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
                 self.breaktime_MM_SO.set(BT_MM_value)
             else:
                 self.breaktime_MM_SO.set("0" + str(BT_MM_value))
-
+            
             if BT_SS_value > 0:
+                self.init_timer(1, "SO_countdown")
                 BT_SS_value -=1
-                time.sleep(1)
             elif BT_MM_value > 0:
+                self.init_timer(1, "SO_countdown")
                 BT_MM_value -=1
                 BT_SS_value = 59
-                time.sleep(1)
             else:
                 if self.sound_SO == "True":
                     self.play_sounds(2)
@@ -2397,72 +2369,41 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
         pygame.mixer.quit()
         pygame.mixer.init()
       
-    # This method start timer and compare the time elapsed with "time.time".
+    # This method start timer and compare the time elapsed with "time.perf_counter".
     def init_timer(self, num_seconds, thread):
-        # print("----------------------------------------------------")
-        # print("###INIT TIMER###")
-        # print(f"Tiempo inicial: {self.start_time:.3f}s")
-        # print("Esto es self.init_TR_multiplier", self.init_TR_multiplier)
-        # print("Esto es self.sinc_multiplier ", self.init_VO_countdown_multiplier)
 
-
-        if self.init_TR_multiplier == 0 and self.init_VO_countdown_multiplier == 0 :
-            # print("Entro aca")
+        # This conditional compense the delay between when the class is "init" with the moment that the timer is run. Only happend once
+        if self.init_TR_VO_multiplier == 0 and self.init_TR_SO_multiplier == 0 and self.init_VO_countdown_multiplier == 0 and self.init_SO_countdown_multiplier == 0:
             init_elapsed_seconds = time.perf_counter() - self.start_time
-            # print("Init elapsed seconds: ", init_elapsed_seconds)
             time.sleep(num_seconds - 0.1 - init_elapsed_seconds)
         else:
+            # Time sleep is run with minus 0.1 to be compensated after and avoid irregulars rounds, have precision and the timer sinchronized.
             time.sleep(num_seconds - 0.1)
 
         current_time = time.perf_counter()
-        # print(f"Tiempo current_time: {current_time:.3f}s")
 
         elapsed_seconds = current_time - self.start_time
 
-        if thread == "TR":
-            # print("Estoy en thread tr")
-            # print("num de seconds: ", num_seconds)
-            # print("elapsed_seconds: ", elapsed_seconds)
-            # print("self.init_TR_multiplier: ", self.init_TR_multiplier)
-            
-            remaining_to_compensate = num_seconds - (elapsed_seconds - (num_seconds * self.init_TR_multiplier))
-            self.init_TR_multiplier += 1
+        # These conditionals get the final value to compensate and avoid the desynchronization in large timers
+        if thread == "TR_VO":          
+            remaining_to_compensate = num_seconds - (elapsed_seconds - (num_seconds * self.init_TR_VO_multiplier))
+            self.init_TR_VO_multiplier += 1
+        if thread == "TR_SO":          
+            remaining_to_compensate = num_seconds - (elapsed_seconds - (num_seconds * self.init_TR_SO_multiplier))
+            self.init_TR_SO_multiplier += 1
         elif thread == "VO_countdown":
             remaining_to_compensate = num_seconds - (elapsed_seconds - (num_seconds * self.init_VO_countdown_multiplier))
             self.init_VO_countdown_multiplier += 1
-        # elif thread == "SO_countdown":
-        #     remaining_to_compensate = num_seconds - (elapsed_seconds - (num_seconds * self.init_SO_countdown_multiplier))
-        #     self.init_VO_countdown_multiplier += 1
+        elif thread == "SO_countdown":
+            remaining_to_compensate = num_seconds - (elapsed_seconds - (num_seconds * self.init_SO_countdown_multiplier))
+            self.init_SO_countdown_multiplier += 1
+        
         if remaining_to_compensate < 0:
             print("remaining_to_compensate antes:", remaining_to_compensate)
             remaining_to_compensate == 0
             print("remaining_to_compensate despues:", remaining_to_compensate)
-        # print(f"Tiempo transcurrido: {elapsed_seconds:.3f}s")
-        # print(f"Tiempo a compensar: {remaining_to_compensate:.3f}s")
-        # compensated_time = elapsed_seconds + remaining_to_compensate
+
         time.sleep(remaining_to_compensate)
-        
-
-        # print(f"Tiempo final: {compensated_time:.3f}s")
-        # print("----------------------------------------------------")
-
-
-    # def sinc_timer(self):
-    #     print("----------------------------------------------------")
-    #     print("###SINC TIMER###")
-    #     current_time = time.perf_counter()
-    #     time_elapsed = current_time - self.start_time
-    #     final_time_elapsed = time_elapsed - (30 * self.sinc_multiplier)
-    #     self.sinc_multiplier += 1
-
-    #     print(f"Tiempo VO_start_time: {self.start_time:.3f}s")
-    #     print(f"Tiempo time_elapsed: {time_elapsed:.3f}s")
-    #     print(f"Tiempo final_time_elapsed: {final_time_elapsed:.3f}s")
-    #     remaining_to_compensate = 30 - final_time_elapsed
-        
-    #     print(f"Tiempo a compensar: {remaining_to_compensate:.3f}s")
-    #     print("----------------------------------------------------")
-    #     return remaining_to_compensate
 
 
 ####################################################
