@@ -12,6 +12,7 @@
 
 # Ignore personal, testing or tutorial files.
 **/Profile_Test
+**/test
 **/Videos
 **/*.psd
 **/queries.py

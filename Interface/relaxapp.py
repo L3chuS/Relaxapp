@@ -455,6 +455,9 @@ class RelaxApp_Initial_Frame():
         database.verify_login(databases["database1"], tables["users_table"], user)
         
         if database.valid_login:
+            waiting_logging = ctk.CTkLabel(self.frame, text="Iniciando Sesión...", font=(font,12))
+            waiting_logging.place(rely=0.81, relx=0.5, anchor="center")
+            self.frame.update_idletasks()
             database.user_configuration(databases["database1"], tables["settings_table"], user["login"], 
                                         "Restore")
             RelaxApp_Structure.close_create(self, RelaxApp_User_Main_Menu, self.root, self.frame)
@@ -1849,9 +1852,9 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
 
         self.root = root
         self.frame = frame
-
         pygame.mixer.init()
-
+        self.start_time = time.perf_counter()
+        
         # Variables to set which threading is started.
         self.visual_set = visual_set
         self.stretch_set = stretch_set
@@ -2043,8 +2046,15 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
                                   bg_color=colors["soft_grey"])
         self.pause_alarm.place(rely=0.85, relx=0.9, anchor="e")
 
+        # This variables are counting how many round have been lunched.
+        self.init_TR_VO_multiplier = 0
+        self.init_TR_SO_multiplier = 0
+        self.init_VO_countdown_multiplier = 0
+        self.init_SO_countdown_multiplier = 0
+
     # This method calls 4 of the 6 countdown.
-    def threading(self): 
+    def threading(self):
+
         # Call all countdown funtions.
         if self.visual_set == True:
             t1=threading.Thread(target=self.TR_VO_countdown) 
@@ -2056,12 +2066,11 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
             t3=threading.Thread(target=self.TR_SO_countdown) 
             t3.start()
             t4=threading.Thread(target=self.NA_SO_countdown) 
-            t4.start()
+            t4.start()     
 
     # This method starts the main countdown "Time Remaining" of the visual options.
     def TR_VO_countdown(self):
-        # Variable to be used to sinchronize countdowns between Time Remaining and both Next Alert and Break Time.
-        contador = 0
+
         # Hours and minutes of time remaining are gotten.
         TR_HH_value = int(self.time_left_HH_VO.get())
         TR_MM_value = int(self.time_left_MM_VO.get())
@@ -2072,8 +2081,6 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
                 self.stop_countdown_VO = True
                 break              
             else:
-                # Timer are sinchronized.
-                self.window_RS.after(30 + contador)
                 # Verify if values have one or two digits in order to add a "0" in front.
                 if TR_MM_value > 9:
                     self.time_left_MM_VO.set(TR_MM_value)
@@ -2083,15 +2090,13 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
                     self.time_left_HH_VO.set(TR_HH_value)
                 else:
                     self.time_left_HH_VO.set("0" + str(TR_HH_value))
- 
-                time.sleep(60)
-                contador += 2
-                # After 1 minute one is subtracted from the minutes.
+
+                self.init_timer(60, "TR_VO")
                 if TR_MM_value > 0:
-                    TR_MM_value -=1
+                    TR_MM_value -= 1
                 # When minute is cero one is subtracted from the hours.
-                elif TR_HH_value > 0:     
-                    TR_HH_value -=1
+                elif TR_HH_value > 0:
+                    TR_HH_value -= 1
                     TR_MM_value = 59
                 # When the main countdown is 0 all label change.    
                 if TR_HH_value == 0 and TR_MM_value == 0:
@@ -2104,7 +2109,7 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
                     self.colon_VO_1.place_forget()
                     # New label is set to show that the countdown is finished.
                     finished_label_VO = ctk.CTkLabel(self.frame_visual, text="Finalizado", font=(font, 20), corner_radius=5,
-                                                     fg_color=colors["soft_green"])
+                                                    fg_color=colors["soft_green"])
                     finished_label_VO.place(rely=0.55, relx=0.06, anchor="w")
                     # All label are set as "00"
                     self.next_alert_MM_VO.set("00")
@@ -2124,10 +2129,11 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
 
         NA_MM_value = int(initial_value_MM)
         NA_SS_value = int(initial_value_SS)
-        
+ 
         while NA_MM_value > -1:
-            # Conditional that stop bucle when time remaining is finished.
-            if self.stop_countdown_VO == True:
+            
+            # Conditional that stop bucle when return button is pressed or time remaining is finished.
+            if self.app_running == False or self.stop_countdown_VO == True:
                 break
             # Verify if values have one or two digits in order to add a "0" in front.
             elif NA_SS_value > 9:
@@ -2141,24 +2147,24 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
 
             # After 1 second one is subtracted from the seconds.
             if NA_SS_value > 0:
-                NA_SS_value -=1
-                time.sleep(1)
+                self.init_timer(1, "VO_countdown")
+                NA_SS_value -= 1
             # When second is cero one is subtracted from the minutes.
             elif NA_MM_value > 0:
+                self.init_timer(1, "VO_countdown")
                 NA_MM_value -= 1
                 NA_SS_value = 59
-                time.sleep(1)
             else:
                 # Sound alert is called.
                 if self.sound_VO == "True":
                     self.play_sounds(2)
-                # Minutos and second are set as there was at the beggining.
+                # Minutes and second are set as there was at the beggining.
                 self.next_alert_SS_VO.set(initial_value_SS)
                 self.next_alert_MM_VO.set(initial_value_MM)
                 # New threading is run to start BT_VO_countdown function.
                 threading.Thread(target=self.BT_VO_countdown).start()
                 break
-
+            
     # This method starts the countdown "Break Time" of the visual options.
     def BT_VO_countdown(self):
         
@@ -2170,9 +2176,10 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
         BT_SS_value = int(initial_value_SS)
 
         while BT_MM_value > -1:
-            # Conditional that stop bucle when time remaining is finished.
-            if self.stop_countdown_VO == True:
-                break
+            # Conditional that stop bucle when return button is pressed or time remaining is finished.
+            if self.app_running == False or self.stop_countdown_VO == True:
+                break 
+
             # Verify if values have one or two digits in order to add a "0" in front.
             if BT_MM_value > 9:
                 self.breaktime_MM_VO.set(BT_MM_value)
@@ -2185,13 +2192,13 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
 
             # After 1 second one is subtracted from the seconds.
             if BT_SS_value > 0:
-                BT_SS_value -=1
-                time.sleep(1)
+                self.init_timer(1, "VO_countdown")
+                BT_SS_value -= 1
             # When second is cero one is subtracted from the minutes.
-            elif BT_MM_value > 0:     
-                BT_MM_value -=1
+            elif BT_MM_value > 0:
+                self.init_timer(1, "VO_countdown")
+                BT_MM_value -= 1
                 BT_SS_value = 59
-                time.sleep(1)
             else:
                 # Sound alert is called.
                 if self.sound_VO == "True":
@@ -2205,7 +2212,7 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
 
     # This method starts the main countdown "Time Remaining" of the stretch options.
     def TR_SO_countdown(self):
-        contador = 0
+
         TR_HH_value = int(self.time_left_HH_SO.get())
         TR_MM_value = int(self.time_left_MM_SO.get())
 
@@ -2214,8 +2221,6 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
                 self.stop_countdown_SO = True
                 break
             else:
-                self.window_RS.after(30 + contador)
-
                 if TR_MM_value > 9:
                     self.time_left_MM_SO.set(TR_MM_value)
                 else:
@@ -2225,8 +2230,7 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
                 else:
                     self.time_left_HH_SO.set("0" + str(TR_HH_value))
 
-                time.sleep(60)
-                contador += 2
+                self.init_timer(60, "TR_SO")
                 if TR_MM_value > 0:
                     TR_MM_value -=1
                 elif TR_HH_value > 0:     
@@ -2258,9 +2262,9 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
         NA_SS_value = int(initial_value_SS)
 
         while NA_MM_value > -1:
-            if self.stop_countdown_SO == True:
+            # Conditional that stop bucle when return button is pressed or time remaining is finished.
+            if self.app_running == False or self.stop_countdown_SO == True:
                 break
-
             elif NA_SS_value > 9:
                 self.next_alert_SS_SO.set(NA_SS_value)
             else:
@@ -2271,12 +2275,12 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
                 self.next_alert_MM_SO.set("0" + str(NA_MM_value))
 
             if NA_SS_value > 0:
+                self.init_timer(1, "SO_countdown")
                 NA_SS_value -=1
-                time.sleep(1)
             elif NA_MM_value > 0:
+                self.init_timer(1, "SO_countdown")
                 NA_MM_value -= 1
                 NA_SS_value = 59
-                time.sleep(1)
             else:
                 if self.sound_SO == "True":
                     self.play_sounds(2)
@@ -2295,8 +2299,9 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
         BT_SS_value = int(initial_value_SS)
 
         while BT_MM_value > -1:
-            if self.stop_countdown_SO == True:
-                break
+            # Conditional that stop bucle when return button is pressed or time remaining is finished.
+            if self.app_running == False or self.stop_countdown_SO == True:
+                break 
 
             if BT_SS_value > 9:
                 self.breaktime_SS_SO.set(BT_SS_value)
@@ -2306,14 +2311,14 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
                 self.breaktime_MM_SO.set(BT_MM_value)
             else:
                 self.breaktime_MM_SO.set("0" + str(BT_MM_value))
-
+            
             if BT_SS_value > 0:
+                self.init_timer(1, "SO_countdown")
                 BT_SS_value -=1
-                time.sleep(1)
             elif BT_MM_value > 0:
+                self.init_timer(1, "SO_countdown")
                 BT_MM_value -=1
                 BT_SS_value = 59
-                time.sleep(1)
             else:
                 if self.sound_SO == "True":
                     self.play_sounds(2)
@@ -2350,7 +2355,7 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
                 except:
                     pygame.mixer.music.load(os.path.join(sounds_path, "Final.mp3"))  
                     pygame.mixer.music.play(loops=0)
-    
+
     # This method stops the app when return button is pressed.
     def stop_app(self):
         # Variable to stop all bucles running.
@@ -2363,6 +2368,40 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
     def stop_sound(self):
         pygame.mixer.quit()
         pygame.mixer.init()
+      
+    # This method start timer and compare the time elapsed with "time.perf_counter".
+    def init_timer(self, num_seconds, thread):
+
+        # This conditional compense the delay between when the class is "init" with the moment that the timer is run. Only happend once
+        if self.init_TR_VO_multiplier == 0 and self.init_TR_SO_multiplier == 0 and self.init_VO_countdown_multiplier == 0 and self.init_SO_countdown_multiplier == 0:
+            init_elapsed_seconds = time.perf_counter() - self.start_time
+            time.sleep(num_seconds - 0.1 - init_elapsed_seconds)
+        else:
+            # Time sleep is run with minus 0.1 to be compensated after and avoid irregulars rounds, have precision and the timer sinchronized.
+            time.sleep(num_seconds - 0.1)
+
+        current_time = time.perf_counter()
+
+        elapsed_seconds = current_time - self.start_time
+
+        # These conditionals get the final value to compensate and avoid the desynchronization in large timers
+        if thread == "TR_VO":          
+            remaining_to_compensate = num_seconds - (elapsed_seconds - (num_seconds * self.init_TR_VO_multiplier))
+            self.init_TR_VO_multiplier += 1
+        if thread == "TR_SO":          
+            remaining_to_compensate = num_seconds - (elapsed_seconds - (num_seconds * self.init_TR_SO_multiplier))
+            self.init_TR_SO_multiplier += 1
+        elif thread == "VO_countdown":
+            remaining_to_compensate = num_seconds - (elapsed_seconds - (num_seconds * self.init_VO_countdown_multiplier))
+            self.init_VO_countdown_multiplier += 1
+        elif thread == "SO_countdown":
+            remaining_to_compensate = num_seconds - (elapsed_seconds - (num_seconds * self.init_SO_countdown_multiplier))
+            self.init_SO_countdown_multiplier += 1
+        from datetime import datetime
+        if remaining_to_compensate < 0:
+            remaining_to_compensate = 0
+
+        time.sleep(remaining_to_compensate)
 
 
 ####################################################
