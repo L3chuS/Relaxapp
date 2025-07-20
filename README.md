@@ -1,6 +1,5 @@
 # RelaxApp
 
-##### Vista previa del estado actual:
 <img src="./Configuration_Files/Images/3.PNG" width=25% height=25%>
 
 ---
@@ -95,7 +94,7 @@
 
 #### >> Finalmente, RelaxApp comenzará la cuenta atrás con lo que hayas configurado o el perfil que tengas establecido por defecto. Mientras el tiempo restante va disminuyendo, el descanso comenzará cuando el intervalo haya finalizado. Cuando este descanso termine, dará inicio nuevamente al intervalo y así sucesivamente hasta que el tiempo restante sea cero. Aquí se ve un ejemplo de la aplicación en funcionamiento:
 
-https://github.com/L3chuS/Relaxapp/assets/144654765/e4e71781-4ff4-48f2-a00d-d74cab3eb104
+https://github.com/user-attachments/assets/c9dd7898-b509-4b72-9e90-49ce7248c5a5
 
 ---
 
