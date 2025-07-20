@@ -1,0 +1,30 @@
+# Ignore Python caches.
+**/__pycache__
+**/*cache
+*.pyc
+*.pyd
+*.c
+*/build/
+
+# Ignores file named "dependecias.docx" and avoid to upload the temporal "~$dependencies.docx"
+# when file is opened.
+**/*dencies.docx
+
+# Ignore personal, testing or tutorial files.
+**/Profile_Test
+**/test
+**/Videos
+**/*.psd
+**/queries.py
+**/Scripts/*
+!/Scripts/script_compiler.bat
+**/build
+**/dist
+**/*.spec
+
+# Ignore sensible files.
+**/*.env
+**/AppSupport
+
+
+
