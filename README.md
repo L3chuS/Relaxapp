@@ -1,5 +1,9 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 # RelaxApp (En desarrollo)
+=======
+# RelaxApp
+>>>>>>> 8fb369886698fbf2037313773cc91413c1bed2aa
 
 ##### Vista previa del estado actual:
 <img src="./Imagenes/3.PNG" width=25% height=25%>
@@ -18,7 +22,10 @@
 ---
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> 8fb369886698fbf2037313773cc91413c1bed2aa
 ### Tecnologías utilizadas
 
 #### >> Python 3: Lenguaje de desarrollo
@@ -51,7 +58,10 @@
 
 ---
 
+<<<<<<< HEAD
 >>>>>>> develop
+=======
+>>>>>>> 8fb369886698fbf2037313773cc91413c1bed2aa
 ### Primeros pasos:
 
 #### >> Inicialmente el menú principal te permite iniciar sesión, registrarte o cambiar tu contraseña:
@@ -79,6 +89,7 @@
 <<<<<<< HEAD
 <img src="./Imagenes/3.PNG" width=25% height=25%> 
 
+<<<<<<< HEAD
 #### >> Si elijes el sub-menú de descanso visual o de estirar podrás establecer la configuración general. Allí verás distintos campos a editar:
 * Duración: hace referencia al tiempo en horas y minutos que la aplicación está realizando una cuenta atrás.
 =======
@@ -87,6 +98,10 @@
 #### >> Si elijes el sub-menú de descanso visual o de estirar podrás establecer la configuración general. Allí verás distintos campos a configurar:
 * Duración: hace referencia al tiempo en horas y minutos que el usuario prevee que estará realizando la actividad.
 >>>>>>> develop
+=======
+#### >> Si elijes el sub-menú de descanso visual o de estirar podrás establecer la configuración general. Allí verás distintos campos a configurar:
+* Duración: hace referencia al tiempo en horas y minutos que el usuario prevee que estará realizando la actividad.
+>>>>>>> 8fb369886698fbf2037313773cc91413c1bed2aa
 * Intervalo Alertas: define cuanto tiempo en minutos transcurre entre cada descanso.
 * Tiempo Descanso: es la duración establecida antes de volver a tu actividad principal.
 * Activar sonido: permite habilitar una alerta sonora cada vez que haya un descanso o cuando la aplicación finalice.
@@ -145,6 +160,7 @@ https://github.com/L3chuS/Relaxapp/assets/144654765/e4e71781-4ff4-48f2-a00d-d74c
 ---
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 # ![Imágen perfil.](https://raw.githubusercontent.com/L3chuS/L3chus/main/Perfil_Emoji.png) Hola, soy Esteban Santos Mendoza!! 👋 
 
 ### Soy informático que trabaja hace 5 años en el mundo del soporte técnico. Actualmente me estoy formando como desarrollador en Python.
@@ -161,3 +177,16 @@ https://github.com/L3chuS/Relaxapp/assets/144654765/e4e71781-4ff4-48f2-a00d-d74c
 ### Soy informático que trabaja hace 6 años en el mundo del soporte técnico. Actualmente me estoy formando como desarrollador en Python y estudiando un grado superior en el IOC (Institut Obert de Catalunya) en Desarrollo de Aplicaciones Web.
 >>>>>>> develop
 ### En mi perfil de GitHub tienes más información sobre mi. Saludos!
+=======
+### Autor:
+
+#### Nombre: Esteban Santos Mendoza
+#### Github: https://github.com/L3chuS
+
+---
+
+# ![Imágen perfil.](https://raw.githubusercontent.com/L3chuS/L3chus/main/Perfil_Emoji.png) Hola, soy Esteban Santos Mendoza!! 👋 
+
+### Soy informático que trabaja hace 6 años en el mundo del soporte técnico. Actualmente me estoy formando como desarrollador en Python y estudiando un grado superior en el IOC (Institut Obert de Catalunya) en Desarrollo de Aplicaciones Web.
+### En mi perfil de GitHub tienes más información sobre mi. Saludos!
+>>>>>>> 8fb369886698fbf2037313773cc91413c1bed2aa
