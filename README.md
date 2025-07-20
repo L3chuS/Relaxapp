@@ -1,18 +1,7 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
-# RelaxApp (En desarrollo)
-=======
-# RelaxApp
->>>>>>> 8fb369886698fbf2037313773cc91413c1bed2aa
-
-##### Vista previa del estado actual:
-<img src="./Imagenes/3.PNG" width=25% height=25%>
-=======
 # RelaxApp
 
 ##### Vista previa del estado actual:
 <img src="./Configuration_Files/Images/3.PNG" width=25% height=25%>
->>>>>>> develop
 
 ---
 ### Qué es RelaxApp?
@@ -21,11 +10,6 @@
 
 ---
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> 8fb369886698fbf2037313773cc91413c1bed2aa
 ### Tecnologías utilizadas
 
 #### >> Python 3: Lenguaje de desarrollo
@@ -58,27 +42,15 @@
 
 ---
 
-<<<<<<< HEAD
->>>>>>> develop
-=======
->>>>>>> 8fb369886698fbf2037313773cc91413c1bed2aa
 ### Primeros pasos:
 
 #### >> Inicialmente el menú principal te permite iniciar sesión, registrarte o cambiar tu contraseña:
 
-<<<<<<< HEAD
-<img src="./Imagenes/1.PNG" width=25% height=25%>
-
-#### >> El menú de registro pide datos básicos necesarios para comenzar a utilizarla: 
-
-<img src="./Imagenes/2.PNG" width=25% height=25%>
-=======
 <img src="./Configuration_Files/Images/1.PNG" width=25% height=25%>
 
 #### >> El menú de registro pide datos básicos necesarios para comenzar a utilizarla: 
 
 <img src="./Configuration_Files/Images/2.PNG" width=25% height=25%>
->>>>>>> develop
 
 ---
 
@@ -86,39 +58,19 @@
 
 #### >> Una vez logueado, verás todas las opciones para configurar la aplicación:
 
-<<<<<<< HEAD
-<img src="./Imagenes/3.PNG" width=25% height=25%> 
-
-<<<<<<< HEAD
-#### >> Si elijes el sub-menú de descanso visual o de estirar podrás establecer la configuración general. Allí verás distintos campos a editar:
-* Duración: hace referencia al tiempo en horas y minutos que la aplicación está realizando una cuenta atrás.
-=======
 <img src="./Configuration_Files/Images/3.PNG" width=25% height=25%> 
 
 #### >> Si elijes el sub-menú de descanso visual o de estirar podrás establecer la configuración general. Allí verás distintos campos a configurar:
 * Duración: hace referencia al tiempo en horas y minutos que el usuario prevee que estará realizando la actividad.
->>>>>>> develop
-=======
-#### >> Si elijes el sub-menú de descanso visual o de estirar podrás establecer la configuración general. Allí verás distintos campos a configurar:
-* Duración: hace referencia al tiempo en horas y minutos que el usuario prevee que estará realizando la actividad.
->>>>>>> 8fb369886698fbf2037313773cc91413c1bed2aa
 * Intervalo Alertas: define cuanto tiempo en minutos transcurre entre cada descanso.
 * Tiempo Descanso: es la duración establecida antes de volver a tu actividad principal.
 * Activar sonido: permite habilitar una alerta sonora cada vez que haya un descanso o cuando la aplicación finalice.
 
-<<<<<<< HEAD
-<img src="./Imagenes/4.PNG" width=25% height=25%>
-
-#### >> Así quedaría un ejemplo de la aplicación configurada:
-
-<img src="./Imagenes/5.PNG" width=25% height=25%>
-=======
 <img src="./Configuration_Files/Images/4.PNG" width=25% height=25%>
 
 #### >> Así quedaría un ejemplo de la aplicación configurada:
 
 <img src="./Configuration_Files/Images/5.PNG" width=25% height=25%>
->>>>>>> develop
 
 #### >> Es decir, durante 8hs, descansarás 5 minutos cada 60 minutos que hayan pasado.
 
@@ -127,19 +79,11 @@
 * El otro para cuando la cuenta atrás haya finalizado.
 #### >> Al mismo tiempo, hay 2 sonidos por default pero también puedes importar tus propias alarmas en los formatos permitidos:
 
-<<<<<<< HEAD
-<img src="./Imagenes/6.PNG" width=25% height=25%>
-
-#### >> Una vez tengas tus opciones configuradas podrás acceder al menú de "Perfiles" para guardarlos y no tener que configurarlos cada vez que inicies la app. Puedes guardas hasta 3 distintos y adaptarlos a tus actividades cotidianas:
-
-<img src="./Imagenes/7.PNG" width=25% height=25%>
-=======
 <img src="./Configuration_Files/Images/6.PNG" width=25% height=25%>
 
 #### >> Una vez tengas tus opciones configuradas podrás acceder al menú de "Perfiles" para guardarlos y no tener que configurarlos cada vez que inicies la app. Puedes guardas hasta 3 distintos y adaptarlos a tus actividades cotidianas:
 
 <img src="./Configuration_Files/Images/7.PNG" width=25% height=25%>
->>>>>>> develop
 
 ---
 
@@ -147,11 +91,7 @@
 
 #### >> Cuando tengas todo listo, deberás elegir al menos una opción para iniciar RelaxApp. Puedes elegir "Descanso Visual", "Estirar" o los dos:
 
-<<<<<<< HEAD
-<img src="./Imagenes/8.PNG" width=25% height=25%>
-=======
 <img src="./Configuration_Files/Images/8.PNG" width=25% height=25%>
->>>>>>> develop
 
 #### >> Finalmente, RelaxApp comenzará la cuenta atrás con lo que hayas configurado o el perfil que tengas establecido por defecto. Mientras el tiempo restante va disminuyendo, el descanso comenzará cuando el intervalo haya finalizado. Cuando este descanso termine, dará inicio nuevamente al intervalo y así sucesivamente hasta que el tiempo restante sea cero. Aquí se ve un ejemplo de la aplicación en funcionamiento:
 
@@ -159,25 +99,6 @@ https://github.com/L3chuS/Relaxapp/assets/144654765/e4e71781-4ff4-48f2-a00d-d74c
 
 ---
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-# ![Imágen perfil.](https://raw.githubusercontent.com/L3chuS/L3chus/main/Perfil_Emoji.png) Hola, soy Esteban Santos Mendoza!! 👋 
-
-### Soy informático que trabaja hace 5 años en el mundo del soporte técnico. Actualmente me estoy formando como desarrollador en Python.
-=======
-### Autor:
-
-#### Nombre: Esteban Santos Mendoza
-#### Github: https://github.com/L3chuS
-
----
-
-# ![Imágen perfil.](https://raw.githubusercontent.com/L3chuS/L3chus/main/Perfil_Emoji.png) Hola, soy Esteban Santos Mendoza!! 👋 
-
-### Soy informático que trabaja hace 6 años en el mundo del soporte técnico. Actualmente me estoy formando como desarrollador en Python y estudiando un grado superior en el IOC (Institut Obert de Catalunya) en Desarrollo de Aplicaciones Web.
->>>>>>> develop
-### En mi perfil de GitHub tienes más información sobre mi. Saludos!
-=======
 ### Autor:
 
 #### Nombre: Esteban Santos Mendoza
@@ -189,4 +110,3 @@ https://github.com/L3chuS/Relaxapp/assets/144654765/e4e71781-4ff4-48f2-a00d-d74c
 
 ### Soy informático que trabaja hace 6 años en el mundo del soporte técnico. Actualmente me estoy formando como desarrollador en Python y estudiando un grado superior en el IOC (Institut Obert de Catalunya) en Desarrollo de Aplicaciones Web.
 ### En mi perfil de GitHub tienes más información sobre mi. Saludos!
->>>>>>> 8fb369886698fbf2037313773cc91413c1bed2aa
