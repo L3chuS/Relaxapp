@@ -2397,11 +2397,9 @@ class RelaxApp_Running(RelaxApp_Running_Structure):
         elif thread == "SO_countdown":
             remaining_to_compensate = num_seconds - (elapsed_seconds - (num_seconds * self.init_SO_countdown_multiplier))
             self.init_SO_countdown_multiplier += 1
-        
+        from datetime import datetime
         if remaining_to_compensate < 0:
-            print("remaining_to_compensate antes:", remaining_to_compensate)
-            remaining_to_compensate == 0
-            print("remaining_to_compensate despues:", remaining_to_compensate)
+            remaining_to_compensate = 0
 
         time.sleep(remaining_to_compensate)
 
