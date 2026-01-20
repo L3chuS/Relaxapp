@@ -9,6 +9,14 @@
 
 ---
 
+### Compatibilidad
+
+#### - ✅ Windows 10 / 11
+#### - ❌ Linux
+#### - ❌ macOS
+
+---
+
 ### Tecnologías utilizadas
 
 #### >> Python 3: Lenguaje de desarrollo
