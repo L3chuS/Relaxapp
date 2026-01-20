@@ -31,12 +31,13 @@
 
 ### Instalación usuarios finales:
 
-#### 1 - Ejecuta el archivo "RelaxApp.exe" ubicado en la carpeta principal descargada.
-#### 2 - Sigue los pasos indicados por el instalador hasta finalizar.
-#### 3 - Inicia la aplicación.
-#### 4 - En el menú de inicio registra tu usuario desde el botón ubicado a la izquierda abajo.
-#### 5 - Completa los campos requeridos y pulsa aceptar.
-#### 6 - Disfruta de RelaxApp.
+#### 1 - Dirígete al apartado de "releases", busca en las "Assets" y descarga "RelaxApp_1.0.exe".
+#### 2 - Ejecuta el archivo descargado.
+#### 3 - Sigue los pasos indicados por el instalador hasta finalizar.
+#### 4 - Inicia la aplicación.
+#### 5 - En el menú de inicio registra tu usuario desde el botón ubicado a la izquierda abajo.
+#### 6 - Completa los campos requeridos y pulsa aceptar.
+#### 7 - Disfruta de RelaxApp.
 
 ---
 
