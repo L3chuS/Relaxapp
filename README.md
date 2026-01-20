@@ -107,5 +107,5 @@ https://github.com/user-attachments/assets/c9dd7898-b509-4b72-9e90-49ce7248c5a5
 
 # ![Imágen perfil.](https://raw.githubusercontent.com/L3chuS/L3chus/main/Perfil_Emoji.png) Hola, soy Esteban Santos Mendoza!! 👋 
 
-### Soy informático que trabaja hace 6 años en el mundo del soporte técnico. Actualmente me estoy formando como desarrollador en Python y estudiando un grado superior en el IOC (Institut Obert de Catalunya) en Desarrollo de Aplicaciones Web.
+### Python Developer, finalizando el Grado Superior en Desarrollo de Aplicaciones Web (DAW) y con más de 6 años de experiencia en IT / Helpdesk N1–N2.
 ### En mi perfil de GitHub tienes más información sobre mi. Saludos!
